@@ -1,386 +1,427 @@
-/* ============================================================
-   ScamTrace Auth Pages – Dark Cybersecurity Theme
-   ============================================================ */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap");
+/* ==========================================================================
+   SCAMTRACE Design System: Minimal Frostmorphism / Glassmorphism
+   Theme: Obsidian Deep Navy & Restrained Violet (No Green, Red, Orange, Blue cliches)
+   ========================================================================== */
 
-/* ── Root layout ────────────────────────────────────────────── */
-.auth-root {
-  display: flex;
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+
+:root {
+  --st-bg: #07080d;
+  --st-surface: rgba(14, 17, 26, 0.65);
+  --st-surface-hover: rgba(18, 22, 34, 0.78);
+  --st-border-glass: rgba(255, 255, 255, 0.08);
+  --st-border-glass-hover: rgba(255, 255, 255, 0.14);
+  --st-highlight-specular: inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
+  --st-shadow-glass: 0 24px 50px -12px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.06);
+
+  --st-text-main: #f4f5f8;
+  --st-text-muted: #8b92a5;
+  --st-text-subtle: #595f72;
+
+  --st-accent: #6366f1;
+  --st-accent-light: #818cf8;
+  --st-accent-tint: rgba(99, 102, 241, 0.12);
+  --st-accent-border: rgba(99, 102, 241, 0.28);
+
+  --st-radius-sm: 8px;
+  --st-radius-md: 12px;
+  --st-radius-lg: 18px;
+  --st-radius-pill: 9999px;
+}
+
+/* ── Viewport & Base Canvas ── */
+.scamtrace-login-root {
   min-height: 100vh;
-  font-family: "Inter", sans-serif;
-  background: #060b14;
-  color: #e2e8f0;
-}
-
-/* ── Left brand panel ────────────────────────────────────────── */
-.auth-brand {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 60px 64px;
-  background: linear-gradient(135deg, #0a1628 0%, #060b14 60%, #0d1f3c 100%);
-  border-right: 1px solid rgba(0, 212, 255, 0.08);
-  position: relative;
-  overflow: hidden;
-}
-
-/* Animated grid background */
-.auth-brand::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(0, 212, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 212, 255, 0.04) 1px, transparent 1px);
-  background-size: 40px 40px;
-  animation: gridMove 20s linear infinite;
-}
-
-/* Glow orbs */
-.auth-brand::after {
-  content: "";
-  position: absolute;
-  top: -100px;
-  left: -100px;
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, rgba(0, 212, 255, 0.06) 0%, transparent 70%);
-  border-radius: 50%;
-  animation: pulse 6s ease-in-out infinite;
-}
-
-@keyframes gridMove {
-  0% { background-position: 0 0; }
-  100% { background-position: 40px 40px; }
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 0.6; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.1); }
-}
-
-/* ── Logo ────────────────────────────────────────────────────── */
-.auth-logo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 56px;
-  position: relative;
-  z-index: 1;
-}
-
-.auth-logo-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #00d4ff, #0066cc);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
-  flex-shrink: 0;
-}
-
-.auth-logo-name {
-  font-family: "Space Grotesk", sans-serif;
-  font-size: 22px;
-  font-weight: 700;
-  color: #fff;
-  letter-spacing: -0.3px;
-}
-
-/* ── Brand content ───────────────────────────────────────────── */
-.auth-tagline {
-  font-family: "Space Grotesk", sans-serif;
-  font-size: 32px;
-  font-weight: 700;
-  line-height: 1.25;
-  color: #fff;
-  margin: 0 0 20px;
-  position: relative;
-  z-index: 1;
-}
-
-.auth-tagline span {
-  background: linear-gradient(90deg, #00d4ff, #7c3aed);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.auth-description {
-  font-size: 15px;
-  color: rgba(226, 232, 240, 0.6);
-  line-height: 1.7;
-  margin: 0 0 40px;
-  max-width: 380px;
-  position: relative;
-  z-index: 1;
-}
-
-/* ── Feature list ────────────────────────────────────────────── */
-.auth-features {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  position: relative;
-  z-index: 1;
-}
-
-.auth-feature-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 14px;
-  color: rgba(226, 232, 240, 0.75);
-}
-
-.auth-feature-check {
-  width: 22px;
-  height: 22px;
-  border-radius: 6px;
-  background: rgba(0, 212, 255, 0.12);
-  border: 1px solid rgba(0, 212, 255, 0.25);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #00d4ff;
-  font-size: 12px;
-  flex-shrink: 0;
-}
-
-/* ── Stat badges ─────────────────────────────────────────────── */
-.auth-stats {
-  display: flex;
-  gap: 24px;
-  margin-top: 48px;
-  position: relative;
-  z-index: 1;
-}
-
-.auth-stat {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.auth-stat-value {
-  font-family: "Space Grotesk", sans-serif;
-  font-size: 22px;
-  font-weight: 700;
-  color: #00d4ff;
-}
-
-.auth-stat-label {
-  font-size: 12px;
-  color: rgba(226, 232, 240, 0.5);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-/* ── Right form panel ────────────────────────────────────────── */
-.auth-form-panel {
-  width: 520px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 48px;
-  background: #080d18;
-}
-
-.auth-form-card {
   width: 100%;
-  max-width: 400px;
-}
-
-/* ── Mobile logo (hidden on desktop) ────────────────────────── */
-.auth-mobile-logo {
-  display: none;
+  background-color: var(--st-bg);
+  color: var(--st-text-main);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 32px;
-}
-
-/* ── Form heading ────────────────────────────────────────────── */
-.auth-form-heading {
-  margin-bottom: 28px;
-}
-
-.auth-form-title {
-  font-family: "Space Grotesk", sans-serif;
-  font-size: 26px;
-  font-weight: 700;
-  color: #fff;
-  margin: 0 0 6px;
-  letter-spacing: -0.3px;
-}
-
-.auth-form-subtitle {
-  font-size: 14px;
-  color: rgba(226, 232, 240, 0.5);
-  margin: 0;
-}
-
-/* ── Error alert ─────────────────────────────────────────────── */
-.auth-error {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  padding: 12px 14px;
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.25);
-  border-radius: 10px;
-  font-size: 13px;
-  color: #fca5a5;
-  margin-bottom: 20px;
-  line-height: 1.5;
-}
-
-/* ── Google wrapper ──────────────────────────────────────────── */
-.auth-google-wrap {
-  width: 100%;
-  margin-bottom: 20px;
-  display: flex;
   justify-content: center;
-}
-
-/* ── Divider ─────────────────────────────────────────────────── */
-.auth-divider {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-.auth-divider-line {
-  flex: 1;
-  height: 1px;
-  background: rgba(226, 232, 240, 0.08);
-}
-
-.auth-divider-text {
-  font-size: 12px;
-  color: rgba(226, 232, 240, 0.35);
-  white-space: nowrap;
-}
-
-/* ── Form ────────────────────────────────────────────────────── */
-.auth-form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.auth-form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.auth-label {
-  display: block;
-  font-size: 12px;
-  font-weight: 500;
-  color: rgba(226, 232, 240, 0.6);
-  margin-bottom: 6px;
-  letter-spacing: 0.3px;
-  text-transform: uppercase;
-}
-
-.auth-input {
-  width: 100%;
-  padding: 11px 14px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 10px;
-  font-size: 14px;
-  color: #e2e8f0;
-  font-family: "Inter", sans-serif;
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  position: relative;
+  overflow-x: hidden;
+  padding: 2.5rem 1.5rem;
   box-sizing: border-box;
 }
 
-.auth-input::placeholder {
-  color: rgba(226, 232, 240, 0.2);
+/* ── Refractive Ambient Backlights for Glassmorphism ── */
+.glass-ambient-orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(110px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.7;
 }
 
-.auth-input:focus {
-  border-color: rgba(0, 212, 255, 0.4);
-  box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.08);
+.glass-orb-top {
+  width: 480px;
+  height: 480px;
+  top: -120px;
+  right: 15%;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, rgba(79, 70, 229, 0.04) 70%, transparent 100%);
 }
 
-/* ── Submit button ───────────────────────────────────────────── */
-.auth-submit-btn {
+.glass-orb-bottom {
+  width: 420px;
+  height: 420px;
+  bottom: -100px;
+  left: 10%;
+  background: radial-gradient(circle, rgba(129, 140, 248, 0.08) 0%, rgba(99, 102, 241, 0.02) 65%, transparent 100%);
+}
+
+.glass-grid-overlay {
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.012) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 60% 50% at 50% 50%, #000 70%, transparent 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Main Two-Column Viewport ── */
+.scamtrace-split-viewport {
+  position: relative;
+  z-index: 1;
   width: 100%;
-  padding: 12px 20px;
-  background: linear-gradient(135deg, #00d4ff, #0066cc);
-  border: none;
-  border-radius: 10px;
-  font-size: 14px;
+  max-width: 960px;
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 4.5rem;
+  align-items: center;
+  margin: auto;
+  animation: frostFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes frostFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Left Column: Brand & Value Proposition ── */
+.scamtrace-brand-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2.25rem;
+}
+
+.brand-header-wrap {
+  display: flex;
+  align-items: center;
+}
+
+.scamtrace-brand-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-shield-svg {
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 12px rgba(99, 102, 241, 0.3));
+}
+
+.scamtrace-wordmark {
+  font-size: 1.18rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--st-text-main);
+}
+
+.brand-copy-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.brand-main-headline {
+  font-size: 2.45rem;
+  font-weight: 700;
+  line-height: 1.18;
+  letter-spacing: -0.03em;
+  color: #ffffff;
+}
+
+.brand-headline-sub {
+  color: #9aa1b5;
   font-weight: 600;
-  color: #fff;
-  font-family: "Inter", sans-serif;
-  cursor: pointer;
+}
+
+.brand-lead-summary {
+  font-size: 1.02rem;
+  line-height: 1.6;
+  color: var(--st-text-muted);
+  max-width: 460px;
+}
+
+/* ── Glass Benefit Tiles ── */
+.brand-benefits-grid {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.95rem;
+  margin-top: 0.5rem;
+  padding: 0;
+}
+
+.glass-benefit-row {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.glass-benefit-icon-badge {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
-  box-shadow: 0 0 20px rgba(0, 212, 255, 0.25);
-  margin-top: 4px;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--st-radius-sm);
+  background: rgba(255, 255, 255, 0.035);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  color: var(--st-accent-light);
+  flex-shrink: 0;
 }
 
-.auth-submit-btn:hover:not(:disabled) {
-  opacity: 0.92;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 24px rgba(0, 212, 255, 0.35);
+.glass-benefit-title {
+  font-size: 0.92rem;
+  font-weight: 400;
+  color: #cfd4e2;
+  letter-spacing: -0.01em;
 }
 
-.auth-submit-btn:active:not(:disabled) {
-  transform: translateY(0);
+/* ── Trust Statement ── */
+.brand-trust-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--st-border-glass);
 }
 
-.auth-submit-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.trust-pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--st-accent-light);
+  box-shadow: 0 0 10px rgba(99, 102, 241, 0.65);
+  flex-shrink: 0;
 }
 
-/* ── Footer text ─────────────────────────────────────────────── */
-.auth-footer-text {
-  text-align: center;
-  font-size: 13px;
-  color: rgba(226, 232, 240, 0.4);
-  margin-top: 20px;
+.trust-manifesto-text {
+  font-size: 0.82rem;
+  color: var(--st-text-subtle);
+  letter-spacing: -0.005em;
+  margin: 0;
 }
 
-.auth-footer-link {
-  color: #00d4ff;
-  text-decoration: none;
+/* ── Right Column: Frostmorphic Glass Card ── */
+.scamtrace-card-col {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.frost-login-card {
+  width: 100%;
+  max-width: 390px;
+  background: var(--st-surface);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid var(--st-border-glass);
+  box-shadow: var(--st-shadow-glass), var(--st-highlight-specular);
+  border-radius: var(--st-radius-lg);
+  padding: 2.25rem 2rem 1.75rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  position: relative;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.frost-login-card:hover {
+  border-color: var(--st-border-glass-hover);
+  box-shadow: 0 28px 60px -12px rgba(0, 0, 0, 0.82), var(--st-highlight-specular);
+}
+
+.glass-card-rim {
+  position: absolute;
+  top: 0;
+  left: 24px;
+  right: 24px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent);
+  pointer-events: none;
+}
+
+.frost-card-header {
+  text-align: left;
+}
+
+.frost-card-title {
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  color: #ffffff;
+  margin: 0 0 0.4rem 0;
+}
+
+.frost-card-sub {
+  font-size: 0.88rem;
+  color: var(--st-text-muted);
+  line-height: 1.45;
+  margin: 0;
+}
+
+.frost-card-interactive {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ── Glass Divider ── */
+.glass-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-top: -0.25rem;
+}
+
+.glass-divider-line {
+  flex: 1;
+  height: 1px;
+  background: var(--st-border-glass);
+}
+
+.glass-divider-tag {
+  font-size: 0.72rem;
   font-weight: 500;
-  transition: color 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--st-text-subtle);
 }
 
-.auth-footer-link:hover {
-  color: #38bdf8;
-  text-decoration: underline;
+/* ── Google Login Container ── */
+.frost-google-container {
+  width: 100%;
+  min-height: 44px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 0.2s ease;
 }
 
-/* ── Route loader spinner ────────────────────────────────────── */
+.frost-google-container.is-processing {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.frost-google-container iframe {
+  margin: 0 auto !important;
+}
+
+/* ── Error Notification ── */
+.frost-error-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  padding: 0.75rem 0.85rem;
+  border-radius: var(--st-radius-sm);
+  background: rgba(239, 68, 68, 0.08);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(239, 68, 68, 0.22);
+  color: #fca5a5;
+}
+
+.frost-error-icon {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ── Privacy Assurance ── */
+.frost-privacy-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  padding: 0.75rem 0.85rem;
+  border-radius: var(--st-radius-sm);
+}
+
+.frost-privacy-icon {
+  color: #717789;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.frost-privacy-text {
+  font-size: 0.76rem;
+  color: #7d8496;
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* ── Card Footer with Legal Links ── */
+.frost-card-footer {
+  border-top: 1px solid var(--st-border-glass);
+  padding-top: 1rem;
+}
+
+.frost-legal-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.frost-legal-link {
+  font-size: 0.76rem;
+  color: #636878;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.frost-legal-link:hover {
+  color: #9aa1b5;
+}
+
+.frost-legal-separator {
+  font-size: 0.76rem;
+  color: #4b5060;
+}
+
+/* ── Route Loader Spinner (Retained for application stability) ── */
 .route-loader {
   height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #060b14;
+  background: var(--st-bg);
 }
 
 .route-spinner {
-  width: 36px;
-  height: 36px;
-  border: 3px solid rgba(0, 212, 255, 0.15);
-  border-top-color: #00d4ff;
+  width: 34px;
+  height: 34px;
+  border: 2px solid rgba(99, 102, 241, 0.15);
+  border-top-color: var(--st-accent);
   border-radius: 50%;
   animation: spin 0.75s linear infinite;
 }
@@ -389,24 +430,49 @@
   to { transform: rotate(360deg); }
 }
 
-/* ── Responsive ──────────────────────────────────────────────── */
-@media (max-width: 900px) {
-  .auth-brand {
-    display: none;
+/* ── Responsive Viewport ── */
+@media (max-width: 868px) {
+  .scamtrace-split-viewport {
+    grid-template-columns: 1fr;
+    gap: 2.75rem;
+    max-width: 440px;
   }
 
-  .auth-form-panel {
-    width: 100%;
-    padding: 32px 24px;
+  .brand-main-headline {
+    font-size: 2rem;
   }
 
-  .auth-mobile-logo {
-    display: flex;
+  .brand-lead-summary {
+    font-size: 0.95rem;
+  }
+
+  .frost-login-card {
+    max-width: 100%;
+    padding: 2rem 1.5rem;
   }
 }
 
 @media (max-width: 480px) {
-  .auth-form-row {
-    grid-template-columns: 1fr;
+  .scamtrace-login-root {
+    padding: 1.5rem 1rem;
+    align-items: flex-start;
+  }
+
+  .brand-main-headline {
+    font-size: 1.7rem;
+  }
+
+  .brand-lead-summary {
+    font-size: 0.88rem;
+  }
+
+  .scamtrace-split-viewport {
+    gap: 2.25rem;
+    margin-top: 1rem;
+  }
+
+  .frost-login-card {
+    padding: 1.6rem 1.25rem;
+    border-radius: var(--st-radius-md);
   }
 }
