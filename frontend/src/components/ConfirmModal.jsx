@@ -49,7 +49,7 @@ export default function ConfirmModal({
                 background:
                   confirmVariant === "danger"
                     ? "rgba(239, 68, 68, 0.15)"
-                    : "rgba(117, 103, 248, 0.15)",
+                    : "rgba(59, 130, 246, 0.12)",
                 color: confirmVariant === "danger" ? "#EF4444" : "var(--accent)",
                 display: "flex",
                 alignItems: "center",

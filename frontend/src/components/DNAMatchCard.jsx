@@ -57,7 +57,7 @@ export default function DNAMatchCard({ match, currentReportId = null }) {
               width: 28,
               height: 28,
               borderRadius: "6px",
-              background: "rgba(117, 103, 248, 0.15)",
+              background: "rgba(59, 130, 246, 0.12)",
               color: "var(--accent)",
               display: "flex",
               alignItems: "center",
@@ -89,7 +89,7 @@ export default function DNAMatchCard({ match, currentReportId = null }) {
                 background:
                   similarity > 60
                     ? "rgba(239, 68, 68, 0.15)"
-                    : "rgba(117, 103, 248, 0.15)",
+                    : "rgba(59, 130, 246, 0.12)",
                 color: similarity > 60 ? "#EF4444" : "var(--accent)",
                 border: "1px solid currentColor",
               }}
@@ -116,9 +116,9 @@ export default function DNAMatchCard({ match, currentReportId = null }) {
                 key={idx}
                 style={{
                   fontSize: 11,
-                  background: "rgba(117, 103, 248, 0.1)",
-                  border: "1px solid rgba(117, 103, 248, 0.25)",
-                  color: "#C7D2FE",
+                  background: "rgba(59, 130, 246, 0.08)",
+                  border: "1px solid rgba(59, 130, 246, 0.2)",
+                  color: "#93C5FD",
                   padding: "2px 8px",
                   borderRadius: "4px",
                   fontFamily: "monospace",

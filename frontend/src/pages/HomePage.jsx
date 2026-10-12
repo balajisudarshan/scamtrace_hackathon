@@ -12,7 +12,6 @@ import {
   LifeBuoy,
   Users,
   ArrowRight,
-  Sparkles,
   Lock,
   ExternalLink,
   MessageSquare,
@@ -92,22 +91,22 @@ export default function HomePage() {
 
   const sampleMessages = [
     {
-      label: "🚨 Fake SBI KYC SMS",
+      label: "KYC Suspension SMS",
       type: "message",
       text: "Dear SBI customer your account has been suspended. Update your KYC immediately at http://sbi-secure-login.co.in or call +918888123456",
     },
     {
-      label: "🔗 HDFC Phishing Link",
+      label: "Banking Phishing Link",
       type: "url",
       text: "http://hdfc-kyc-update.net",
     },
     {
-      label: "📞 Digital Arrest Scam",
+      label: "Digital Arrest Threat",
       type: "message",
       text: "This is CBI speaking. A case has been filed against you for money laundering. You are under digital arrest. Do not tell anyone and stay on the call.",
     },
     {
-      label: "💸 UPI Fraud",
+      label: "UPI Payment Reversal",
       type: "message",
       text: "I sent Rs 5000 to your UPI by mistake. Please approve this collect request to refund the amount back to my account.",
     },
@@ -150,18 +149,18 @@ export default function HomePage() {
               display: "inline-flex",
               alignItems: "center",
               gap: 8,
-              padding: "6px 14px",
+              padding: "5px 12px",
               borderRadius: "9999px",
-              background: "rgba(117, 103, 248, 0.12)",
-              border: "1px solid rgba(117, 103, 248, 0.3)",
-              color: "#C7D2FE",
+              background: "rgba(59, 130, 246, 0.08)",
+              border: "1px solid var(--surface-border)",
+              color: "var(--text-secondary)",
               fontSize: 12,
-              fontWeight: 600,
+              fontWeight: 500,
               marginBottom: 16,
             }}
           >
-            <Sparkles size={14} style={{ color: "var(--accent)" }} />
-            Scam Detection & Community Intelligence
+            <ShieldCheck size={14} style={{ color: "var(--accent)" }} />
+            Threat Intelligence & Scam Verification Engine
           </div>
 
           <h1
@@ -228,7 +227,7 @@ export default function HomePage() {
                       padding: "7px 14px",
                       borderRadius: "var(--radius-sm)",
                       border: active ? "1px solid var(--accent)" : "1px solid var(--surface-border)",
-                      background: active ? "rgba(117, 103, 248, 0.15)" : "#0E1428",
+                      background: active ? "rgba(59, 130, 246, 0.12)" : "var(--surface-card)",
                       color: active ? "#FFFFFF" : "var(--text-secondary)",
                       fontSize: 13,
                       fontWeight: 500,
@@ -285,9 +284,9 @@ export default function HomePage() {
                     type="button"
                     onClick={() => handleSelectSample(s)}
                     style={{
-                      background: "rgba(117, 103, 248, 0.08)",
-                      border: "1px solid rgba(117, 103, 248, 0.25)",
-                      color: "#C7D2FE",
+                      background: "var(--surface-card)",
+                      border: "1px solid var(--surface-border)",
+                      color: "var(--text-secondary)",
                       padding: "4px 10px",
                       borderRadius: "6px",
                       fontSize: 12,
@@ -579,7 +578,7 @@ export default function HomePage() {
                   width: 36,
                   height: 36,
                   borderRadius: "8px",
-                  background: "rgba(117, 103, 248, 0.15)",
+                  background: "rgba(59, 130, 246, 0.12)",
                   color: "var(--accent)",
                   display: "flex",
                   alignItems: "center",

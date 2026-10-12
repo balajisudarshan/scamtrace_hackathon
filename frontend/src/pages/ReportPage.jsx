@@ -19,7 +19,6 @@ import {
   HelpCircle,
   UploadCloud,
   Image,
-  Sparkles,
 } from "lucide-react";
 
 export default function ReportPage() {
@@ -240,7 +239,7 @@ export default function ReportPage() {
                         padding: "8px 14px",
                         borderRadius: "var(--radius-sm)",
                         border: active ? "1px solid var(--accent)" : "1px solid var(--surface-border)",
-                        background: active ? "rgba(117, 103, 248, 0.15)" : "#0E1428",
+                        background: active ? "rgba(59, 130, 246, 0.12)" : "var(--surface-card)",
                         color: active ? "#FFFFFF" : "var(--text-secondary)",
                         fontSize: 13,
                         fontWeight: 500,
@@ -267,13 +266,13 @@ export default function ReportPage() {
                     alignItems: "center",
                     gap: 6,
                     padding: "4px 10px",
-                    background: "rgba(117, 103, 248, 0.12)",
-                    border: "1px solid rgba(117, 103, 248, 0.3)",
+                    background: "var(--surface-card)",
+                    border: "1px solid var(--surface-border)",
                     borderRadius: "4px",
-                    color: "#C7D2FE",
+                    color: "var(--text-secondary)",
                     fontSize: 12,
                     cursor: "pointer",
-                    fontWeight: 600,
+                    fontWeight: 500,
                   }}
                 >
                   <UploadCloud size={13} style={{ color: "var(--accent)" }} />
@@ -289,8 +288,8 @@ export default function ReportPage() {
               </div>
               {ocrSuccess && (
                 <div style={{ fontSize: 12, color: "#34D399", marginBottom: 6, display: "flex", alignItems: "center", gap: 6 }}>
-                  <Sparkles size={13} />
-                  <span>Text successfully extracted from screenshot and populated below!</span>
+                  <CheckCircle2 size={13} />
+                  <span>Text extracted from screenshot and populated below.</span>
                 </div>
               )}
               <textarea

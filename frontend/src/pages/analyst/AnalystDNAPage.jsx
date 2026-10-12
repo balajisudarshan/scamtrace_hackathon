@@ -129,7 +129,7 @@ export default function AnalystDNAPage() {
             width: 36,
             height: 36,
             borderRadius: "50%",
-            background: "rgba(117, 103, 248, 0.15)",
+            background: "rgba(59, 130, 246, 0.12)",
             color: "var(--accent)",
             display: "flex",
             alignItems: "center",

@@ -133,7 +133,7 @@ export default function AnalystGraphPage() {
                 <span>High Risk Incident</span>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#7567F8" }} />
+                <span style={{ width: 10, height: 10, borderRadius: "50%", background: "var(--accent)" }} />
                 <span>Shared Indicator Hub</span>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
@@ -160,10 +160,10 @@ export default function AnalystGraphPage() {
               <rect width="100%" height="100%" fill="url(#grid-dots)" />
 
               {/* Edge Connections */}
-              <line x1="350" y1="200" x2="160" y2="100" stroke="rgba(117,103,248,0.4)" strokeWidth="2" strokeDasharray="4 2" />
-              <line x1="350" y1="200" x2="180" y2="300" stroke="rgba(117,103,248,0.4)" strokeWidth="2" strokeDasharray="4 2" />
-              <line x1="350" y1="200" x2="520" y2="120" stroke="rgba(117,103,248,0.4)" strokeWidth="2" />
-              <line x1="350" y1="200" x2="540" y2="280" stroke="rgba(117,103,248,0.4)" strokeWidth="2" />
+              <line x1="350" y1="200" x2="160" y2="100" stroke="rgba(59,130,246,0.3)" strokeWidth="2" strokeDasharray="4 2" />
+              <line x1="350" y1="200" x2="180" y2="300" stroke="rgba(59,130,246,0.3)" strokeWidth="2" strokeDasharray="4 2" />
+              <line x1="350" y1="200" x2="520" y2="120" stroke="rgba(59,130,246,0.3)" strokeWidth="2" />
+              <line x1="350" y1="200" x2="540" y2="280" stroke="rgba(59,130,246,0.3)" strokeWidth="2" />
               <line x1="160" y1="100" x2="180" y2="300" stroke="rgba(239,68,68,0.3)" strokeWidth="1.5" />
 
               {/* Center Hub: sbi-secure-login.co.in */}
@@ -183,8 +183,8 @@ export default function AnalystGraphPage() {
                   });
                 }}
               >
-                <circle r="36" fill="#151E38" stroke="#7567F8" strokeWidth="2.5" />
-                <circle r="30" fill="rgba(117,103,248,0.2)" />
+                <circle r="36" fill="#151E38" stroke="var(--accent)" strokeWidth="2.5" />
+                <circle r="30" fill="rgba(59,130,246,0.15)" />
                 <text textAnchor="middle" dy="4" fill="#FFFFFF" fontSize="10" fontWeight="700">
                   sbi-secure
                 </text>

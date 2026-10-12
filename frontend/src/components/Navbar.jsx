@@ -14,7 +14,6 @@ import {
   Menu,
   X,
   PlusCircle,
-  Sparkles,
 } from "lucide-react";
 
 export function BrandMark({ size = 28 }) {
@@ -36,19 +35,19 @@ export function BrandMark({ size = 28 }) {
         />
         <path
           d="M16 9V15L12 18M16 15L20 18"
-          stroke="#A5B4FC"
+          stroke="#93C5FD"
           strokeWidth="1.8"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
         <circle cx="16" cy="15" r="1.8" fill="#FFFFFF" />
-        <circle cx="12" cy="18" r="1.3" fill="#818CF8" />
-        <circle cx="20" cy="18" r="1.3" fill="#818CF8" />
+        <circle cx="12" cy="18" r="1.3" fill="#3B82F6" />
+        <circle cx="20" cy="18" r="1.3" fill="#3B82F6" />
         <defs>
           <linearGradient id="shield-nav-grad" x1="6" y1="3" x2="26" y2="29" gradientUnits="userSpaceOnUse">
             <stop stopColor="#FFFFFF" />
-            <stop offset="0.5" stopColor="#A5B4FC" />
-            <stop offset="1" stopColor="#7567F8" />
+            <stop offset="0.5" stopColor="#93C5FD" />
+            <stop offset="1" stopColor="#3B82F6" />
           </linearGradient>
         </defs>
       </svg>
@@ -190,15 +189,15 @@ export default function Navbar() {
                 gap: 6,
                 padding: "6px 12px",
                 borderRadius: "var(--radius-md)",
-                background: "linear-gradient(135deg, rgba(117,103,248,0.2) 0%, rgba(99,102,241,0.1) 100%)",
-                border: "1px solid rgba(117, 103, 248, 0.4)",
-                color: "#C7D2FE",
+                background: "var(--surface-card)",
+                border: "1px solid var(--surface-border)",
+                color: "var(--text-primary)",
                 fontSize: 12,
                 fontWeight: 600,
                 textDecoration: "none",
               }}
             >
-              <Terminal size={14} style={{ color: "#A5B4FC" }} />
+              <Terminal size={14} style={{ color: "var(--accent)" }} />
               <span>Analyst Desk</span>
             </Link>
           ) : (
@@ -211,16 +210,16 @@ export default function Navbar() {
                 gap: 5,
                 padding: "5px 10px",
                 borderRadius: "var(--radius-sm)",
-                background: "rgba(117, 103, 248, 0.1)",
-                border: "1px solid rgba(117, 103, 248, 0.3)",
-                color: "#A5B4FC",
+                background: "var(--surface-card)",
+                border: "1px solid var(--surface-border)",
+                color: "var(--text-secondary)",
                 fontSize: 11,
-                fontWeight: 600,
+                fontWeight: 500,
                 cursor: "pointer",
               }}
             >
               <Terminal size={12} />
-              <span>⚡ Analyst Mode</span>
+              <span>Analyst Mode</span>
             </button>
           )}
 

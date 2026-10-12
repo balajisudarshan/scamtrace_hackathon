@@ -39,8 +39,8 @@ export default function AnalystLayout() {
       <header
         style={{
           height: 56,
-          background: "#0D1326",
-          borderBottom: "1px solid rgba(117, 103, 248, 0.25)",
+          background: "var(--bg-base)",
+          borderBottom: "1px solid var(--surface-border)",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -66,14 +66,14 @@ export default function AnalystLayout() {
                 width: 28,
                 height: 28,
                 borderRadius: "6px",
-                background: "linear-gradient(135deg, #7567F8 0%, #4F46E5 100%)",
+                background: "var(--accent)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 color: "#FFFFFF",
               }}
             >
-              <Terminal size={16} />
+              <Terminal size={15} />
             </div>
             <div style={{ display: "flex", alignItems: "baseline", gap: 6 }}>
               <span style={{ fontSize: 15, fontWeight: 800, color: "#FFFFFF", letterSpacing: "0.04em" }}>
@@ -83,11 +83,11 @@ export default function AnalystLayout() {
                 style={{
                   fontSize: 10,
                   fontWeight: 700,
-                  color: "#A5B4FC",
-                  background: "rgba(117, 103, 248, 0.2)",
+                  color: "#93C5FD",
+                  background: "rgba(59, 130, 246, 0.12)",
                   padding: "2px 6px",
                   borderRadius: "4px",
-                  border: "1px solid rgba(117, 103, 248, 0.4)",
+                  border: "1px solid rgba(59, 130, 246, 0.25)",
                   textTransform: "uppercase",
                   letterSpacing: "0.06em",
                 }}

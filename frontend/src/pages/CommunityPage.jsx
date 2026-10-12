@@ -93,7 +93,7 @@ export default function CommunityPage() {
 
   const getProvenanceBadge = (sourceType, datasetSource) => {
     if (sourceType === "COMMUNITY") {
-      return { label: "User Submitted", bg: "rgba(117, 103, 248, 0.15)", color: "#A5B4FC" };
+      return { label: "User Submitted", bg: "rgba(59, 130, 246, 0.12)", color: "#93C5FD" };
     }
     if (sourceType === "IMPORTED" || datasetSource) {
       return {

@@ -118,9 +118,9 @@ export default function ReportDetailPage() {
                 alignItems: "center",
                 gap: 6,
                 fontSize: 12,
-                color: "#A5B4FC",
-                background: "rgba(117, 103, 248, 0.15)",
-                border: "1px solid rgba(117, 103, 248, 0.3)",
+                color: "var(--accent)",
+                background: "rgba(59, 130, 246, 0.12)",
+                border: "1px solid rgba(59, 130, 246, 0.25)",
                 padding: "4px 10px",
                 borderRadius: "6px",
                 textDecoration: "none",
@@ -240,7 +240,7 @@ export default function ReportDetailPage() {
                           fontWeight: 700,
                           padding: "2px 6px",
                           borderRadius: "4px",
-                          background: "rgba(117, 103, 248, 0.15)",
+                          background: "rgba(59, 130, 246, 0.12)",
                           color: "var(--accent)",
                         }}
                       >

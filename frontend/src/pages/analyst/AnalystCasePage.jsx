@@ -270,8 +270,8 @@ export default function AnalystCasePage() {
         <div
           className="card"
           style={{
-            background: "linear-gradient(135deg, rgba(117, 103, 248, 0.08) 0%, #11182B 100%)",
-            border: "1px solid rgba(117, 103, 248, 0.3)",
+            background: "var(--surface-elevated)",
+            border: "1px solid var(--surface-border)",
             padding: "20px 24px",
           }}
         >
@@ -410,8 +410,8 @@ export default function AnalystCasePage() {
         <div
           className="card"
           style={{
-            background: "#0F162D",
-            border: "1px solid rgba(117, 103, 248, 0.3)",
+            background: "var(--surface-elevated)",
+            border: "1px solid var(--surface-border)",
           }}
         >
           <h2 style={{ fontSize: 16, fontWeight: 700, marginBottom: 14, display: "flex", alignItems: "center", gap: 8 }}>
@@ -528,7 +528,7 @@ export default function AnalystCasePage() {
                         fontWeight: 700,
                         padding: "2px 6px",
                         borderRadius: "4px",
-                        background: "rgba(117, 103, 248, 0.15)",
+                        background: "rgba(59, 130, 246, 0.12)",
                         color: "var(--accent)",
                       }}
                     >

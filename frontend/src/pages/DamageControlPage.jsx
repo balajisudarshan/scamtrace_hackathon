@@ -312,7 +312,7 @@ export default function DamageControlPage() {
                       width: 32,
                       height: 32,
                       borderRadius: "8px",
-                      background: active ? "rgba(117, 103, 248, 0.2)" : "#0E1428",
+                      background: active ? "rgba(59, 130, 246, 0.15)" : "var(--surface-card)",
                       color: active ? "var(--accent)" : "var(--text-secondary)",
                       display: "flex",
                       alignItems: "center",
@@ -358,7 +358,7 @@ export default function DamageControlPage() {
                   background:
                     current.riskLevel === "CRITICAL" || current.riskLevel === "HIGH"
                       ? "rgba(239, 68, 68, 0.15)"
-                      : "rgba(117, 103, 248, 0.15)",
+                      : "rgba(59, 130, 246, 0.12)",
                   color:
                     current.riskLevel === "CRITICAL" || current.riskLevel === "HIGH"
                       ? "#EF4444"

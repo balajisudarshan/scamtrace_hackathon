@@ -218,7 +218,7 @@ export default function ScamPulsePage() {
                               style={{
                                 height: "100%",
                                 width: `${pct}%`,
-                                background: "linear-gradient(90deg, #7567F8, #A5B4FC)",
+                                background: "linear-gradient(90deg, #3B82F6, #60A5FA)",
                                 borderRadius: 3,
                               }}
                             />

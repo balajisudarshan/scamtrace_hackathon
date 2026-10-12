@@ -7,9 +7,9 @@ export default function StatusBadge({ status }) {
   const configs = {
     PUBLISHED: {
       label: "Published",
-      bg: "rgba(117, 103, 248, 0.15)",
-      color: "#A5B4FC",
-      border: "rgba(117, 103, 248, 0.3)",
+      bg: "rgba(59, 130, 246, 0.12)",
+      color: "#93C5FD",
+      border: "rgba(59, 130, 246, 0.25)",
       icon: Globe2,
     },
     CORROBORATED: {

@@ -19,7 +19,6 @@ import {
   ArrowRight,
   Info,
   Layers,
-  Sparkles,
   ExternalLink,
   Lock,
 } from "lucide-react";
@@ -285,7 +284,7 @@ export default function BrandMonitorPage() {
         {/* Page Header */}
         <div style={{ marginBottom: 28, display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 16 }}>
           <div>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(117, 103, 248, 0.12)", padding: "4px 10px", borderRadius: 20, color: "var(--accent)", fontSize: 12, fontWeight: 600, marginBottom: 8 }}>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(59, 130, 246, 0.1)", padding: "4px 10px", borderRadius: 20, color: "var(--accent)", fontSize: 12, fontWeight: 600, marginBottom: 8 }}>
               <ShieldCheck size={14} />
               <span>Digital Risk Protection</span>
             </div>
@@ -664,7 +663,7 @@ export default function BrandMonitorPage() {
                     {socialResult.techniques?.length ? (
                       <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                         {socialResult.techniques.map((t, idx) => (
-                          <span key={idx} style={{ background: "rgba(117, 103, 248, 0.2)", border: "1px solid rgba(117, 103, 248, 0.4)", color: "#C7D2FE", fontSize: 11, padding: "3px 8px", borderRadius: 4 }}>
+                          <span key={idx} style={{ background: "rgba(59, 130, 246, 0.12)", border: "1px solid rgba(59, 130, 246, 0.25)", color: "#93C5FD", fontSize: 11, padding: "3px 8px", borderRadius: 4, fontFamily: "monospace" }}>
                             {t}
                           </span>
                         ))}
@@ -1018,7 +1017,7 @@ export default function BrandMonitorPage() {
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                     {nameCheckResult.techniques?.length ? (
                       nameCheckResult.techniques.map((t, idx) => (
-                        <span key={idx} style={{ background: "rgba(117, 103, 248, 0.2)", border: "1px solid rgba(117, 103, 248, 0.4)", color: "#C7D2FE", fontSize: 11, padding: "2px 8px", borderRadius: 4 }}>
+                        <span key={idx} style={{ background: "rgba(59, 130, 246, 0.12)", border: "1px solid rgba(59, 130, 246, 0.25)", color: "#93C5FD", fontSize: 11, padding: "2px 8px", borderRadius: 4, fontFamily: "monospace" }}>
                           {t}
                         </span>
                       ))

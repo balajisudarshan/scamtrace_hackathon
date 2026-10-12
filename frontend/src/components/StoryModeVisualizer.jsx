@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Sparkles, AlertOctagon, HelpCircle, ChevronRight } from "lucide-react";
+import { Fingerprint, AlertOctagon, HelpCircle, ChevronRight } from "lucide-react";
 
 /**
  * StoryModeVisualizer
@@ -12,7 +12,7 @@ export default function StoryModeVisualizer({ storyMode = [], rawContent = "" })
     return (
       <div
         style={{
-          background: "#0D1326",
+          background: "var(--surface-card)",
           border: "1px dashed var(--surface-border)",
           borderRadius: "var(--radius-lg)",
           padding: "24px",
@@ -20,9 +20,9 @@ export default function StoryModeVisualizer({ storyMode = [], rawContent = "" })
           color: "var(--text-muted)",
         }}
       >
-        <Sparkles size={24} style={{ marginBottom: 8, opacity: 0.5 }} />
+        <Fingerprint size={24} style={{ marginBottom: 8, opacity: 0.5 }} />
         <p style={{ fontSize: 14 }}>
-          No specific tactical phrase patterns triggered Story Mode for this content.
+          No specific social engineering tactic phrases matched for this content.
         </p>
       </div>
     );
@@ -42,7 +42,7 @@ export default function StoryModeVisualizer({ storyMode = [], rawContent = "" })
     if (t.includes("otp") || t.includes("credential")) {
       return { label: "Credential Harvesting", color: "#EF4444", bg: "rgba(239, 68, 68, 0.2)" };
     }
-    return { label: tactic.replace(/_/g, " "), color: "#A5B4FC", bg: "rgba(117, 103, 248, 0.15)" };
+    return { label: tactic.replace(/_/g, " "), color: "#93C5FD", bg: "rgba(59, 130, 246, 0.12)" };
   };
 
   const activeItem = storyMode[selectedIdx] || storyMode[0];
@@ -73,20 +73,20 @@ export default function StoryModeVisualizer({ storyMode = [], rawContent = "" })
             style={{
               width: 32,
               height: 32,
-              borderRadius: "8px",
-              background: "rgba(117, 103, 248, 0.15)",
+              borderRadius: "6px",
+              background: "rgba(59, 130, 246, 0.12)",
               color: "var(--accent)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <Sparkles size={18} />
+            <Fingerprint size={17} />
           </div>
           <div>
-            <h3 style={{ fontSize: 15, fontWeight: 600 }}>Scam Story Mode</h3>
+            <h3 style={{ fontSize: 14, fontWeight: 600 }}>Tactic & Trigger Breakdown</h3>
             <p style={{ fontSize: 12, color: "var(--text-muted)" }}>
-              Explainable breakdown of psychological triggers & manipulation tactics
+              Phrase-level extraction of manipulation patterns and psychological lures
             </p>
           </div>
         </div>

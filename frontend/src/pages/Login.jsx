@@ -229,11 +229,11 @@ export default function Login() {
                     onClick={() => handleQuickDemoLogin("analyst@scamtrace.dev", "analyst123")}
                     disabled={authProcessing}
                     style={{
-                      background: "rgba(117, 103, 248, 0.15)",
-                      border: "1px solid rgba(117, 103, 248, 0.4)",
+                      background: "rgba(59, 130, 246, 0.12)",
+                      border: "1px solid rgba(59, 130, 246, 0.25)",
                       borderRadius: "6px",
                       padding: "8px 10px",
-                      color: "#C7D2FE",
+                      color: "var(--accent)",
                       fontSize: 11,
                       fontWeight: 600,
                       cursor: "pointer",

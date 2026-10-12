@@ -22,7 +22,6 @@ import {
   CheckCircle2,
   XCircle,
   LifeBuoy,
-  Sparkles,
   GitCompare,
   Image,
   UploadCloud,
@@ -55,27 +54,27 @@ export default function CheckPage() {
 
   const sampleMessages = [
     {
-      label: "🚨 Fake SBI SMS",
+      label: "KYC Suspension SMS",
       type: "message",
       text: "Dear SBI customer your account has been suspended. Update your KYC immediately at http://sbi-secure-login.co.in or call +918888123456",
     },
     {
-      label: "🔗 HDFC Phishing",
+      label: "Banking Phishing Link",
       type: "url",
       text: "http://hdfc-kyc-update.net",
     },
     {
-      label: "📞 Digital Arrest",
+      label: "Digital Arrest Threat",
       type: "message",
       text: "This is CBI speaking. A case has been filed against you for money laundering. You are under digital arrest. Do not tell anyone and stay on the call.",
     },
     {
-      label: "💸 UPI Fraud",
+      label: "UPI Payment Reversal",
       type: "message",
       text: "I sent money to your UPI by mistake. Please return it via this collect request. Approve the payment to refund Rs 5000 to my account.",
     },
     {
-      label: "🎁 Prize Scam",
+      label: "Lottery Reward URL",
       type: "url",
       text: "http://paytm-cashback-win.com",
     },
@@ -219,7 +218,7 @@ export default function CheckPage() {
                       padding: "7px 14px",
                       borderRadius: "var(--radius-sm)",
                       border: active ? "1px solid var(--accent)" : "1px solid var(--surface-border)",
-                      background: active ? "rgba(117, 103, 248, 0.15)" : "#0E1428",
+                      background: active ? "rgba(59, 130, 246, 0.12)" : "var(--surface-card)",
                       color: active ? "#FFFFFF" : "var(--text-secondary)",
                       fontSize: 13,
                       fontWeight: 500,
@@ -236,7 +235,7 @@ export default function CheckPage() {
             <Link
               to="/brand-monitor"
               className="btn btn-outline btn-sm"
-              style={{ fontSize: 12, display: "inline-flex", alignItems: "center", gap: 6, borderColor: "rgba(117, 103, 248, 0.4)", color: "#C7D2FE" }}
+              style={{ fontSize: 12, display: "inline-flex", alignItems: "center", gap: 6, borderColor: "var(--surface-border)", color: "var(--text-secondary)" }}
             >
               <ShieldCheck size={14} style={{ color: "var(--accent)" }} />
               <span>Brand & Mobile App Monitor →</span>
@@ -253,11 +252,11 @@ export default function CheckPage() {
                     if (e.dataTransfer.files?.[0]) handleImageChange(e.dataTransfer.files[0]);
                   }}
                   style={{
-                    border: "2px dashed rgba(117, 103, 248, 0.4)",
+                    border: "1px dashed var(--surface-border-strong)",
                     borderRadius: "var(--radius-md)",
                     padding: "24px 16px",
                     textAlign: "center",
-                    background: "rgba(117, 103, 248, 0.04)",
+                    background: "var(--surface-card)",
                     cursor: "pointer",
                     position: "relative",
                   }}
@@ -294,7 +293,7 @@ export default function CheckPage() {
                           width: 44,
                           height: 44,
                           borderRadius: "50%",
-                          background: "rgba(117, 103, 248, 0.15)",
+                          background: "rgba(59, 130, 246, 0.12)",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
@@ -501,13 +500,15 @@ export default function CheckPage() {
                       {result.threatType && (
                         <span
                           style={{
-                            background: "rgba(117, 103, 248, 0.25)",
-                            color: "#C4B5FD",
-                            border: "1px solid rgba(117, 103, 248, 0.4)",
+                            background: "rgba(59, 130, 246, 0.12)",
+                            color: "#93C5FD",
+                            border: "1px solid rgba(59, 130, 246, 0.25)",
                             padding: "2px 8px",
                             borderRadius: "4px",
                             fontSize: 11,
                             fontWeight: 600,
+                            fontFamily: "monospace",
+                            letterSpacing: "0.02em",
                           }}
                         >
                           {result.threatType}
@@ -516,20 +517,21 @@ export default function CheckPage() {
                       {result.aiAnalysis?.enabled && (
                         <span
                           style={{
-                            background: "rgba(16, 185, 129, 0.15)",
-                            color: "#6EE7B7",
-                            border: "1px solid rgba(16, 185, 129, 0.3)",
+                            background: "rgba(148, 163, 184, 0.08)",
+                            color: "#94A3B8",
+                            border: "1px solid rgba(148, 163, 184, 0.2)",
                             padding: "2px 8px",
                             borderRadius: "4px",
                             fontSize: 11,
-                            fontWeight: 600,
+                            fontWeight: 500,
                             display: "inline-flex",
                             alignItems: "center",
                             gap: 4,
+                            fontFamily: "monospace",
                           }}
                         >
-                          <Sparkles size={11} />
-                          <span>AI Evaluated ({result.aiAnalysis.confidence}% conf)</span>
+                          <ShieldCheck size={11} />
+                          <span>Signal Match • {result.aiAnalysis.confidence}%</span>
                         </span>
                       )}
                     </div>
@@ -543,13 +545,13 @@ export default function CheckPage() {
                           marginTop: 8,
                           fontSize: 13,
                           color: "#E2E8F0",
-                          background: "rgba(0, 0, 0, 0.25)",
+                          background: "var(--surface-card)",
                           padding: "8px 12px",
                           borderRadius: "6px",
                           borderLeft: "3px solid var(--accent)",
                         }}
                       >
-                        <strong>AI Assessment:</strong> {result.verdictSummary}
+                        <strong>Summary:</strong> {result.verdictSummary}
                       </div>
                     )}
                   </div>
@@ -567,14 +569,14 @@ export default function CheckPage() {
                 </div>
               </div>
 
-              {/* View Switcher: Plain English vs Forensic Breakdown */}
+              {/* View Switcher */}
               <div
                 style={{
                   display: "flex",
                   gap: 4,
-                  background: "#0E1428",
-                  padding: 4,
-                  borderRadius: "8px",
+                  background: "var(--surface-elevated)",
+                  padding: 3,
+                  borderRadius: "6px",
                   border: "1px solid var(--surface-border)",
                   width: "fit-content",
                 }}
@@ -583,8 +585,8 @@ export default function CheckPage() {
                   type="button"
                   onClick={() => setResultView("simple")}
                   style={{
-                    padding: "6px 14px",
-                    borderRadius: "6px",
+                    padding: "5px 12px",
+                    borderRadius: "4px",
                     border: "none",
                     background: resultView === "simple" ? "var(--surface-card)" : "transparent",
                     color: resultView === "simple" ? "#FFFFFF" : "var(--text-secondary)",
@@ -593,14 +595,14 @@ export default function CheckPage() {
                     cursor: "pointer",
                   }}
                 >
-                  🛡️ Plain-Language Verdict
+                  Overview
                 </button>
                 <button
                   type="button"
                   onClick={() => setResultView("forensic")}
                   style={{
-                    padding: "6px 14px",
-                    borderRadius: "6px",
+                    padding: "5px 12px",
+                    borderRadius: "4px",
                     border: "none",
                     background: resultView === "forensic" ? "var(--surface-card)" : "transparent",
                     color: resultView === "forensic" ? "#FFFFFF" : "var(--text-secondary)",
@@ -609,7 +611,7 @@ export default function CheckPage() {
                     cursor: "pointer",
                   }}
                 >
-                  🔬 Deep Forensic Evidence ({result.evidence?.length || 0})
+                  Technical Evidence ({result.evidence?.length || 0})
                 </button>
               </div>
             </div>
@@ -619,11 +621,11 @@ export default function CheckPage() {
               <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                 {/* Extracted Screenshot Text (if Image) */}
                 {result.ocrText && (
-                  <div className="card" style={{ background: "rgba(117, 103, 248, 0.05)", border: "1px solid rgba(117, 103, 248, 0.25)" }}>
+                  <div className="card" style={{ background: "var(--surface-elevated)", border: "1px solid var(--surface-border)" }}>
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8, flexWrap: "wrap", gap: 6 }}>
-                      <h3 style={{ fontSize: 14, fontWeight: 700, margin: 0, display: "flex", alignItems: "center", gap: 6, color: "#C7D2FE" }}>
-                        <FileText size={16} style={{ color: "var(--accent)" }} />
-                        <span>Extracted Text from Screenshot (OCR)</span>
+                      <h3 style={{ fontSize: 13, fontWeight: 600, margin: 0, display: "flex", alignItems: "center", gap: 6, color: "var(--text-primary)" }}>
+                        <FileText size={15} style={{ color: "var(--accent)" }} />
+                        <span>Extracted Content (OCR)</span>
                       </h3>
                       {result.imageUrl && (
                         <a
