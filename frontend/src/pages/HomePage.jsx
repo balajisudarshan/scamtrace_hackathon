@@ -94,7 +94,7 @@ export default function HomePage() {
     {
       label: "🚨 Fake SBI KYC SMS",
       type: "message",
-      text: "Dear customer your SBI account is suspended. Update your KYC immediately at http://sbi-secure-login.co.in or call +918888123456",
+      text: "Dear SBI customer your account has been suspended. Update your KYC immediately at http://sbi-secure-login.co.in or call +918888123456",
     },
     {
       label: "🔗 HDFC Phishing Link",
@@ -102,14 +102,14 @@ export default function HomePage() {
       text: "http://hdfc-kyc-update.net",
     },
     {
-      label: "📞 Police Threat Call",
-      type: "phone",
-      text: "+917777654321",
+      label: "📞 Digital Arrest Scam",
+      type: "message",
+      text: "This is CBI speaking. A case has been filed against you for money laundering. You are under digital arrest. Do not tell anyone and stay on the call.",
     },
     {
-      label: "🎁 Paytm Cashback Win",
-      type: "url",
-      text: "http://paytm-cashback-win.com",
+      label: "💸 UPI Fraud",
+      type: "message",
+      text: "I sent Rs 5000 to your UPI by mistake. Please approve this collect request to refund the amount back to my account.",
     },
   ];
 

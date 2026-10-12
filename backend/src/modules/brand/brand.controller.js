@@ -12,7 +12,7 @@ import { tmpdir } from "os";
 import path from "path";
 import fs from "fs";
 
-import { scan, lookalikeName, scoreSocial, scoreApp } from "../../lib/brandDetect.js";
+import { scan, lookalikeName, scoreSocial, scoreApp, isOfficialSocial, isOfficialApp } from "../../lib/brandDetect.js";
 import { aiExplainDetection, aiCompareLogos, analyzeImageWithOCR, uploadToCloudinary, aiEnabled } from "../../lib/aiVision.js";
 import { prisma } from "../../lib/prisma.js";
 
@@ -268,3 +268,349 @@ export const demoScanController = async (req, res) => {
     return res.status(500).json({ success: false, message: err.message });
   }
 };
+
+// ─── GET /api/brand/profiles — List all brand profiles ───────────────────────
+export const listBrandProfilesController = async (req, res) => {
+  try {
+    const brands = await prisma.$queryRawUnsafe(
+      `SELECT * FROM "BrandProfile" ORDER BY name ASC`
+    );
+    return res.json({ success: true, brands });
+  } catch (err) {
+    console.error("List brand profiles error:", err);
+    return res.status(500).json({ success: false, message: "Failed to fetch brand profiles" });
+  }
+};
+
+// ─── GET /api/brand/profiles/:id — Get single brand profile ──────────────────
+export const getBrandProfileController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const rows = await prisma.$queryRawUnsafe(
+      `SELECT * FROM "BrandProfile" WHERE id = $1`, id
+    );
+    if (!rows.length) {
+      return res.status(404).json({ success: false, message: "Brand profile not found" });
+    }
+    return res.json({ success: true, brand: rows[0] });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// ─── POST /api/brand/profiles — Create new brand profile ─────────────────────
+export const createBrandProfileController = async (req, res) => {
+  try {
+    const { name, domain, description, logoUrl, logoHash, officialSocial, officialApps } = req.body;
+    if (!name || !domain) {
+      return res.status(400).json({ success: false, message: "Brand name and official domain are required" });
+    }
+
+    const id = `brand_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+    const socialJson = JSON.stringify(officialSocial || []);
+    const appsJson = JSON.stringify(officialApps || []);
+
+    const created = await prisma.$queryRawUnsafe(
+      `INSERT INTO "BrandProfile" ("id", "name", "domain", "description", "logoUrl", "logoHash", "officialSocial", "officialApps", "createdAt", "updatedAt")
+       VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8::jsonb, NOW(), NOW())
+       RETURNING *`,
+      id, name.trim(), domain.trim(), description || "", logoUrl || "", logoHash || "", socialJson, appsJson
+    );
+
+    return res.status(201).json({ success: true, brand: created[0] });
+  } catch (err) {
+    console.error("Create brand profile error:", err);
+    return res.status(500).json({ success: false, message: err.message || "Failed to create brand profile" });
+  }
+};
+
+// ─── PUT /api/brand/profiles/:id — Update brand profile ──────────────────────
+export const updateBrandProfileController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, domain, description, logoUrl, logoHash, officialSocial, officialApps } = req.body;
+
+    if (!name || !domain) {
+      return res.status(400).json({ success: false, message: "Brand name and official domain are required" });
+    }
+
+    const socialJson = JSON.stringify(officialSocial || []);
+    const appsJson = JSON.stringify(officialApps || []);
+
+    const updated = await prisma.$queryRawUnsafe(
+      `UPDATE "BrandProfile"
+       SET "name" = $1, "domain" = $2, "description" = $3, "logoUrl" = $4, "logoHash" = $5,
+           "officialSocial" = $6::jsonb, "officialApps" = $7::jsonb, "updatedAt" = NOW()
+       WHERE "id" = $8
+       RETURNING *`,
+      name.trim(), domain.trim(), description || "", logoUrl || "", logoHash || "", socialJson, appsJson, id
+    );
+
+    if (!updated.length) {
+      return res.status(404).json({ success: false, message: "Brand profile not found" });
+    }
+
+    return res.json({ success: true, brand: updated[0] });
+  } catch (err) {
+    console.error("Update brand profile error:", err);
+    return res.status(500).json({ success: false, message: err.message || "Failed to update brand profile" });
+  }
+};
+
+// ─── DELETE /api/brand/profiles/:id — Delete brand profile ───────────────────
+export const deleteBrandProfileController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await prisma.$queryRawUnsafe(`DELETE FROM "BrandProfile" WHERE "id" = $1`, id);
+    return res.json({ success: true, message: "Brand profile deleted successfully" });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// ─── POST /api/brand/analyze-social — Analyze candidate social account ───────
+export const analyzeSocialController = async (req, res) => {
+  try {
+    const { brandId, brandData, candidate } = req.body;
+    if (!candidate || !candidate.handle) {
+      return res.status(400).json({ success: false, message: "Candidate social account handle is required" });
+    }
+
+    let brand = brandData;
+    if (!brand && brandId) {
+      const rows = await prisma.$queryRawUnsafe(`SELECT * FROM "BrandProfile" WHERE id = $1`, brandId);
+      if (rows.length) brand = rows[0];
+    }
+
+    if (!brand || !brand.name) {
+      return res.status(400).json({ success: false, message: "Valid brand profile is required for analysis" });
+    }
+
+    // Check if official
+    const isOfficial = isOfficialSocial(candidate, brand);
+    if (isOfficial) {
+      return res.json({
+        success: true,
+        isOfficial: true,
+        riskLevel: "LOW_SIGNAL",
+        riskScore: 0,
+        score: 0,
+        verdict: "OFFICIAL_ASSET — Verified official brand account",
+        reasons: ["Matches official verified social handle registered in brand profile"],
+        techniques: ["verified official identifier"],
+        candidate,
+        brand: { name: brand.name, domain: brand.domain },
+      });
+    }
+
+    // Score candidate
+    const scored = scoreSocial(candidate, brand);
+    const scoreVal = scored ? scored.score : 15;
+    const severity = scored ? scored.severity : "LOW";
+    const riskLevel = scoreVal >= 75 ? "HIGH_RISK" : scoreVal >= 45 ? "NEEDS_CAUTION" : "LOW_SIGNAL";
+
+    return res.json({
+      success: true,
+      isOfficial: false,
+      riskLevel,
+      riskScore: Math.round(scoreVal) / 100,
+      score: scoreVal,
+      severity,
+      verdict: scoreVal >= 75
+        ? "HIGH_RISK — Potential fake or impersonating account"
+        : scoreVal >= 45
+        ? "NEEDS_CAUTION — Suspicious similarities detected"
+        : "LOW_SIGNAL — Low resemblance to official brand",
+      reasons: scored?.reasons || ["Account name does not closely resemble brand assets"],
+      techniques: scored?.techniques || [],
+      matchedFields: scored?.matchedFields || {},
+      candidate,
+      brand: { name: brand.name, domain: brand.domain, officialSocial: brand.officialSocial },
+    });
+  } catch (err) {
+    console.error("Analyze social error:", err);
+    return res.status(500).json({ success: false, message: err.message || "Failed to analyze social profile" });
+  }
+};
+
+// ─── POST /api/brand/analyze-app — Analyze candidate mobile app ──────────────
+export const analyzeAppController = async (req, res) => {
+  try {
+    const { brandId, brandData, candidate } = req.body;
+    if (!candidate || (!candidate.name && !candidate.appId)) {
+      return res.status(400).json({ success: false, message: "Candidate app name or package/appId is required" });
+    }
+
+    let brand = brandData;
+    if (!brand && brandId) {
+      const rows = await prisma.$queryRawUnsafe(`SELECT * FROM "BrandProfile" WHERE id = $1`, brandId);
+      if (rows.length) brand = rows[0];
+    }
+
+    if (!brand || !brand.name) {
+      return res.status(400).json({ success: false, message: "Valid brand profile is required for analysis" });
+    }
+
+    // Check if official
+    const isOfficial = isOfficialApp(candidate, brand);
+    if (isOfficial) {
+      return res.json({
+        success: true,
+        isOfficial: true,
+        riskLevel: "LOW_SIGNAL",
+        riskScore: 0,
+        score: 0,
+        verdict: "OFFICIAL_ASSET — Verified official brand mobile application",
+        reasons: ["App package ID matches official brand application record"],
+        techniques: ["verified official app package identifier"],
+        candidate,
+        brand: { name: brand.name, domain: brand.domain },
+      });
+    }
+
+    // Score app
+    const scored = scoreApp(candidate, brand);
+    const scoreVal = scored ? scored.score : 15;
+    const severity = scored ? scored.severity : "LOW";
+    const riskLevel = scoreVal >= 75 ? "HIGH_RISK" : scoreVal >= 45 ? "NEEDS_CAUTION" : "LOW_SIGNAL";
+
+    return res.json({
+      success: true,
+      isOfficial: false,
+      riskLevel,
+      riskScore: Math.round(scoreVal) / 100,
+      score: scoreVal,
+      severity,
+      verdict: scoreVal >= 75
+        ? "HIGH_RISK — Potential fake mobile app impersonating brand"
+        : scoreVal >= 45
+        ? "NEEDS_CAUTION — Elevated risk due to name or publisher differences"
+        : "LOW_SIGNAL — Minimal risk signal detected",
+      reasons: scored?.reasons || ["App identifiers do not show significant brand resemblance"],
+      techniques: scored?.techniques || [],
+      candidate,
+      brand: { name: brand.name, domain: brand.domain, officialApps: brand.officialApps },
+    });
+  } catch (err) {
+    console.error("Analyze app error:", err);
+    return res.status(500).json({ success: false, message: err.message || "Failed to analyze mobile app" });
+  }
+};
+
+// ─── POST /api/brand/submit-case — Submit asset to Analyst Triage Queue ───────
+export const submitBrandCaseController = async (req, res) => {
+  try {
+    const { assetType, candidate, brand, analysisResult } = req.body;
+    if (!assetType || !candidate || !brand) {
+      return res.status(400).json({ success: false, message: "assetType, candidate, and brand are required" });
+    }
+
+    const contentType = assetType === "app" ? "app" : "social";
+    const platform = assetType === "app" ? (candidate.store || "App Store") : (candidate.platform || "Social Media");
+    const assetTitle = assetType === "app" ? candidate.name : `@${candidate.handle}`;
+
+    const rawContent = JSON.stringify({
+      targetBrand: brand.name,
+      targetDomain: brand.domain,
+      assetType,
+      candidate,
+      analysisResult,
+    }, null, 2);
+
+    const publicSummary = `[IMPERSONATION INVESTIGATION] ${contentType.toUpperCase()}: ${assetTitle} targeting ${brand.name}. Risk Score: ${Math.round((analysisResult?.riskScore || 0) * 100)}/100.`;
+
+    const riskLevel = analysisResult?.riskLevel || "NEEDS_CAUTION";
+    const riskScore = analysisResult?.riskScore || 0.6;
+    const evidenceJson = JSON.stringify((analysisResult?.reasons || []).map(r => ({ field: "impersonation_signal", value: r, why: r })));
+    const storyModeJson = JSON.stringify((analysisResult?.techniques || []).map(t => ({ phrase: assetTitle, tactic: t, explanation: `Used technique: ${t}` })));
+    const nextStepsJson = JSON.stringify([
+      `Do not install or authenticate with this ${contentType}`,
+      `Verify the asset against ${brand.name}'s official website: ${brand.domain}`,
+      "Report to brand protection and cyber security helpline 1930"
+    ]);
+
+    const rows = await prisma.$queryRawUnsafe(`
+      INSERT INTO "Report" (id, "submittedById", "contentType", "rawContent", "publicSummary",
+        platform, "targetRegion", "riskLevel", "riskScore", "evidenceJson", "storyModeJson",
+        "nextStepsJson", caveat, status, "sourceType", "createdAt", "updatedAt")
+      VALUES (gen_random_uuid()::text, $1, $2, $3, $4, $5, 'IN', $6, $7, $8, $9, $10, $11, 'RECEIVED', 'COMMUNITY', NOW(), NOW())
+      RETURNING id, "riskLevel", "riskScore", status, "createdAt"
+    `,
+      req.user?.id ?? null,
+      contentType,
+      rawContent,
+      publicSummary,
+      platform,
+      riskLevel,
+      riskScore,
+      evidenceJson,
+      storyModeJson,
+      nextStepsJson,
+      "Asset submitted through Public Brand Protection portal for analyst review."
+    );
+
+    const report = rows[0];
+
+    // Persist Brand & Asset Indicators
+    try {
+      // 1. Brand Indicator
+      const brandVal = brand.name.toLowerCase();
+      const existBrand = await prisma.$queryRawUnsafe(`SELECT id FROM "Indicator" WHERE type='BRAND' AND value=$1`, brandVal);
+      let brandIndId;
+      if (existBrand.length) {
+        brandIndId = existBrand[0].id;
+      } else {
+        const ins = await prisma.$queryRawUnsafe(
+          `INSERT INTO "Indicator" (id, type, value, metadata, "createdAt") VALUES (gen_random_uuid()::text, 'BRAND', $1, $2, NOW()) RETURNING id`,
+          brandVal, JSON.stringify({ brandName: brand.name })
+        );
+        brandIndId = ins[0].id;
+      }
+      await prisma.$queryRawUnsafe(
+        `INSERT INTO "ReportIndicator" (id, "reportId", "indicatorId", context) VALUES (gen_random_uuid()::text, $1, $2, $3) ON CONFLICT DO NOTHING`,
+        report.id, brandIndId, `Brand targeted: ${brand.name}`
+      );
+
+      // 2. Social Handle or App Name Indicator
+      const assetVal = (assetType === "app" ? (candidate.appId || candidate.name) : candidate.handle).toLowerCase();
+      const indType = assetType === "app" ? "PHRASE" : "SOCIAL_HANDLE";
+      const existAsset = await prisma.$queryRawUnsafe(`SELECT id FROM "Indicator" WHERE type=$1 AND value=$2`, indType, assetVal);
+      let assetIndId;
+      if (existAsset.length) {
+        assetIndId = existAsset[0].id;
+      } else {
+        const ins = await prisma.$queryRawUnsafe(
+          `INSERT INTO "Indicator" (id, type, value, metadata, "createdAt") VALUES (gen_random_uuid()::text, $1, $2, $3, NOW()) RETURNING id`,
+          indType, assetVal, JSON.stringify({ candidate })
+        );
+        assetIndId = ins[0].id;
+      }
+      await prisma.$queryRawUnsafe(
+        `INSERT INTO "ReportIndicator" (id, "reportId", "indicatorId", context) VALUES (gen_random_uuid()::text, $1, $2, $3) ON CONFLICT DO NOTHING`,
+        report.id, assetIndId, `Suspicious asset: ${assetTitle}`
+      );
+    } catch (_) {}
+
+    // Audit log
+    try {
+      await prisma.$queryRawUnsafe(
+        `INSERT INTO "AuditEvent" (id, "userId", "reportId", action, detail, "createdAt")
+         VALUES (gen_random_uuid()::text, $1, $2, 'REPORT_SUBMITTED', $3, NOW())`,
+        req.user?.id ?? null, report.id, JSON.stringify({ assetType, brand: brand.name, score: riskScore })
+      );
+    } catch (_) {}
+
+    return res.status(201).json({
+      success: true,
+      reportId: report.id,
+      status: report.status,
+      riskLevel: report.riskLevel,
+      riskScore: report.riskScore,
+      message: "Suspicious asset submitted to Analyst Triage Queue for investigation.",
+    });
+  } catch (err) {
+    console.error("Submit brand case error:", err);
+    return res.status(500).json({ success: false, message: err.message || "Failed to submit brand case" });
+  }
+};
+

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { api } from "../../services/api";
 import RiskBadge from "../../components/RiskBadge";
 import StatusBadge from "../../components/StatusBadge";
@@ -15,18 +15,24 @@ import {
   Eye,
   Tag,
   AlertTriangle,
+  RotateCw,
 } from "lucide-react";
 
 export default function AnalystQueuePage() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const [statusTab, setStatusTab] = useState("RECEIVED");
+  const initialStatus = searchParams.get("status") || "RECEIVED";
+  const [statusTab, setStatusTab] = useState(initialStatus);
+  const [assetTypeFilter, setAssetTypeFilter] = useState("ALL");
+  const [riskFilter, setRiskFilter] = useState("ALL");
   const [page, setPage] = useState(1);
   const [reports, setReports] = useState([]);
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [statusCounts, setStatusCounts] = useState({});
 
   // Local search filter for loaded queue rows
   const [searchFilter, setSearchFilter] = useState("");
@@ -38,42 +44,91 @@ export default function AnalystQueuePage() {
     { id: "PUBLISHED", label: "Published" },
     { id: "DISPUTED", label: "Disputed" },
     { id: "REJECTED", label: "Rejected" },
+    { id: "ALL", label: "All Incidents" },
   ];
 
-  useEffect(() => {
-    let isMounted = true;
+  // Fetch status counts for tab badges
+  const fetchCounts = async () => {
+    try {
+      const res = await api.admin.getStats();
+      if (res && res.success && res.stats?.reportsByStatus) {
+        const countsMap = {};
+        let allTotal = 0;
+        res.stats.reportsByStatus.forEach((s) => {
+          countsMap[s.status] = s.count;
+          allTotal += s.count;
+        });
+        countsMap["ALL"] = allTotal;
+        setStatusCounts(countsMap);
+      }
+    } catch (_) {}
+  };
+
+  const fetchQueue = async () => {
     setLoading(true);
     setError(null);
-
-    api.admin
-      .getQueue({ status: statusTab, page, limit: 15 })
-      .then((res) => {
-        if (isMounted && res.success) {
-          setReports(res.reports || []);
-          setTotal(res.total || 0);
-          setTotalPages(res.totalPages || 1);
-        } else {
-          setError(res?.message || "Failed to load triage queue.");
-        }
-      })
-      .catch((err) => {
-        if (isMounted) setError(err.message || "Failed to fetch triage queue from backend.");
-      })
-      .finally(() => {
-        if (isMounted) setLoading(false);
+    try {
+      const res = await api.admin.getQueue({
+        status: statusTab,
+        contentType: assetTypeFilter,
+        riskLevel: riskFilter,
+        page,
+        limit: 15,
       });
 
-    return () => {
-      isMounted = false;
-    };
-  }, [statusTab, page]);
+      if (res && res.success) {
+        setReports(res.reports || []);
+        setTotal(res.total || 0);
+        setTotalPages(res.totalPages || 1);
+      } else {
+        setError(res?.message || "Failed to load triage queue.");
+      }
+    } catch (err) {
+      setError(err?.message || "Failed to fetch triage queue from backend.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCounts();
+  }, []);
+
+  useEffect(() => {
+    const s = searchParams.get("status");
+    if (s && s !== statusTab) {
+      setStatusTab(s);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    fetchQueue();
+  }, [statusTab, assetTypeFilter, riskFilter, page]);
+
+  const handleTabChange = (tabId) => {
+    setStatusTab(tabId);
+    setPage(1);
+    setSearchParams({ status: tabId });
+  };
+
+  const handleReconnect = async () => {
+    try {
+      setLoading(true);
+      await api.auth.login("analyst@scamtrace.dev", "analyst123");
+      await fetchCounts();
+      await fetchQueue();
+    } catch (err) {
+      setError(err?.message || "Failed to reconnect session.");
+      setLoading(false);
+    }
+  };
 
   // Client-side quick filter on current batch
   const filteredReports = reports.filter((r) => {
     if (!searchFilter.trim()) return true;
     const q = searchFilter.toLowerCase();
     return (
-      r.id.toLowerCase().includes(q) ||
+      (r.id || "").toLowerCase().includes(q) ||
       (r.publicSummary || "").toLowerCase().includes(q) ||
       (r.rawContent || "").toLowerCase().includes(q) ||
       (r.platform || "").toLowerCase().includes(q)
@@ -93,55 +148,139 @@ export default function AnalystQueuePage() {
           </p>
         </div>
 
-        <div style={{ fontSize: 13, color: "var(--text-muted)" }}>
-          Showing <strong>{filteredReports.length}</strong> of <strong>{total}</strong> cases in{" "}
-          <strong style={{ color: "var(--accent)" }}>{statusTab}</strong>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <div style={{ fontSize: 13, color: "var(--text-muted)" }}>
+            Showing <strong>{filteredReports.length}</strong> of <strong>{total}</strong> cases in{" "}
+            <strong style={{ color: "var(--accent)" }}>{statusTab}</strong>
+          </div>
+          <button
+            onClick={() => {
+              fetchCounts();
+              fetchQueue();
+            }}
+            className="btn btn-secondary btn-sm"
+            title="Refresh queue"
+            style={{ padding: "6px 10px" }}
+          >
+            <RotateCw size={13} className={loading ? "animate-spin" : ""} />
+            <span>Refresh</span>
+          </button>
         </div>
       </div>
 
       {/* ── Status Tab Navigation ── */}
       <div className="tab-nav" style={{ overflowX: "auto" }}>
-        {statusTabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => {
-              setStatusTab(tab.id);
-              setPage(1);
-            }}
-            className={`tab-btn ${statusTab === tab.id ? "active" : ""}`}
-            style={{ whiteSpace: "nowrap" }}
-          >
-            {tab.label}
-          </button>
-        ))}
+        {statusTabs.map((tab) => {
+          const count = statusCounts[tab.id];
+          return (
+            <button
+              key={tab.id}
+              onClick={() => handleTabChange(tab.id)}
+              className={`tab-btn ${statusTab === tab.id ? "active" : ""}`}
+              style={{ whiteSpace: "nowrap", display: "inline-flex", alignItems: "center", gap: 6 }}
+            >
+              <span>{tab.label}</span>
+              {count !== undefined && (
+                <span
+                  style={{
+                    fontSize: 11,
+                    padding: "1px 6px",
+                    borderRadius: "10px",
+                    background: statusTab === tab.id ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.06)",
+                    color: statusTab === tab.id ? "#FFFFFF" : "var(--text-muted)",
+                    fontWeight: 700,
+                  }}
+                >
+                  {count}
+                </span>
+              )}
+            </button>
+          );
+        })}
       </div>
 
-      {/* ── Search Bar within Queue ── */}
-      <div style={{ position: "relative" }}>
-        <Search
-          size={15}
-          style={{
-            position: "absolute",
-            left: 14,
-            top: "50%",
-            transform: "translateY(-50%)",
-            color: "var(--text-muted)",
-          }}
-        />
-        <input
-          type="text"
-          className="input"
-          value={searchFilter}
-          onChange={(e) => setSearchFilter(e.target.value)}
-          placeholder="Filter queue by report ID, domain, platform, or keyword..."
-          style={{ paddingLeft: 38 }}
-        />
+      {/* ── Filter Bar: Asset Type, Risk Level, and Keyword Search ── */}
+      <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
+        <div style={{ position: "relative", flex: 1, minWidth: 260 }}>
+          <Search
+            size={15}
+            style={{
+              position: "absolute",
+              left: 14,
+              top: "50%",
+              transform: "translateY(-50)",
+              color: "var(--text-muted)",
+            }}
+          />
+          <input
+            type="text"
+            className="input"
+            value={searchFilter}
+            onChange={(e) => setSearchFilter(e.target.value)}
+            placeholder="Search within page by keyword or ID..."
+            style={{ paddingLeft: 38 }}
+          />
+        </div>
+
+        {/* Asset Type Filter Dropdown */}
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <span style={{ fontSize: 12, color: "var(--text-muted)", whiteSpace: "nowrap" }}>Asset Type:</span>
+          <select
+            className="select"
+            value={assetTypeFilter}
+            onChange={(e) => {
+              setAssetTypeFilter(e.target.value);
+              setPage(1);
+            }}
+            style={{ padding: "8px 12px", fontSize: 13, minWidth: 140 }}
+          >
+            <option value="ALL">All Assets</option>
+            <option value="social">Social Media</option>
+            <option value="app">Mobile Apps</option>
+            <option value="message">SMS / Messages</option>
+            <option value="url">URLs / Websites</option>
+            <option value="phone">Phone Calls</option>
+          </select>
+        </div>
+
+        {/* Risk Level Filter Dropdown */}
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <span style={{ fontSize: 12, color: "var(--text-muted)", whiteSpace: "nowrap" }}>Risk:</span>
+          <select
+            className="select"
+            value={riskFilter}
+            onChange={(e) => {
+              setRiskFilter(e.target.value);
+              setPage(1);
+            }}
+            style={{ padding: "8px 12px", fontSize: 13, minWidth: 140 }}
+          >
+            <option value="ALL">All Risk Levels</option>
+            <option value="HIGH_RISK">High Risk (🚨)</option>
+            <option value="NEEDS_CAUTION">Needs Caution (⚠️)</option>
+            <option value="LOW_SIGNAL">Low Signal (✅)</option>
+          </select>
+        </div>
       </div>
 
       {/* ── Triage Queue Table ── */}
       {error ? (
-        <div className="card" style={{ textAlign: "center", padding: 36, color: "var(--risk-high)" }}>
-          {error}
+        <div className="card" style={{ textAlign: "center", padding: 36, maxWidth: 540, margin: "20px auto" }}>
+          <AlertTriangle size={32} style={{ color: "var(--risk-high)", marginBottom: 12 }} />
+          <h3 style={{ fontSize: 16, fontWeight: 700, color: "#FFFFFF", marginBottom: 6 }}>
+            Queue Retrieval Error
+          </h3>
+          <p style={{ color: "var(--text-muted)", fontSize: 13, marginBottom: 16 }}>
+            {error}
+          </p>
+          <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
+            <button onClick={fetchQueue} className="btn btn-secondary btn-sm">
+              Try Again
+            </button>
+            <button onClick={handleReconnect} className="btn btn-primary btn-sm">
+              ⚡ Reconnect Analyst Session
+            </button>
+          </div>
         </div>
       ) : loading ? (
         <div className="flex-center" style={{ minHeight: 300 }}>

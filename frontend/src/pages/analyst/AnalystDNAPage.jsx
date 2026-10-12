@@ -27,16 +27,25 @@ export default function AnalystDNAPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Load candidate reports for dropdowns
+  // Load candidate reports for dropdowns - use admin queue to see all reports
   useEffect(() => {
-    api.reports
-      .list({ limit: 15, status: "PUBLISHED" })
-      .then((res) => {
-        if (res.success && Array.isArray(res.reports)) {
-          setCandidateReports(res.reports);
-          if (!reportAId && res.reports[0]) setReportAId(res.reports[0].id);
-          if (!reportBId && res.reports[1]) setReportBId(res.reports[1].id);
-        }
+    // First try to get all received reports, then published
+    Promise.all([
+      api.admin.getQueue({ status: "RECEIVED", page: 1, limit: 10 }),
+      api.admin.getQueue({ status: "PUBLISHED", page: 1, limit: 10 }),
+      api.admin.getQueue({ status: "CORROBORATED", page: 1, limit: 10 }),
+    ])
+      .then(([receivedRes, publishedRes, corrobRes]) => {
+        const allReports = [
+          ...(receivedRes.reports || []),
+          ...(publishedRes.reports || []),
+          ...(corrobRes.reports || []),
+        ];
+        // Deduplicate by id
+        const unique = Array.from(new Map(allReports.map(r => [r.id, r])).values());
+        setCandidateReports(unique);
+        if (!reportAId && unique[0]) setReportAId(unique[0].id);
+        if (!reportBId && unique[1]) setReportBId(unique[1].id);
       })
       .catch((err) => console.warn("Failed to load candidate reports:", err.message));
   }, []);

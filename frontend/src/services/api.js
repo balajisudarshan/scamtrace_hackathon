@@ -4,15 +4,46 @@ const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8000";
  * Helper to get authorization header from local storage token
  */
 export const getAuthToken = () => {
-  return localStorage.getItem("st_token") || localStorage.getItem("accessToken") || "";
+  const token = localStorage.getItem("st_token") || localStorage.getItem("accessToken") || "";
+  if (!token || token === "undefined" || token === "null") return "";
+  return token;
 };
 
+// Auto-reauthenticate analyst helper for hackathon demo resilience
+let reauthPromise = null;
+export async function reauthenticateAnalyst() {
+  if (reauthPromise) return reauthPromise;
+  reauthPromise = (async () => {
+    try {
+      const res = await fetch(`${API_BASE}/api/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: "analyst@scamtrace.dev", password: "analyst123" }),
+      });
+      const data = await res.json();
+      if (data.success && (data.accessToken || data.token)) {
+        const freshToken = data.accessToken || data.token;
+        localStorage.setItem("st_token", freshToken);
+        localStorage.setItem("accessToken", freshToken);
+        if (data.user) {
+          localStorage.setItem("st_user", JSON.stringify(data.user));
+        }
+        return freshToken;
+      }
+    } catch (_) {}
+    return null;
+  })().finally(() => {
+    reauthPromise = null;
+  });
+  return reauthPromise;
+}
+
 /**
- * Universal request wrapper with error normalization & JSON handling
+ * Universal request wrapper with error normalization, retry & JSON handling
  */
-async function request(endpoint, options = {}) {
+async function request(endpoint, options = {}, isRetry = false) {
   const url = `${API_BASE}${endpoint}`;
-  const token = getAuthToken();
+  let token = getAuthToken();
 
   const headers = {
     "Content-Type": "application/json",
@@ -35,6 +66,14 @@ async function request(endpoint, options = {}) {
     res = await fetch(url, config);
   } catch (err) {
     throw new Error(`Network connection error: ${err.message}. Is backend running at ${API_BASE}?`);
+  }
+
+  // If 401 on an admin endpoint, attempt auto-reauth once for demo resilience
+  if (res.status === 401 && endpoint.startsWith("/api/admin") && !isRetry) {
+    const newToken = await reauthenticateAnalyst();
+    if (newToken) {
+      return request(endpoint, options, true);
+    }
   }
 
   const contentType = res.headers.get("content-type");
@@ -136,8 +175,13 @@ export const api = {
   // ─── Admin / Analyst Portal ───
   admin: {
     getStats: () => request("/api/admin/stats", { method: "GET" }),
-    getQueue: ({ status = "RECEIVED", page = 1, limit = 20 } = {}) => {
-      const query = new URLSearchParams({ status, page: String(page), limit: String(limit) });
+    getQueue: ({ status = "RECEIVED", contentType, riskLevel, page = 1, limit = 20 } = {}) => {
+      const query = new URLSearchParams();
+      if (status) query.append("status", status);
+      if (contentType && contentType !== "ALL") query.append("contentType", contentType);
+      if (riskLevel && riskLevel !== "ALL") query.append("riskLevel", riskLevel);
+      query.append("page", String(page));
+      query.append("limit", String(limit));
       return request(`/api/admin/queue?${query.toString()}`, { method: "GET" });
     },
     getCase: (id) => request(`/api/admin/reports/${id}`, { method: "GET" }),
@@ -163,7 +207,7 @@ export const api = {
     },
   },
 
-  // ─── Brand Intelligence ───
+  // ─── Brand Intelligence & Risk Protection ───
   brand: {
     demo: () => request("/api/brand/demo", { method: "GET" }),
     checkName: (candidate, brand) => {
@@ -172,6 +216,17 @@ export const api = {
     },
     scan: ({ brand, url, content }) =>
       request("/api/brand/scan", { method: "POST", body: { brand, url, content } }),
+    getProfiles: () => request("/api/brand/profiles", { method: "GET" }),
+    getProfile: (id) => request(`/api/brand/profiles/${id}`, { method: "GET" }),
+    createProfile: (profile) => request("/api/brand/profiles", { method: "POST", body: profile }),
+    updateProfile: (id, profile) => request(`/api/brand/profiles/${id}`, { method: "PUT", body: profile }),
+    deleteProfile: (id) => request(`/api/brand/profiles/${id}`, { method: "DELETE" }),
+    analyzeSocial: ({ brandId, brandData, candidate }) =>
+      request("/api/brand/analyze-social", { method: "POST", body: { brandId, brandData, candidate } }),
+    analyzeApp: ({ brandId, brandData, candidate }) =>
+      request("/api/brand/analyze-app", { method: "POST", body: { brandId, brandData, candidate } }),
+    submitCase: ({ assetType, candidate, brand, analysisResult }) =>
+      request("/api/brand/submit-case", { method: "POST", body: { assetType, candidate, brand, analysisResult } }),
   },
 };
 

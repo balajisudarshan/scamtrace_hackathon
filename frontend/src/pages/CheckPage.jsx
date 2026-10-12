@@ -57,7 +57,7 @@ export default function CheckPage() {
     {
       label: "🚨 Fake SBI SMS",
       type: "message",
-      text: "Dear customer your SBI account is suspended. Update your KYC immediately at http://sbi-secure-login.co.in or call +918888123456",
+      text: "Dear SBI customer your account has been suspended. Update your KYC immediately at http://sbi-secure-login.co.in or call +918888123456",
     },
     {
       label: "🔗 HDFC Phishing",
@@ -65,12 +65,17 @@ export default function CheckPage() {
       text: "http://hdfc-kyc-update.net",
     },
     {
-      label: "📞 Police Threat",
-      type: "phone",
-      text: "+917777654321",
+      label: "📞 Digital Arrest",
+      type: "message",
+      text: "This is CBI speaking. A case has been filed against you for money laundering. You are under digital arrest. Do not tell anyone and stay on the call.",
     },
     {
-      label: "🎁 Paytm Cashback",
+      label: "💸 UPI Fraud",
+      type: "message",
+      text: "I sent money to your UPI by mistake. Please return it via this collect request. Approve the payment to refund Rs 5000 to my account.",
+    },
+    {
+      label: "🎁 Prize Scam",
       type: "url",
       text: "http://paytm-cashback-win.com",
     },
@@ -188,43 +193,54 @@ export default function CheckPage() {
           }}
         >
           {/* Input Type Selector */}
-          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 14, flexWrap: "wrap" }}>
-            {[
-              { id: "message", label: "Message / SMS", icon: MessageSquare },
-              { id: "image", label: "Screenshot / Image", icon: Image },
-              { id: "url", label: "Website Link", icon: Globe },
-              { id: "phone", label: "Phone Number", icon: Phone },
-              { id: "social", label: "Social Handle", icon: AtSign },
-            ].map((t) => {
-              const Icon = t.icon;
-              const active = type === t.id;
-              return (
-                <button
-                  key={t.id}
-                  type="button"
-                  onClick={() => {
-                    setType(t.id);
-                    if (result) setResult(null);
-                  }}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 6,
-                    padding: "7px 14px",
-                    borderRadius: "var(--radius-sm)",
-                    border: active ? "1px solid var(--accent)" : "1px solid var(--surface-border)",
-                    background: active ? "rgba(117, 103, 248, 0.15)" : "#0E1428",
-                    color: active ? "#FFFFFF" : "var(--text-secondary)",
-                    fontSize: 13,
-                    fontWeight: 500,
-                    cursor: "pointer",
-                  }}
-                >
-                  <Icon size={14} style={{ color: active ? "var(--accent)" : "inherit" }} />
-                  <span>{t.label}</span>
-                </button>
-              );
-            })}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14, flexWrap: "wrap", gap: 10 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+              {[
+                { id: "message", label: "Message / SMS", icon: MessageSquare },
+                { id: "image", label: "Screenshot / Image", icon: Image },
+                { id: "url", label: "Website Link", icon: Globe },
+                { id: "phone", label: "Phone Number", icon: Phone },
+                { id: "social", label: "Social Handle", icon: AtSign },
+              ].map((t) => {
+                const Icon = t.icon;
+                const active = type === t.id;
+                return (
+                  <button
+                    key={t.id}
+                    type="button"
+                    onClick={() => {
+                      setType(t.id);
+                      if (result) setResult(null);
+                    }}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 6,
+                      padding: "7px 14px",
+                      borderRadius: "var(--radius-sm)",
+                      border: active ? "1px solid var(--accent)" : "1px solid var(--surface-border)",
+                      background: active ? "rgba(117, 103, 248, 0.15)" : "#0E1428",
+                      color: active ? "#FFFFFF" : "var(--text-secondary)",
+                      fontSize: 13,
+                      fontWeight: 500,
+                      cursor: "pointer",
+                    }}
+                  >
+                    <Icon size={14} style={{ color: active ? "var(--accent)" : "inherit" }} />
+                    <span>{t.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            <Link
+              to="/brand-monitor"
+              className="btn btn-outline btn-sm"
+              style={{ fontSize: 12, display: "inline-flex", alignItems: "center", gap: 6, borderColor: "rgba(117, 103, 248, 0.4)", color: "#C7D2FE" }}
+            >
+              <ShieldCheck size={14} style={{ color: "var(--accent)" }} />
+              <span>Brand & Mobile App Monitor →</span>
+            </Link>
           </div>
 
           <form onSubmit={handleSubmit}>
@@ -676,64 +692,81 @@ export default function CheckPage() {
                   </div>
                 </div>
 
-                {/* Do's & Don'ts */}
+                {/* Dynamic Next Steps from Backend */}
                 <div className="card">
                   <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 10 }}>
                     What you should do right now:
                   </h3>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 10 }}>
-                    {result.nextSteps?.map((step, idx) => {
-                      const isEmergency = step.includes("🚨") || step.includes("EMERGENCY") || step.includes("CRITICAL");
-                      const isWarning = step.includes("⚠️") || step.includes("Do NOT") || step.includes("Do not") || step.includes("Never");
-                      const isSafe = step.includes("✅") || step.includes("Block") || step.includes("Report") || step.includes("Verify") || step.includes("Contact") || step.includes("Screenshot") || step.includes("File") || step.includes("Check") || step.includes("Talk") || step.includes("community report");
+                  {result.nextSteps && result.nextSteps.length > 0 ? (
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 10 }}>
+                      {result.nextSteps.map((step, idx) => {
+                        const isEmergency = step.includes("🚨") || step.includes("EMERGENCY") || step.includes("CRITICAL");
+                        const isWarning = step.includes("⚠️") || step.includes("Do NOT") || step.includes("Do not") || step.includes("Never");
+                        const isSafe = step.includes("✅") || step.includes("Block") || step.includes("Report") || step.includes("Verify") || step.includes("Contact") || step.includes("Screenshot") || step.includes("File") || step.includes("Check") || step.includes("Talk") || step.includes("community report");
 
-                      const bg = isEmergency
-                        ? "rgba(239, 68, 68, 0.12)"
-                        : isWarning
-                        ? "rgba(239, 68, 68, 0.08)"
-                        : isSafe
-                        ? "rgba(16, 185, 129, 0.08)"
-                        : "rgba(245, 158, 11, 0.08)";
+                        const bg = isEmergency
+                          ? "rgba(239, 68, 68, 0.12)"
+                          : isWarning
+                          ? "rgba(239, 68, 68, 0.08)"
+                          : isSafe
+                          ? "rgba(16, 185, 129, 0.08)"
+                          : "rgba(245, 158, 11, 0.08)";
 
-                      const border = isEmergency
-                        ? "1px solid rgba(239, 68, 68, 0.3)"
-                        : isWarning
-                        ? "1px solid rgba(239, 68, 68, 0.2)"
-                        : isSafe
-                        ? "1px solid rgba(16, 185, 129, 0.2)"
-                        : "1px solid rgba(245, 158, 11, 0.2)";
+                        const border = isEmergency
+                          ? "1px solid rgba(239, 68, 68, 0.3)"
+                          : isWarning
+                          ? "1px solid rgba(239, 68, 68, 0.2)"
+                          : isSafe
+                          ? "1px solid rgba(16, 185, 129, 0.2)"
+                          : "1px solid rgba(245, 158, 11, 0.2)";
 
-                      const color = isEmergency
-                        ? "#FCA5A5"
-                        : isWarning
-                        ? "#FCA5A5"
-                        : isSafe
-                        ? "#6EE7B7"
-                        : "#FCD34D";
+                        const color = isEmergency
+                          ? "#FCA5A5"
+                          : isWarning
+                          ? "#FCA5A5"
+                          : isSafe
+                          ? "#6EE7B7"
+                          : "#FCD34D";
 
-                      const Icon = isWarning || isEmergency ? XCircle : CheckCircle2;
+                        const Icon = isWarning || isEmergency ? XCircle : CheckCircle2;
 
-                      return (
-                        <div
-                          key={idx}
-                          style={{
-                            background: bg,
-                            border,
-                            padding: "12px",
-                            borderRadius: "8px",
-                            fontSize: 13,
-                            color,
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 8,
-                          }}
-                        >
-                          <Icon size={16} style={{ flexShrink: 0 }} />
-                          <span>{step}</span>
-                        </div>
-                      );
-                    })}
-                  </div>
+                        return (
+                          <div
+                            key={idx}
+                            style={{
+                              background: bg,
+                              border,
+                              padding: "12px",
+                              borderRadius: "8px",
+                              fontSize: 13,
+                              color,
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 8,
+                            }}
+                          >
+                            <Icon size={16} style={{ flexShrink: 0 }} />
+                            <span>{step}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                      <div style={{ background: "rgba(239, 68, 68, 0.08)", border: "1px solid rgba(239, 68, 68, 0.2)", padding: "12px", borderRadius: "8px", fontSize: 13, color: "#FCA5A5", display: "flex", alignItems: "center", gap: 8 }}>
+                        <XCircle size={16} style={{ flexShrink: 0 }} />
+                        <span><strong>Do NOT</strong> click any link or send an OTP</span>
+                      </div>
+                      <div style={{ background: "rgba(239, 68, 68, 0.08)", border: "1px solid rgba(239, 68, 68, 0.2)", padding: "12px", borderRadius: "8px", fontSize: 13, color: "#FCA5A5", display: "flex", alignItems: "center", gap: 8 }}>
+                        <XCircle size={16} style={{ flexShrink: 0 }} />
+                        <span><strong>Do NOT</strong> call the sender number</span>
+                      </div>
+                      <div style={{ background: "rgba(16, 185, 129, 0.08)", border: "1px solid rgba(16, 185, 129, 0.2)", padding: "12px", borderRadius: "8px", fontSize: 13, color: "#6EE7B7", display: "flex", alignItems: "center", gap: 8 }}>
+                        <CheckCircle2 size={16} style={{ flexShrink: 0 }} />
+                        <span><strong>Block & delete</strong> the message</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             ) : (

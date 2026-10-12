@@ -11,12 +11,16 @@ export const authMiddleware = (req, res, next) => {
       token = req.cookies?.accessToken;
     }
 
-    if (!token) {
+    if (!token || token === "undefined" || token === "null" || !token.trim()) {
       return res.status(401).json({ success: false, message: "Access token missing" });
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
+    req.user = {
+      ...decoded,
+      id: decoded.id || decoded.userId,
+      userId: decoded.userId || decoded.id,
+    };
     next();
   } catch (error) {
     return res.status(401).json({ success: false, message: "Invalid or expired token" });

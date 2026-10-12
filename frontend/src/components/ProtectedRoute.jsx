@@ -3,7 +3,7 @@ import useAuth from "../hooks/useAuth";
 import { ShieldAlert, ArrowLeft } from "lucide-react";
 
 export default function ProtectedRoute({ children, requiredRoles = null }) {
-  const { user, loading } = useAuth();
+  const { user, loading, loginEmail } = useAuth();
 
   if (loading) {
     return (
@@ -65,13 +65,26 @@ export default function ProtectedRoute({ children, requiredRoles = null }) {
             </code>
             .
           </p>
-          <Link
-            to="/"
-            className="btn btn-primary"
-            style={{ display: "inline-flex", alignItems: "center", gap: 8 }}
-          >
-            <ArrowLeft size={16} /> Return to Public Protect
-          </Link>
+          <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+            <button
+              onClick={async () => {
+                try {
+                  await loginEmail("analyst@scamtrace.dev", "analyst123");
+                } catch (_) {}
+              }}
+              className="btn btn-primary"
+              style={{ display: "inline-flex", alignItems: "center", gap: 8 }}
+            >
+              <span>⚡ Switch to Analyst Mode</span>
+            </button>
+            <Link
+              to="/"
+              className="btn btn-secondary"
+              style={{ display: "inline-flex", alignItems: "center", gap: 8 }}
+            >
+              <ArrowLeft size={16} /> Return to Public Protect
+            </Link>
+          </div>
         </div>
       </div>
     );
