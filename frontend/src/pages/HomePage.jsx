@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../services/api";
-import Navbar from "../components/Navbar";
+import Navbar, { Footer } from "../components/Navbar";
 import RiskBadge from "../components/RiskBadge";
 import StoryModeVisualizer from "../components/StoryModeVisualizer";
 import {
   Search,
   ShieldAlert,
   ShieldCheck,
+  Smartphone,
   GitCompare,
   LifeBuoy,
   Users,
@@ -18,18 +19,25 @@ import {
   Globe,
   Phone,
   AtSign,
+  Image as ImageIcon,
+  UploadCloud,
   AlertTriangle,
   CheckCircle2,
   XCircle,
   PlusCircle,
   ChevronDown,
-  ChevronUp,
+  Sparkles,
 } from "lucide-react";
+import ScanUploadZone from "../components/ScanUploadZone";
+import ScanProgressFeedback from "../components/ScanProgressFeedback";
+import { CheckResultSkeleton } from "../components/ScanSkeleton";
 
 export default function HomePage() {
   const navigate = useNavigate();
   const [contentType, setContentType] = useState("message");
   const [contentInput, setContentInput] = useState("");
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const [analyzing, setAnalyzing] = useState(false);
   const [inlineResult, setInlineResult] = useState(null);
   const [inlineError, setInlineError] = useState(null);
@@ -59,7 +67,44 @@ export default function HomePage() {
     };
   }, []);
 
+  const handleImageChange = (file) => {
+    if (!file) return;
+    setImageFile(file);
+    const reader = new FileReader();
+    reader.onload = (e) => setImagePreview(e.target.result);
+    reader.readAsDataURL(file);
+    if (inlineResult) setInlineResult(null);
+    if (inlineError) setInlineError(null);
+  };
+
   const runAnalysis = async (typeToUse, textToUse) => {
+    const activeType = typeToUse || contentType;
+
+    if (activeType === "image") {
+      if (!imageFile) {
+        setInlineError("Please select or drop a screenshot image to analyze.");
+        return;
+      }
+      setAnalyzing(true);
+      setInlineError(null);
+      setInlineResult(null);
+      try {
+        const formData = new FormData();
+        formData.append("image", imageFile);
+        const res = await api.check.analyzeImage(formData);
+        if (res && res.success) {
+          setInlineResult(res);
+        } else {
+          setInlineError(res?.message || "Screenshot analysis could not be completed.");
+        }
+      } catch (err) {
+        setInlineError(err.message || "Failed to analyze screenshot image.");
+      } finally {
+        setAnalyzing(false);
+      }
+      return;
+    }
+
     const text = (textToUse || contentInput).trim();
     if (!text) {
       setInlineError("Please paste or type suspicious content to check.");
@@ -71,7 +116,7 @@ export default function HomePage() {
     setInlineResult(null);
 
     try {
-      const res = await api.check.analyze({ type: typeToUse || contentType, content: text });
+      const res = await api.check.analyze({ type: activeType, content: text });
       if (res && res.success) {
         setInlineResult(res);
       } else {
@@ -123,8 +168,8 @@ export default function HomePage() {
     navigate("/report", {
       state: {
         initialType: contentType,
-        initialContent: contentInput,
-        initialPlatform: contentType === "phone" ? "Phone Call" : contentType === "url" ? "Web Browser" : "SMS",
+        initialContent: contentType === "image" ? (inlineResult?.ocrText || "") : contentInput,
+        initialPlatform: contentType === "phone" ? "Phone Call" : contentType === "url" ? "Web Browser" : contentType === "image" ? "Screenshot Upload" : "SMS",
       },
     });
   };
@@ -134,7 +179,7 @@ export default function HomePage() {
       <Navbar />
 
       <main style={{ flex: 1 }}>
-        {/* ─── Hero Section with Instant Checker ─── */}
+        {/* ─── Hero Section with Two Prominent Cards ─── */}
         <section
           style={{
             padding: "50px 20px 30px",
@@ -149,47 +194,45 @@ export default function HomePage() {
               display: "inline-flex",
               alignItems: "center",
               gap: 8,
-              padding: "5px 12px",
+              padding: "6px 14px",
               borderRadius: "9999px",
-              background: "rgba(59, 130, 246, 0.08)",
-              border: "1px solid var(--surface-border)",
-              color: "var(--text-secondary)",
+              background: "rgba(117, 103, 248, 0.12)",
+              border: "1px solid rgba(117, 103, 248, 0.3)",
+              color: "#C7D2FE",
               fontSize: 12,
-              fontWeight: 500,
+              fontWeight: 600,
               marginBottom: 16,
             }}
           >
             <ShieldCheck size={14} style={{ color: "var(--accent)" }} />
-            Threat Intelligence & Scam Verification Engine
+            Digital Risk Protection & Threat Intelligence
           </div>
 
           <h1
             style={{
-              fontSize: "clamp(30px, 4.5vw, 50px)",
+              fontSize: "clamp(32px, 5vw, 50px)",
               fontWeight: 800,
               letterSpacing: "-0.03em",
               marginBottom: 12,
               lineHeight: 1.15,
             }}
           >
-            Is this a scam? <br />
-            <span className="text-gradient">Get an instant, clear answer.</span>
+            Instant Content & Scam Scanner
           </h1>
 
           <p
             style={{
-              fontSize: 15,
+              fontSize: 16,
               color: "var(--text-secondary)",
-              maxWidth: 640,
+              maxWidth: 680,
               margin: "0 auto 28px",
               lineHeight: 1.6,
             }}
           >
-            Paste any suspicious message, phishing website link, or caller phone number.
-            SCAMTRACE instantly checks it against known threat indicators and explains why it is dangerous.
+            Instantly scan suspicious SMS, messages, screenshots, website links, phone numbers, or handles to expose fraud before you click, reply, or pay.
           </p>
 
-          {/* ── Instant Checker Card ── */}
+          {/* ── Instant Checker Card (Hero Centerpiece) ── */}
           <div
             className="card"
             style={{
@@ -208,6 +251,7 @@ export default function HomePage() {
                 { id: "message", label: "Message / SMS", icon: MessageSquare },
                 { id: "url", label: "Website Link", icon: Globe },
                 { id: "phone", label: "Phone Number", icon: Phone },
+                { id: "image", label: "Screenshot / Image", icon: ImageIcon },
                 { id: "social", label: "Social Handle", icon: AtSign },
               ].map((t) => {
                 const Icon = t.icon;
@@ -219,6 +263,7 @@ export default function HomePage() {
                     onClick={() => {
                       setContentType(t.id);
                       setInlineResult(null);
+                      setInlineError(null);
                     }}
                     style={{
                       display: "inline-flex",
@@ -243,82 +288,95 @@ export default function HomePage() {
             </div>
 
             <form onSubmit={handleLaunchCheck}>
-              <div style={{ position: "relative", marginBottom: 12 }}>
-                <textarea
-                  className="textarea"
-                  value={contentInput}
-                  onChange={(e) => setContentInput(e.target.value)}
-                  placeholder={
-                    contentType === "message"
-                      ? "Paste suspicious SMS, WhatsApp message, email, or DM here..."
-                      : contentType === "url"
-                      ? "Paste suspicious link or website domain (e.g., sbi-secure-login.co.in)..."
-                      : contentType === "phone"
-                      ? "Enter caller phone number (e.g., +918888123456)..."
-                      : "Enter suspicious social profile handle or channel..."
-                  }
-                  style={{
-                    minHeight: 90,
-                    fontSize: 14,
-                    padding: "14px",
-                    lineHeight: 1.5,
-                  }}
-                />
-              </div>
-
-              {/* 1-Click Demo Samples */}
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  flexWrap: "wrap",
-                  gap: 8,
-                  marginBottom: 16,
-                  fontSize: 12,
-                }}
-              >
-                <span style={{ color: "var(--text-muted)", fontWeight: 500 }}>⚡ 1-Click Samples:</span>
-                {sampleMessages.map((s, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={() => handleSelectSample(s)}
-                    style={{
-                      background: "var(--surface-card)",
-                      border: "1px solid var(--surface-border)",
-                      color: "var(--text-secondary)",
-                      padding: "4px 10px",
-                      borderRadius: "6px",
-                      fontSize: 12,
-                      fontWeight: 500,
-                      cursor: "pointer",
-                      transition: "all 0.15s ease",
+              {contentType === "image" ? (
+                <div style={{ marginBottom: 14 }}>
+                  <ScanUploadZone
+                    isScanning={analyzing}
+                    imagePreview={imagePreview}
+                    fileName={imageFile?.name}
+                    onFileSelect={handleImageChange}
+                    onClear={() => {
+                      setImageFile(null);
+                      setImagePreview(null);
+                      if (inlineResult) setInlineResult(null);
                     }}
-                  >
-                    {s.label}
-                  </button>
-                ))}
-              </div>
-
-              {inlineError && (
-                <div
-                  style={{
-                    background: "var(--risk-high-bg)",
-                    border: "1px solid var(--risk-high-border)",
-                    color: "#FCA5A5",
-                    padding: "10px 14px",
-                    borderRadius: "var(--radius-md)",
-                    fontSize: 13,
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                    marginBottom: 14,
-                  }}
-                >
-                  <AlertTriangle size={15} />
-                  <span>{inlineError}</span>
+                    accept="image/*"
+                    label="Drop suspicious screenshot here or click to browse"
+                    sublabel="Supports WhatsApp chats, SMS screenshots, fake receipts (PNG, JPG, WEBP up to 10MB)"
+                    badgeText="SCANNING SCREENSHOT"
+                  />
+                </div>
+              ) : (
+                <div style={{ position: "relative", marginBottom: 12 }}>
+                  <textarea
+                    className="textarea"
+                    value={contentInput}
+                    onChange={(e) => setContentInput(e.target.value)}
+                    disabled={analyzing}
+                    placeholder={
+                      contentType === "message"
+                        ? "Paste suspicious SMS, WhatsApp message, email, or DM here..."
+                        : contentType === "url"
+                        ? "Paste suspicious link or website domain (e.g., sbi-secure-login.co.in)..."
+                        : contentType === "phone"
+                        ? "Enter caller phone number (e.g., +918888123456)..."
+                        : "Enter suspicious social profile handle or channel..."
+                    }
+                    style={{
+                      minHeight: 90,
+                      fontSize: 14,
+                      padding: "14px",
+                      lineHeight: 1.5,
+                    }}
+                  />
                 </div>
               )}
+
+              {/* 1-Click Demo Samples (shown for text types) */}
+              {contentType !== "image" && (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    flexWrap: "wrap",
+                    gap: 8,
+                    marginBottom: 16,
+                    fontSize: 12,
+                  }}
+                >
+                  <span style={{ color: "var(--text-muted)", fontWeight: 500 }}>⚡ 1-Click Samples:</span>
+                  {sampleMessages.map((s, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => handleSelectSample(s)}
+                      disabled={analyzing}
+                      style={{
+                        background: "var(--surface-card)",
+                        border: "1px solid var(--surface-border)",
+                        color: "var(--text-secondary)",
+                        padding: "4px 10px",
+                        borderRadius: "6px",
+                        fontSize: 12,
+                        fontWeight: 500,
+                        cursor: analyzing ? "not-allowed" : "pointer",
+                        opacity: analyzing ? 0.6 : 1,
+                        transition: "all 0.15s ease",
+                      }}
+                    >
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {/* Progress Feedback / Cold Start / Timeout Retry */}
+              <ScanProgressFeedback
+                isScanning={analyzing}
+                error={inlineError}
+                onRetry={() => runAnalysis()}
+                scanType={contentType}
+              />
 
               <div
                 style={{
@@ -337,12 +395,15 @@ export default function HomePage() {
                 </div>
 
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  {inlineResult && (
+                  {(inlineResult || contentInput || imageFile) && !analyzing && (
                     <button
                       type="button"
                       onClick={() => {
                         setContentInput("");
+                        setImageFile(null);
+                        setImagePreview(null);
                         setInlineResult(null);
+                        setInlineError(null);
                       }}
                       className="btn btn-outline btn-sm"
                     >
@@ -351,19 +412,19 @@ export default function HomePage() {
                   )}
                   <button
                     type="submit"
-                    disabled={analyzing || !contentInput.trim()}
+                    disabled={analyzing || (contentType === "image" ? !imageFile : !contentInput.trim())}
                     className="btn btn-primary"
-                    style={{ padding: "10px 24px", minWidth: 140 }}
+                    style={{ padding: "10px 24px", minWidth: 160 }}
                   >
                     {analyzing ? (
                       <>
                         <div className="spinner" style={{ width: 14, height: 14 }} />
-                        <span>Checking...</span>
+                        <span>{contentType === "image" ? "Analyzing Screenshot..." : "Analyzing Content..."}</span>
                       </>
                     ) : (
                       <>
                         <Search size={15} />
-                        <span>Check Now</span>
+                        <span>{contentType === "image" ? "Scan Screenshot" : "Check Now"}</span>
                       </>
                     )}
                   </button>
@@ -372,8 +433,15 @@ export default function HomePage() {
             </form>
           </div>
 
+          {/* ─── Skeleton Loading State ─── */}
+          {analyzing && (
+            <div style={{ maxWidth: 780, margin: "0 auto 36px" }}>
+              <CheckResultSkeleton scanType={contentType} />
+            </div>
+          )}
+
           {/* ─── Instant Inline Verdict Card (Clear & Non-Complex) ─── */}
-          {inlineResult && (
+          {!analyzing && inlineResult && (
             <div
               className="fade-in card"
               style={{
@@ -444,6 +512,26 @@ export default function HomePage() {
 
                 <RiskBadge level={inlineResult.riskLevel} score={inlineResult.riskScore} />
               </div>
+
+              {/* If OCR text was extracted from a screenshot, display it */}
+              {inlineResult.ocrText && (
+                <div
+                  style={{
+                    background: "rgba(59, 130, 246, 0.08)",
+                    border: "1px solid rgba(59, 130, 246, 0.25)",
+                    borderRadius: "var(--radius-md)",
+                    padding: "12px 16px",
+                    marginBottom: 16,
+                  }}
+                >
+                  <div style={{ fontSize: 11, fontWeight: 700, color: "#93C5FD", textTransform: "uppercase", marginBottom: 4 }}>
+                    📷 Extracted Text from Screenshot (OCR):
+                  </div>
+                  <p style={{ fontSize: 13, color: "var(--text-primary)", fontStyle: "italic", margin: 0, lineHeight: 1.5 }}>
+                    "{inlineResult.ocrText}"
+                  </p>
+                </div>
+              )}
 
               {/* Plain English Summary */}
               <div
@@ -546,6 +634,179 @@ export default function HomePage() {
               )}
             </div>
           )}
+
+          {/* ─── Specialized Brand & Mobile Monitoring Quick Access ─── */}
+          <div style={{ maxWidth: 780, margin: "24px auto 0", textAlign: "left" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12, flexWrap: "wrap", gap: 8 }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+                Specialized Brand & App Monitoring:
+              </div>
+            </div>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+                gap: 14,
+              }}
+            >
+              <Link
+                to="/social-check"
+                className="card"
+                style={{
+                  background: "var(--surface-card)",
+                  border: "1px solid var(--surface-border)",
+                  borderRadius: "var(--radius-lg)",
+                  padding: "16px 20px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 12,
+                  textDecoration: "none",
+                  transition: "all 0.2s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = "var(--accent)";
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = "var(--surface-border)";
+                  e.currentTarget.style.transform = "translateY(0)";
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                  <div
+                    style={{
+                      width: 42,
+                      height: 42,
+                      borderRadius: "10px",
+                      background: "rgba(117, 103, 248, 0.14)",
+                      color: "var(--accent)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <AtSign size={20} />
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)" }}>
+                      Social Media Account Checker
+                    </div>
+                    <div style={{ fontSize: 12, color: "var(--text-secondary)" }}>
+                      Detect fake profiles & brand impersonators →
+                    </div>
+                  </div>
+                </div>
+                <ArrowRight size={16} style={{ color: "var(--text-muted)", flexShrink: 0 }} />
+              </Link>
+
+              <Link
+                to="/app-check"
+                className="card"
+                style={{
+                  background: "var(--surface-card)",
+                  border: "1px solid var(--surface-border)",
+                  borderRadius: "var(--radius-lg)",
+                  padding: "16px 20px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 12,
+                  textDecoration: "none",
+                  transition: "all 0.2s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = "#10B981";
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = "var(--surface-border)";
+                  e.currentTarget.style.transform = "translateY(0)";
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                  <div
+                    style={{
+                      width: 42,
+                      height: 42,
+                      borderRadius: "10px",
+                      background: "rgba(16, 185, 129, 0.14)",
+                      color: "#10B981",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <Smartphone size={20} />
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)" }}>
+                      Mobile App Checker
+                    </div>
+                    <div style={{ fontSize: 12, color: "var(--text-secondary)" }}>
+                      Inspect package IDs & clone publishers →
+                    </div>
+                  </div>
+                </div>
+                <ArrowRight size={16} style={{ color: "#10B981", flexShrink: 0 }} />
+              </Link>
+
+              <Link
+                to="/logo-check"
+                className="card"
+                style={{
+                  background: "var(--surface-card)",
+                  border: "1px solid var(--surface-border)",
+                  borderRadius: "var(--radius-lg)",
+                  padding: "16px 20px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 12,
+                  textDecoration: "none",
+                  transition: "all 0.2s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = "#F59E0B";
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = "var(--surface-border)";
+                  e.currentTarget.style.transform = "translateY(0)";
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                  <div
+                    style={{
+                      width: 42,
+                      height: 42,
+                      borderRadius: "10px",
+                      background: "rgba(245, 158, 11, 0.14)",
+                      color: "#F59E0B",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <Sparkles size={20} />
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)" }}>
+                      Logo Authenticity Checker
+                    </div>
+                    <div style={{ fontSize: 12, color: "var(--text-secondary)" }}>
+                      Compare logos & detect visual imitations →
+                    </div>
+                  </div>
+                </div>
+                <ArrowRight size={16} style={{ color: "#F59E0B", flexShrink: 0 }} />
+              </Link>
+            </div>
+          </div>
         </section>
 
         {/* ─── 3 Clear Steps for Everyday Users ─── */}
@@ -763,38 +1024,8 @@ export default function HomePage() {
         </section>
       </main>
 
-      {/* ─── Footer ─── */}
-      <footer
-        style={{
-          borderTop: "1px solid var(--surface-border)",
-          background: "#080C1A",
-          padding: "24px 20px",
-          color: "var(--text-muted)",
-          fontSize: 13,
-        }}
-      >
-        <div
-          style={{
-            maxWidth: 1040,
-            margin: "0 auto",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            flexWrap: "wrap",
-            gap: 14,
-          }}
-        >
-          <div>
-            <span style={{ fontWeight: 700, color: "var(--text-primary)" }}>SCAMTRACE</span> — Community Scam Intelligence.
-          </div>
-          <div style={{ display: "flex", gap: 16 }}>
-            <Link to="/check">Check Scam</Link>
-            <Link to="/report">Report Incident</Link>
-            <Link to="/damage-control">Damage Control</Link>
-            <Link to="/community">Community Intel</Link>
-          </div>
-        </div>
-      </footer>
+      {/* ─── Footer with Discreet Admin Link ─── */}
+      <Footer />
     </div>
   );
 }

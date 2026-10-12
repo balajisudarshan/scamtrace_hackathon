@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <rect width="200" height="200" fill="#0F172A" rx="20"/>
+  <!-- Altered yellow/gold ribbon -->
+  <path d="M68 35 L90 35 L90 145 L68 145 Z" fill="#CA8A04"/>
+  <path d="M110 35 L132 35 L132 145 L110 145 Z" fill="#CA8A04"/>
+  <path d="M68 35 L132 145 L110 145 L68 35 Z" fill="#FACC15"/>
+  <text x="100" y="175" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FACC15" text-anchor="middle">FREE NETFL1X HD</text>
+</svg>

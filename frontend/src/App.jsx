@@ -2,31 +2,30 @@ import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { AuthProvider } from "./context/AuthContext";
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute, { AdminRoute } from "./components/ProtectedRoute";
 
-// Public Portal Pages (Protect)
+// Public Pages
 import HomePage from "./pages/HomePage";
+import SocialCheckPage from "./pages/SocialCheckPage";
+import AppCheckPage from "./pages/AppCheckPage";
+import BrandMonitorPage from "./pages/BrandMonitorPage";
 import CheckPage from "./pages/CheckPage";
 import ReportPage from "./pages/ReportPage";
 import CommunityPage from "./pages/CommunityPage";
 import ReportDetailPage from "./pages/ReportDetailPage";
 import DamageControlPage from "./pages/DamageControlPage";
 import ScamPulsePage from "./pages/ScamPulsePage";
-import BrandMonitorPage from "./pages/BrandMonitorPage";
+import LogoCheckPage from "./pages/LogoCheckPage";
 
 // Auth Pages
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 
-// Analyst Portal Pages (Intelligence Desk)
-import AnalystLayout from "./components/AnalystLayout";
-import AnalystOverview from "./pages/analyst/AnalystOverview";
-import AnalystQueuePage from "./pages/analyst/AnalystQueuePage";
-import AnalystCasePage from "./pages/analyst/AnalystCasePage";
-import AnalystDNAPage from "./pages/analyst/AnalystDNAPage";
-import AnalystGraphPage from "./pages/analyst/AnalystGraphPage";
-import AnalystRadarPage from "./pages/analyst/AnalystRadarPage";
-import AnalystAuditPage from "./pages/analyst/AnalystAuditPage";
+// Admin Portal Pages
+import AdminLoginPage from "./pages/admin/AdminLoginPage";
+import AdminLayout from "./components/AdminLayout";
+import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
+import AdminReportsPage from "./pages/admin/AdminReportsPage";
 
 const GOOGLE_CLIENT_ID =
   import.meta.env.VITE_GOOGLE_CLIENT_ID ||
@@ -38,38 +37,41 @@ export default function App() {
       <AuthProvider>
         <BrowserRouter>
           <Routes>
-            {/* ─── Portal A: SCAMTRACE Protect (Public) ─── */}
+            {/* ─── Public Portal Routes ─── */}
             <Route path="/" element={<HomePage />} />
-            <Route path="/check" element={<CheckPage />} />
+            <Route path="/social-check" element={<SocialCheckPage />} />
+            <Route path="/app-check" element={<AppCheckPage />} />
+            <Route path="/logo-check" element={<LogoCheckPage />} />
             <Route path="/brand-monitor" element={<BrandMonitorPage />} />
+            <Route path="/check" element={<CheckPage />} />
             <Route path="/report" element={<ReportPage />} />
             <Route path="/community" element={<CommunityPage />} />
             <Route path="/reports/:id" element={<ReportDetailPage />} />
             <Route path="/damage-control" element={<DamageControlPage />} />
             <Route path="/pulse" element={<ScamPulsePage />} />
 
-            {/* ─── Authentication Routes ─── */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            {/* ─── Authentication Routes (Direct to Admin Portal) ─── */}
+            <Route path="/login" element={<Navigate to="/admin/login" replace />} />
+            <Route path="/register" element={<Navigate to="/admin/login" replace />} />
+            <Route path="/admin/login" element={<AdminLoginPage />} />
             <Route path="/dashboard" element={<Navigate to="/" replace />} />
 
-            {/* ─── Portal B: SCAMTRACE Intelligence Desk (Restricted Analyst) ─── */}
+            {/* ─── Admin Portal Routes (Protected) ─── */}
             <Route
-              path="/analyst"
+              path="/admin"
               element={
-                <ProtectedRoute requiredRoles={["ANALYST", "ADMIN"]}>
-                  <AnalystLayout />
-                </ProtectedRoute>
+                <AdminRoute>
+                  <AdminLayout />
+                </AdminRoute>
               }
             >
-              <Route index element={<AnalystOverview />} />
-              <Route path="queue" element={<AnalystQueuePage />} />
-              <Route path="cases/:id" element={<AnalystCasePage />} />
-              <Route path="dna" element={<AnalystDNAPage />} />
-              <Route path="graph" element={<AnalystGraphPage />} />
-              <Route path="radar" element={<AnalystRadarPage />} />
-              <Route path="audit" element={<AnalystAuditPage />} />
+              <Route index element={<AdminDashboardPage />} />
+              <Route path="dashboard" element={<AdminDashboardPage />} />
+              <Route path="reports" element={<AdminReportsPage />} />
             </Route>
+
+            {/* ─── Legacy Analyst Route Redirect ─── */}
+            <Route path="/analyst/*" element={<Navigate to="/admin/login" replace />} />
 
             {/* ─── Fallback ─── */}
             <Route path="*" element={<Navigate to="/" replace />} />

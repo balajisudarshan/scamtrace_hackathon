@@ -8,18 +8,23 @@ import {
   getStatsController,
   getPatternRadarController,
   getAuditLogController,
+  adminLoginController,
 } from "./admin.controller.js";
 import { authMiddleware, requireAnalyst } from "../../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
-// All admin routes require authentication AND analyst/admin role
+// ─── Public Administrator Login (No Auth Required) ───────────────────────────
+router.post("/login", adminLoginController);
+
+// All subsequent admin routes require authentication AND admin/analyst role
 router.use(authMiddleware, requireAnalyst);
 
 // Overview
 router.get("/stats", getStatsController);
 
-// Triage Queue
+// Reported Scams / Triage Queue
+router.get("/reports", getTriageQueueController);
 router.get("/queue", getTriageQueueController);
 
 // Case Management

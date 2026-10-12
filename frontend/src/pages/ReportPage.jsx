@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { api } from "../services/api";
-import Navbar from "../components/Navbar";
+import Navbar, { Footer } from "../components/Navbar";
 import RiskBadge from "../components/RiskBadge";
 import StatusBadge from "../components/StatusBadge";
 import {
@@ -16,6 +16,7 @@ import {
   Globe,
   Phone,
   AtSign,
+  Smartphone,
   HelpCircle,
   UploadCloud,
   Image,
@@ -200,6 +201,9 @@ export default function ReportPage() {
                 <span>View Report Status</span>
                 <ArrowRight size={15} />
               </Link>
+              <Link to="/logo-check" className="btn btn-outline">
+                <span>Check a Brand Logo</span>
+              </Link>
               <button
                 onClick={() => {
                   setSuccessData(null);
@@ -217,13 +221,13 @@ export default function ReportPage() {
           <form onSubmit={handleSubmit} className="card" style={{ padding: 28 }}>
             {/* Field 1: Category */}
             <div style={{ marginBottom: 20 }}>
-              <label className="input-label">Incident Category</label>
+              <label className="input-label">Report Type</label>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                 {[
-                  { id: "message", label: "Phishing Message / SMS", icon: MessageSquare },
-                  { id: "url", label: "Malicious URL / Domain", icon: Globe },
-                  { id: "phone", label: "Fraudulent Phone Call", icon: Phone },
-                  { id: "social", label: "Social Media / DM Handle", icon: AtSign },
+                  { id: "social", label: "Social Account", icon: AtSign },
+                  { id: "app", label: "Mobile App", icon: Smartphone },
+                  { id: "url", label: "Website", icon: Globe },
+                  { id: "other", label: "Other / Message", icon: MessageSquare },
                 ].map((t) => {
                   const Icon = t.icon;
                   const active = type === t.id;
@@ -239,10 +243,10 @@ export default function ReportPage() {
                         padding: "8px 14px",
                         borderRadius: "var(--radius-sm)",
                         border: active ? "1px solid var(--accent)" : "1px solid var(--surface-border)",
-                        background: active ? "rgba(59, 130, 246, 0.12)" : "var(--surface-card)",
+                        background: active ? "rgba(117, 103, 248, 0.15)" : "var(--surface-card)",
                         color: active ? "#FFFFFF" : "var(--text-secondary)",
                         fontSize: 13,
-                        fontWeight: 500,
+                        fontWeight: 600,
                         cursor: "pointer",
                       }}
                     >
@@ -440,6 +444,7 @@ export default function ReportPage() {
           </form>
         )}
       </main>
+      <Footer />
     </div>
   );
 }

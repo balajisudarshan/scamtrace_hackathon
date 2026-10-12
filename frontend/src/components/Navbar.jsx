@@ -4,16 +4,17 @@ import useAuth from "../hooks/useAuth";
 import {
   ShieldAlert,
   ShieldCheck,
-  Search,
-  Users,
-  LifeBuoy,
-  BarChart3,
-  Terminal,
+  Smartphone,
+  AtSign,
+  PlusCircle,
+  Home,
   LogOut,
   LogIn,
   Menu,
   X,
-  PlusCircle,
+  LayoutDashboard,
+  Lock,
+  Sparkles,
 } from "lucide-react";
 
 export function BrandMark({ size = 28 }) {
@@ -35,19 +36,19 @@ export function BrandMark({ size = 28 }) {
         />
         <path
           d="M16 9V15L12 18M16 15L20 18"
-          stroke="#93C5FD"
+          stroke="#A5B4FC"
           strokeWidth="1.8"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
         <circle cx="16" cy="15" r="1.8" fill="#FFFFFF" />
-        <circle cx="12" cy="18" r="1.3" fill="#3B82F6" />
-        <circle cx="20" cy="18" r="1.3" fill="#3B82F6" />
+        <circle cx="12" cy="18" r="1.3" fill="#818CF8" />
+        <circle cx="20" cy="18" r="1.3" fill="#818CF8" />
         <defs>
           <linearGradient id="shield-nav-grad" x1="6" y1="3" x2="26" y2="29" gradientUnits="userSpaceOnUse">
             <stop stopColor="#FFFFFF" />
-            <stop offset="0.5" stopColor="#93C5FD" />
-            <stop offset="1" stopColor="#3B82F6" />
+            <stop offset="0.5" stopColor="#A5B4FC" />
+            <stop offset="1" stopColor="#7567F8" />
           </linearGradient>
         </defs>
       </svg>
@@ -73,42 +74,88 @@ export function BrandMark({ size = 28 }) {
             marginTop: 2,
           }}
         >
-          Protect Portal
+          Risk Protection
         </span>
       </div>
     </div>
   );
 }
 
+export function Footer() {
+  return (
+    <footer
+      style={{
+        borderTop: "1px solid var(--surface-border)",
+        background: "var(--bg-base)",
+        padding: "32px 20px 24px",
+        marginTop: "auto",
+      }}
+    >
+      <div
+        style={{
+          maxWidth: 1200,
+          margin: "0 auto",
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: 16,
+          fontSize: 13,
+          color: "var(--text-muted)",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <BrandMark size={20} />
+          <span>© {new Date().getFullYear()} SCAMTRACE. Digital Risk & Impersonation Protection.</span>
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+          <Link to="/" style={{ color: "var(--text-secondary)" }}>Home</Link>
+          <Link to="/social-check" style={{ color: "var(--text-secondary)" }}>Social Account Check</Link>
+          <Link to="/app-check" style={{ color: "var(--text-secondary)" }}>Mobile App Check</Link>
+          <Link to="/logo-check" style={{ color: "var(--text-secondary)" }}>Check a Logo</Link>
+          <Link to="/report" style={{ color: "var(--text-secondary)" }}>Report a Scam</Link>
+          {/* Discreet Admin Portal Link */}
+          <Link
+            to="/admin/login"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 4,
+              color: "var(--text-muted)",
+              fontSize: 12,
+              padding: "4px 8px",
+              borderRadius: "var(--radius-sm)",
+              border: "1px solid rgba(255, 255, 255, 0.05)",
+            }}
+          >
+            <Lock size={11} />
+            Admin
+          </Link>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
 export default function Navbar() {
-  const { user, isAnalyst, loginEmail, logoutUser } = useAuth();
+  const { user, isAdmin, logoutUser } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  // Phase 8: Public navigation — Home | Social Account Check | Mobile App Check | Check a Logo | Report a Scam
   const navLinks = [
-    { label: "Check Scam", path: "/check", icon: Search },
-    { label: "Brand Monitor", path: "/brand-monitor", icon: ShieldCheck },
-    { label: "Report Scam", path: "/report", icon: PlusCircle },
-    { label: "Emergency Help", path: "/damage-control", icon: LifeBuoy },
-    { label: "Community Intel", path: "/community", icon: Users },
-    { label: "Trends", path: "/pulse", icon: BarChart3 },
+    { label: "Home", path: "/", icon: Home },
+    { label: "Social Account Check", path: "/social-check", icon: AtSign },
+    { label: "Mobile App Check", path: "/app-check", icon: Smartphone },
+    { label: "Check a Logo", path: "/logo-check", icon: Sparkles },
+    { label: "Report a Scam", path: "/report", icon: PlusCircle },
   ];
 
   const handleLogout = async () => {
     await logoutUser();
-    navigate("/login");
-  };
-
-  const handleQuickAnalystDemo = async () => {
-    try {
-      const res = await loginEmail("analyst@scamtrace.dev", "analyst123");
-      if (res?.success) {
-        navigate("/analyst");
-      }
-    } catch (err) {
-      navigate("/login");
-    }
+    navigate("/");
   };
 
   return (
@@ -117,7 +164,7 @@ export default function Navbar() {
         position: "sticky",
         top: 0,
         zIndex: 50,
-        backgroundColor: "rgba(11, 16, 32, 0.9)",
+        backgroundColor: "rgba(11, 16, 32, 0.92)",
         backdropFilter: "blur(12px)",
         borderBottom: "1px solid var(--surface-border)",
       }}
@@ -127,7 +174,7 @@ export default function Navbar() {
           maxWidth: 1280,
           margin: "0 auto",
           padding: "0 20px",
-          height: 60,
+          height: 62,
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -138,7 +185,7 @@ export default function Navbar() {
           <BrandMark />
         </Link>
 
-        {/* Desktop Links */}
+        {/* Public Desktop Navigation */}
         <nav
           style={{
             display: "none",
@@ -158,10 +205,10 @@ export default function Navbar() {
                   display: "inline-flex",
                   alignItems: "center",
                   gap: 6,
-                  padding: "7px 12px",
+                  padding: "8px 14px",
                   borderRadius: "var(--radius-md)",
                   fontSize: 13,
-                  fontWeight: 500,
+                  fontWeight: 600,
                   color: isActive ? "#FFFFFF" : "var(--text-secondary)",
                   backgroundColor: isActive ? "var(--surface-card)" : "transparent",
                   border: isActive
@@ -170,57 +217,35 @@ export default function Navbar() {
                   transition: "all var(--transition-fast)",
                 }}
               >
-                <Icon size={14} style={{ color: isActive ? "var(--accent)" : "inherit" }} />
+                <Icon size={15} style={{ color: isActive ? "var(--accent)" : "inherit" }} />
                 {link.label}
               </Link>
             );
           })}
         </nav>
 
-        {/* Right CTA / Auth controls */}
+        {/* Right Section: Admin Dashboard Link if logged in, or Sign In */}
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          {/* Quick Analyst Desk Switcher */}
-          {isAnalyst ? (
+          {isAdmin && (
             <Link
-              to="/analyst"
+              to="/admin/dashboard"
               style={{
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 6,
                 padding: "6px 12px",
                 borderRadius: "var(--radius-md)",
-                background: "var(--surface-card)",
-                border: "1px solid var(--surface-border)",
-                color: "var(--text-primary)",
+                background: "rgba(117, 103, 248, 0.15)",
+                border: "1px solid rgba(117, 103, 248, 0.35)",
+                color: "#C7D2FE",
                 fontSize: 12,
-                fontWeight: 600,
+                fontWeight: 700,
                 textDecoration: "none",
               }}
             >
-              <Terminal size={14} style={{ color: "var(--accent)" }} />
-              <span>Analyst Desk</span>
+              <LayoutDashboard size={14} style={{ color: "var(--accent)" }} />
+              <span>Admin Dashboard</span>
             </Link>
-          ) : (
-            <button
-              onClick={handleQuickAnalystDemo}
-              title="Test the restricted Analyst Desk"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 5,
-                padding: "5px 10px",
-                borderRadius: "var(--radius-sm)",
-                background: "var(--surface-card)",
-                border: "1px solid var(--surface-border)",
-                color: "var(--text-secondary)",
-                fontSize: 11,
-                fontWeight: 500,
-                cursor: "pointer",
-              }}
-            >
-              <Terminal size={12} />
-              <span>Analyst Mode</span>
-            </button>
           )}
 
           {user ? (
@@ -238,7 +263,7 @@ export default function Navbar() {
               </button>
             </div>
           ) : (
-            <Link to="/login" className="btn btn-secondary btn-sm" style={{ fontSize: 12 }}>
+            <Link to="/admin/login" className="btn btn-secondary btn-sm" style={{ fontSize: 12 }}>
               <LogIn size={13} />
               <span>Sign In</span>
             </Link>
@@ -285,9 +310,10 @@ export default function Navbar() {
                   color: isActive ? "#FFFFFF" : "var(--text-secondary)",
                   background: isActive ? "var(--surface-card)" : "transparent",
                   fontSize: 13,
+                  fontWeight: 600,
                 }}
               >
-                <Icon size={15} />
+                <Icon size={16} />
                 {link.label}
               </Link>
             );

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <rect width="200" height="200" fill="#064E3B" rx="20"/>
+  <circle cx="100" cy="85" r="45" fill="#10B981"/>
+  <path d="M100 50 C120 70 120 100 100 120 C80 100 80 70 100 50 Z" fill="#D1FAE5"/>
+  <text x="100" y="165" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#ECFDF5" text-anchor="middle">APEX BOTANICS</text>
+</svg>

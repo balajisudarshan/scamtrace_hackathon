@@ -27,6 +27,9 @@ import {
   UploadCloud,
   FileText,
 } from "lucide-react";
+import ScanUploadZone from "../components/ScanUploadZone";
+import ScanProgressFeedback from "../components/ScanProgressFeedback";
+import { CheckResultSkeleton } from "../components/ScanSkeleton";
 
 export default function CheckPage() {
   const location = useLocation();
@@ -245,72 +248,21 @@ export default function CheckPage() {
           <form onSubmit={handleSubmit}>
             {type === "image" ? (
               <div style={{ marginBottom: 14 }}>
-                <div
-                  onDragOver={(e) => e.preventDefault()}
-                  onDrop={(e) => {
-                    e.preventDefault();
-                    if (e.dataTransfer.files?.[0]) handleImageChange(e.dataTransfer.files[0]);
+                <ScanUploadZone
+                  isScanning={loading}
+                  imagePreview={imagePreview}
+                  fileName={imageFile?.name}
+                  onFileSelect={handleImageChange}
+                  onClear={() => {
+                    setImageFile(null);
+                    setImagePreview(null);
+                    if (result) setResult(null);
                   }}
-                  style={{
-                    border: "1px dashed var(--surface-border-strong)",
-                    borderRadius: "var(--radius-md)",
-                    padding: "24px 16px",
-                    textAlign: "center",
-                    background: "var(--surface-card)",
-                    cursor: "pointer",
-                    position: "relative",
-                  }}
-                >
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => handleImageChange(e.target.files?.[0])}
-                    style={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      width: "100%",
-                      height: "100%",
-                      opacity: 0,
-                      cursor: "pointer",
-                    }}
-                  />
-                  {imagePreview ? (
-                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
-                      <img
-                        src={imagePreview}
-                        alt="Screenshot Preview"
-                        style={{ maxHeight: 180, maxWidth: "100%", borderRadius: 8, objectFit: "contain", border: "1px solid var(--surface-border)" }}
-                      />
-                      <span style={{ fontSize: 12, color: "var(--text-secondary)" }}>
-                        {imageFile?.name} (Click or drop another image to replace)
-                      </span>
-                    </div>
-                  ) : (
-                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
-                      <div
-                        style={{
-                          width: 44,
-                          height: 44,
-                          borderRadius: "50%",
-                          background: "rgba(59, 130, 246, 0.12)",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          color: "var(--accent)",
-                        }}
-                      >
-                        <UploadCloud size={24} />
-                      </div>
-                      <div style={{ fontSize: 14, fontWeight: 600, color: "#FFFFFF" }}>
-                        Drop suspicious screenshot here or click to browse
-                      </div>
-                      <div style={{ fontSize: 12, color: "var(--text-muted)" }}>
-                        Supports WhatsApp chats, SMS screenshots, fake receipts (PNG, JPG, WEBP up to 10MB)
-                      </div>
-                    </div>
-                  )}
-                </div>
+                  accept="image/*"
+                  label="Drop suspicious screenshot here or click to browse"
+                  sublabel="Supports WhatsApp chats, SMS screenshots, fake receipts (PNG, JPG, WEBP up to 10MB)"
+                  badgeText="SCANNING SCREENSHOT"
+                />
               </div>
             ) : (
               <div style={{ marginBottom: 12 }}>
@@ -329,6 +281,7 @@ export default function CheckPage() {
                       : "Enter social handle: e.g., @fraud_account"
                   }
                   style={{ fontSize: 14 }}
+                  disabled={loading}
                 />
               </div>
             )}
@@ -350,6 +303,7 @@ export default function CheckPage() {
                   key={idx}
                   type="button"
                   onClick={() => handleSelectSample(s)}
+                  disabled={loading}
                   style={{
                     background: "rgba(255, 255, 255, 0.04)",
                     border: "1px solid var(--surface-border)",
@@ -357,7 +311,8 @@ export default function CheckPage() {
                     padding: "3px 8px",
                     borderRadius: "4px",
                     fontSize: 11,
-                    cursor: "pointer",
+                    cursor: loading ? "not-allowed" : "pointer",
+                    opacity: loading ? 0.6 : 1,
                   }}
                 >
                   {s.label}
@@ -365,25 +320,13 @@ export default function CheckPage() {
               ))}
             </div>
 
-            {error && (
-              <div
-                style={{
-                  background: "var(--risk-high-bg)",
-                  border: "1px solid var(--risk-high-border)",
-                  color: "#FCA5A5",
-                  padding: "10px 14px",
-                  borderRadius: "var(--radius-md)",
-                  fontSize: 13,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  marginBottom: 14,
-                }}
-              >
-                <AlertTriangle size={15} />
-                <span>{error}</span>
-              </div>
-            )}
+            {/* Progress Feedback / Cold-Start Status / Error Retry */}
+            <ScanProgressFeedback
+              isScanning={loading}
+              error={error}
+              onRetry={() => runCheck()}
+              scanType={type}
+            />
 
             <div
               style={{
@@ -400,7 +343,7 @@ export default function CheckPage() {
               </div>
 
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                {result && (
+                {result && !loading && (
                   <button
                     type="button"
                     onClick={handleReset}
@@ -414,12 +357,12 @@ export default function CheckPage() {
                   type="submit"
                   disabled={loading || (type === "image" ? !imageFile : !content.trim())}
                   className="btn btn-primary"
-                  style={{ minWidth: 140 }}
+                  style={{ minWidth: 160 }}
                 >
                   {loading ? (
                     <>
                       <div className="spinner" style={{ width: 14, height: 14 }} />
-                      <span>Checking...</span>
+                      <span>{type === "image" ? "Analyzing Image..." : "Checking Content..."}</span>
                     </>
                   ) : (
                     <>
@@ -433,8 +376,11 @@ export default function CheckPage() {
           </form>
         </div>
 
+        {/* ─── Skeleton Loading State ─── */}
+        {loading && <CheckResultSkeleton scanType={type} />}
+
         {/* ─── Results Section ─── */}
-        {result && (
+        {!loading && result && (
           <div className="fade-in" style={{ display: "flex", flexDirection: "column", gap: 20 }}>
             {/* 1. Main Verdict Header */}
             <div

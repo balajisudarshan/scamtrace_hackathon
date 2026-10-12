@@ -1,0 +1,55 @@
+{
+  "nike": {
+    "success": true,
+    "status": "FOUND",
+    "brand": {
+      "id": "wikidata_Q483915",
+      "name": "Nike",
+      "fullName": "Nike (American athletic equipment company)",
+      "domain": "nike.com",
+      "wikidataId": "Q483915"
+    },
+    "referenceLogo": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/a/a6/Logo_NIKE.svg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "sourceType": "Authoritative Brand Asset / Wikidata (Q483915) Verified",
+      "sourceUrl": "https://www.nike.com/",
+      "retrievedAt": "2026-10-12",
+      "description": "Official verified brand asset for Nike retrieved from authoritative public knowledge repository",
+      "bufferBase64": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAwIiBoZWlnaHQ9IjM1Ni4zOSIgdmlld0JveD0iMTM1LjUgMzYxLjM4IDEwMDAgMzU2LjM5Ij4KICA8cGF0aCBkPSJNMjQ1LjgwNzUgNzE3LjYyNDA2Yy0yOS43OTU4OC0xLjE4MzctNTQuMTczNC05LjMzNjgtNzMuMjM0NTktMjQuNDc5Ni0zLjYzNzc1LTIuODkyOC0xMi4zMDYxMS0xMS41NjYzLTE1LjIxNDI3LTE1LjIyNDUtNy43Mjk1OC05LjcxOTMtMTIuOTg0NjctMTkuMTc4NS0xNi40ODk3Ny0yOS42NzM0LTEwLjc4NTctMzIuMzA2MS01LjIzNDY5LTc0LjY5ODkgMTUuODc3NTMtMTIxLjIyNDMgMTguMDc2NS0zOS44MzE2IDQ1Ljk2OTMyLTc5LjMzNjYgOTQuNjMyNTItMTM0LjA1MDggNy4xNjgzNi04LjA1MTEgMjguNTE1MjYtMzEuNTk2OSAyOC42NTMwMi0zMS41OTY5LjA1MSAwLTEuMTEyMjUgMi4wMTUzLTIuNTc2NTIgNC40Njk0LTEyLjY1MzA0IDIxLjE5MzgtMjMuNDc5NTcgNDYuMTU4LTI5LjM3NzUxIDY3Ljc3MDMtOS40NzQ0OCAzNC42Nzg1LTguMzMxNjMgNjQuNDM4NyAzLjM0NjkzIDg3LjUxNTEgOC4wNTYxMSAxNS44OTggMjEuODY3MzEgMjkuNjY4NCAzNy4zOTc5IDM3LjI4MDYgMjcuMTg4NzQgMTMuMzIxNCA2Ni45OTQ4IDE0LjQyMzUgMTE1LjYwNjk5IDMuMjI0NSAzLjM0Njk0LS43NzU1IDE2OS4xOTM2My00NC44MDEgMzY4LjU1MDQ4LTk3LjgzNjYgMTk5LjM1Njg2LTUzLjA0MDggMzYyLjQ5NDM5LTk2LjQwMjkgMzYyLjUxOTg5LTk2LjM2NzIuMDU2LjA0Ni00NjMuMTYyNTkgMTk4LjI1OTktNzAzLjYyNjU0IDMwMS4wOTE0LTM4LjA4MTU4IDE2LjI4MDYtNDguMjY1MjEgMjAuMzkyOC02Ni4xNjgyNyAyNi42Nzg1LTQ1Ljc2NTI1IDE2LjA3MTQtODYuNzYwMDggMjMuNzM5OC0xMTkuODk3NzkgMjIuNDIzNXoiLz4KPC9zdmc+"
+    },
+    "searchMetadata": {
+      "provider": "Wikidata & Wikimedia Commons Structured Brand Registry",
+      "validatedDomain": "nike.com",
+      "confidence": "HIGH",
+      "durationMs": 2602
+    }
+  },
+  "sbi": {
+    "success": true,
+    "status": "FOUND",
+    "brand": {
+      "id": "brand_sbi",
+      "name": "SBI",
+      "fullName": "State Bank of India",
+      "domain": "sbi.co.in"
+    },
+    "referenceLogo": {
+      "url": "/brands/sbi.svg",
+      "sourceType": "Official Brand Asset / Reserve Registry",
+      "sourceUrl": "https://sbi.co.in",
+      "retrievedAt": "2026-03-01",
+      "description": "Official circular blue keyhole emblem with State Bank of India typography",
+      "primaryColors": [
+        "#00B5EF",
+        "#0A1128",
+        "#FFFFFF"
+      ],
+      "bufferBase64": "PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiMwQTExMjgiIHJ4PSIyMCIvPjxjaXJjbGUgY3g9IjEwMCIgY3k9IjkwIiByPSI2MCIgZmlsbD0iIzAwQjVFRiIvPjxjaXJjbGUgY3g9IjEwMCIgY3k9IjkwIiByPSIyMiIgZmlsbD0iIzBBMTEyOCIvPjxyZWN0IHg9Ijk0IiB5PSI5MCIgd2lkdGg9IjEyIiBoZWlnaHQ9IjUyIiBmaWxsPSIjMEExMTI4Ii8+PHRleHQgeD0iMTAwIiB5PSIxNzUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNGRkZGRkYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlNUQVRFIEJBTksgT0YgSU5ESUE8L3RleHQ+PC9zdmc+"
+    },
+    "searchMetadata": {
+      "provider": "Local Authoritative Brand Registry",
+      "fromCache": false,
+      "durationMs": 2
+    }
+  }
+}

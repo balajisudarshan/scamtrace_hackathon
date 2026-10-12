@@ -1,6 +1,25 @@
+import React from "react";
 import { Navigate, Link } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { ShieldAlert, ArrowLeft } from "lucide-react";
+
+export function AdminRoute({ children }) {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="flex-center" style={{ minHeight: "100vh", background: "#0B1020" }}>
+        <div className="spinner" />
+      </div>
+    );
+  }
+
+  if (!user || (user.role !== "ADMIN" && user.role !== "ANALYST")) {
+    return <Navigate to="/admin/login" replace />;
+  }
+
+  return children;
+}
 
 export default function ProtectedRoute({ children, requiredRoles = null }) {
   const { user, loading, loginEmail } = useAuth();

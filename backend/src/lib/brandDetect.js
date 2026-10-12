@@ -207,18 +207,51 @@ function severity(score) {
 
 const FLAG_THRESHOLD = 40;
 
+// ─── Normalization helpers ──────────────────────────────────────────────────
+export function normalizePlatform(p) {
+  const s = String(p || "").toLowerCase();
+  if (s.includes("twitter") || s.includes("x")) return "x";
+  if (s.includes("insta")) return "instagram";
+  if (s.includes("face") || s.includes("fb")) return "facebook";
+  if (s.includes("link")) return "linkedin";
+  if (s.includes("you")) return "youtube";
+  return s;
+}
+
+export function normalizeStore(st) {
+  const s = String(st || "").toLowerCase();
+  if (s.includes("play") || s.includes("google")) return "google play";
+  if (s.includes("apple") || s.includes("ios") || s.includes("app store")) return "apple app store";
+  return s;
+}
+
 // ─── Official asset exclusion ────────────────────────────────────────────────
 export function isOfficialSocial(item, brand) {
-  return (brand.officialSocial || []).some(
-    (o) => o.platform?.toLowerCase() === item.platform?.toLowerCase() &&
-            o.handle?.toLowerCase() === String(item.handle || "").toLowerCase()
-  );
+  const cleanItemHandle = String(item.handle || "").replace(/^@/, "").toLowerCase().trim();
+  const itemPlatform = normalizePlatform(item.platform);
+
+  return (brand.officialSocial || []).some((o) => {
+    const cleanOfficialHandle = String(o.handle || "").replace(/^@/, "").toLowerCase().trim();
+    if (!cleanOfficialHandle || cleanOfficialHandle !== cleanItemHandle) return false;
+    const oPlatform = normalizePlatform(o.platform);
+    return !itemPlatform || !oPlatform || itemPlatform === oPlatform;
+  });
 }
 
 export function isOfficialApp(item, brand) {
-  return (brand.officialApps || []).some(
-    (o) => o.store?.toLowerCase() === item.store?.toLowerCase() && o.appId === item.appId
-  );
+  const cleanItemAppId = String(item.appId || "").toLowerCase().trim();
+  const cleanItemName = String(item.name || "").toLowerCase().trim();
+  const itemStore = normalizeStore(item.store);
+
+  return (brand.officialApps || []).some((o) => {
+    const cleanOfficialAppId = String(o.appId || "").toLowerCase().trim();
+    const cleanOfficialName = String(o.name || "").toLowerCase().trim();
+    const matchId = Boolean(cleanOfficialAppId && cleanItemAppId && cleanOfficialAppId === cleanItemAppId);
+    const matchName = Boolean(cleanOfficialName && cleanItemName && (cleanOfficialName.includes(cleanItemName) || cleanItemName.includes(cleanOfficialName)));
+    if (!matchId && !matchName) return false;
+    const oStore = normalizeStore(o.store);
+    return !itemStore || !oStore || itemStore === oStore;
+  });
 }
 
 // ─── Score social profile ────────────────────────────────────────────────────

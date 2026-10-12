@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect } from "react";
+import { api } from "../services/api";
 import {
   loginWithGoogle,
   loginWithEmail,
@@ -118,6 +119,27 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // ─── Admin Login (Dedicated, No OAuth) ─────────────────────
+  const loginAdmin = async (identifier, password) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await api.admin.login({ email: identifier, username: identifier, password });
+      if (res.success) {
+        saveAuthSession(res.user, res.token || res.accessToken);
+        return res;
+      } else {
+        setError(res.message || "Admin authentication failed");
+        return res;
+      }
+    } catch (err) {
+      setError(err.message || "Admin authentication failed");
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // ─── Revalidate on mount ───────────────────────────────────
   useEffect(() => {
     const fetchUser = async () => {
@@ -149,6 +171,9 @@ export const AuthProvider = ({ children }) => {
   const isAnalyst = Boolean(
     user && (user.role === "ANALYST" || user.role === "ADMIN")
   );
+  const isAdmin = Boolean(
+    user && (user.role === "ADMIN" || user.role === "ANALYST")
+  );
 
   return (
     <AuthContext.Provider
@@ -157,8 +182,10 @@ export const AuthProvider = ({ children }) => {
         loading,
         error,
         isAnalyst,
+        isAdmin,
         loginGoogle,
         loginEmail,
+        loginAdmin,
         registerEmail,
         logoutUser,
         setError,

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 120" width="300" height="120">
+  <rect width="300" height="120" fill="#111111" rx="16"/>
+  <!-- Genuine Nike Swoosh curve representation for candidate testing -->
+  <path d="M40 75 C85 95 180 50 240 25 C190 65 110 115 50 95 C42 92 36 84 40 75 Z" fill="#FFFFFF"/>
+</svg>

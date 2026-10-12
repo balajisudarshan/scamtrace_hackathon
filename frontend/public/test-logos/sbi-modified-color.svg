@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <rect width="200" height="200" fill="#2E0249" rx="20"/>
+  <!-- Modified Purple/Magenta colors -->
+  <circle cx="100" cy="85" r="55" fill="#F806CC"/>
+  <circle cx="100" cy="85" r="20" fill="#2E0249"/>
+  <rect x="94" y="85" width="12" height="48" fill="#2E0249"/>
+  <!-- Added unofficial badge -->
+  <rect x="25" y="152" width="150" height="26" fill="#F43F5E" rx="6"/>
+  <text x="100" y="169" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF" text-anchor="middle">OFFICIAL 24x7 SUPPORT</text>
+</svg>
