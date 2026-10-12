@@ -22,7 +22,12 @@ const NVIDIA_URL = "https://integrate.api.nvidia.com/v1/chat/completions";
 export const aiEnabled = () =>
   Boolean(process.env.NVIDIA_API_KEY && process.env.NVIDIA_API_KEY !== "your-key-here");
 
-async function nvidiaChatRaw(messages, { maxTokens = 800, temperature = 0.2 } = {}) {
+async function nvidiaChatRaw(messages, { maxTokens = 500, temperature = 0.2, timeoutMs = 25000 } = {}) {
+  const envModel = process.env.NVIDIA_MODEL;
+  const primaryModel = (envModel && !envModel.includes("kimi")) 
+    ? envModel 
+    : "meta/llama-3.2-11b-vision-instruct";
+
   const res = await fetch(NVIDIA_URL, {
     method: "POST",
     headers: {
@@ -31,17 +36,130 @@ async function nvidiaChatRaw(messages, { maxTokens = 800, temperature = 0.2 } = 
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: process.env.NVIDIA_MODEL || "moonshotai/kimi-k3",
+      model: primaryModel,
       messages,
       max_tokens: maxTokens,
       temperature,
       stream: false,
     }),
-    signal: AbortSignal.timeout(30000),
+    signal: AbortSignal.timeout(timeoutMs),
   });
   if (!res.ok) throw new Error(`NVIDIA API ${res.status}: ${(await res.text()).slice(0, 300)}`);
   const json = await res.json();
   return json.choices?.[0]?.message?.content?.trim() || "";
+}
+
+/**
+ * Deep Pretrained AI Threat & Scam Evaluation
+ * Evaluates raw communication text using LLM reasoning (threat, extortion, coercion, phishing, manipulation)
+ */
+export async function aiEvaluateContentThreat(contentType, content, ruleFindings = null) {
+  if (!aiEnabled()) {
+    return {
+      isAiEvaluated: false,
+      reason: "AI key not configured or inactive",
+      aiFindings: null,
+    };
+  }
+
+  try {
+    const prompt = `Analyze this submitted ${contentType} with pretrained cyber-threat intelligence:
+
+"""
+${content.slice(0, 2500)}
+"""
+
+Evaluate:
+1. Is it a threat, physical violence, extortion, blackmail, sextortion, digital arrest, job scam, investment scam, or phishing?
+2. Determine riskLevel ("HIGH_RISK", "NEEDS_CAUTION", or "LOW_SIGNAL") and riskScore (0.0 to 1.0).
+3. Death/harm threats, extortion, arrest threats MUST be "HIGH_RISK" (score >= 0.85).
+4. Extract coercive phrases and threat markers.
+5. Provide actionable next steps.
+
+Respond ONLY in valid, compact JSON:
+{
+  "isThreat": true,
+  "riskLevel": "HIGH_RISK",
+  "riskScore": 0.95,
+  "threatType": "Extortion / Blackmail",
+  "verdictTitle": "🚨 Severe Threat & Extortion Detected",
+  "verdictSummary": "Coercive demand with threats to victim safety or reputation.",
+  "evidence": [
+    {
+      "value": "quoted phrase",
+      "tactic": "extortion",
+      "why": "Demand accompanied by coercive threat"
+    }
+  ],
+  "storyMode": [
+    {
+      "phrase": "quoted phrase",
+      "tactic": "intimidation",
+      "explanation": "Creates intense fear to force immediate compliance"
+    }
+  ],
+  "indicators": [
+    {
+      "type": "PHRASE",
+      "value": "quoted phrase",
+      "context": "context sentence"
+    }
+  ],
+  "nextSteps": [
+    "🚨 Do not pay any money — contact police immediately",
+    "Preserve all evidence (screenshots)"
+  ],
+  "confidence": 95
+}`;
+
+    const rawResponse = await nvidiaChatRaw(
+      [
+        {
+          role: "system",
+          content: "You are an elite cyber threat & fraud intelligence analyzer. Return valid JSON only.",
+        },
+        { role: "user", content: prompt },
+      ],
+      { maxTokens: 450, temperature: 0.1, timeoutMs: 25000 }
+    );
+
+    // Clean up response if it has markdown formatting
+    let cleanJson = rawResponse.trim();
+    if (cleanJson.startsWith("```json")) {
+      cleanJson = cleanJson.replace(/^```json\s*/, "").replace(/\s*```$/, "");
+    } else if (cleanJson.startsWith("```")) {
+      cleanJson = cleanJson.replace(/^```\s*/, "").replace(/\s*```$/, "");
+    }
+
+    const parsed = JSON.parse(cleanJson);
+
+    return {
+      isAiEvaluated: true,
+      model: process.env.NVIDIA_MODEL || "meta/llama-3.2-11b-vision-instruct",
+      aiFindings: {
+        isThreat: Boolean(parsed.isThreat),
+        riskLevel: ["HIGH_RISK", "NEEDS_CAUTION", "LOW_SIGNAL"].includes(parsed.riskLevel)
+          ? parsed.riskLevel
+          : "NEEDS_CAUTION",
+        riskScore: typeof parsed.riskScore === "number" ? Math.min(1.0, Math.max(0, parsed.riskScore)) : 0.7,
+        threatType: parsed.threatType || "Suspicious Communication",
+        verdictTitle: parsed.verdictTitle || "Threat Analysis Complete",
+        verdictSummary: parsed.verdictSummary || "",
+        evidence: Array.isArray(parsed.evidence) ? parsed.evidence : [],
+        storyMode: Array.isArray(parsed.storyMode) ? parsed.storyMode : [],
+        indicators: Array.isArray(parsed.indicators) ? parsed.indicators : [],
+        nextSteps: Array.isArray(parsed.nextSteps) ? parsed.nextSteps : [],
+        confidence: typeof parsed.confidence === "number" ? parsed.confidence : 90,
+      },
+    };
+  } catch (err) {
+    console.error("AI Threat Evaluation error:", err.message);
+    return {
+      isAiEvaluated: false,
+      reason: err.message,
+      aiFindings: null,
+    };
+  }
 }
 
 /**

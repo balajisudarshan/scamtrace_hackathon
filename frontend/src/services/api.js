@@ -77,6 +77,19 @@ export const api = {
   check: {
     analyze: ({ type, content }) =>
       request("/api/check", { method: "POST", body: { type, content } }),
+    analyzeImage: (formData) => {
+      const url = `${API_BASE}/api/check/image`;
+      const token = getAuthToken();
+      return fetch(url, {
+        method: "POST",
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        body: formData,
+      }).then(async (res) => {
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || "Failed to analyze screenshot");
+        return data;
+      });
+    },
   },
 
   // ─── Reports (Public) ───

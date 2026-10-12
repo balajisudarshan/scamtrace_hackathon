@@ -24,6 +24,9 @@ import {
   LifeBuoy,
   Sparkles,
   GitCompare,
+  Image,
+  UploadCloud,
+  FileText,
 } from "lucide-react";
 
 export default function CheckPage() {
@@ -32,12 +35,23 @@ export default function CheckPage() {
 
   const [type, setType] = useState(location.state?.initialType || "message");
   const [content, setContent] = useState(location.state?.initialContent || "");
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [result, setResult] = useState(null);
 
   // Tab switcher for results: 'simple' (Plain language verdict) vs 'forensic' (Deep clues & DNA)
   const [resultView, setResultView] = useState("simple");
+
+  const handleImageChange = (file) => {
+    if (!file) return;
+    setImageFile(file);
+    const reader = new FileReader();
+    reader.onload = (e) => setImagePreview(e.target.result);
+    reader.readAsDataURL(file);
+    if (result) setResult(null);
+  };
 
   const sampleMessages = [
     {
@@ -63,6 +77,32 @@ export default function CheckPage() {
   ];
 
   const runCheck = async (checkType, checkContent) => {
+    const activeType = checkType || type;
+
+    if (activeType === "image") {
+      if (!imageFile) {
+        setError("Please select or drop a screenshot image to analyze.");
+        return;
+      }
+      setLoading(true);
+      setError(null);
+      try {
+        const formData = new FormData();
+        formData.append("image", imageFile);
+        const res = await api.check.analyzeImage(formData);
+        if (res && res.success) {
+          setResult(res);
+        } else {
+          setError(res?.message || "Screenshot analysis could not be completed.");
+        }
+      } catch (err) {
+        setError(err?.message || "Failed to analyze screenshot.");
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
+
     const textToAnalyze = (checkContent !== undefined ? checkContent : content).trim();
     if (!textToAnalyze) {
       setError("Please enter or paste suspicious content to analyze.");
@@ -72,7 +112,7 @@ export default function CheckPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await api.check.analyze({ type: checkType || type, content: textToAnalyze });
+      const res = await api.check.analyze({ type: activeType, content: textToAnalyze });
       if (res && res.success) {
         setResult(res);
       } else {
@@ -105,6 +145,8 @@ export default function CheckPage() {
 
   const handleReset = () => {
     setContent("");
+    setImageFile(null);
+    setImagePreview(null);
     setResult(null);
     setError(null);
   };
@@ -149,6 +191,7 @@ export default function CheckPage() {
           <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 14, flexWrap: "wrap" }}>
             {[
               { id: "message", label: "Message / SMS", icon: MessageSquare },
+              { id: "image", label: "Screenshot / Image", icon: Image },
               { id: "url", label: "Website Link", icon: Globe },
               { id: "phone", label: "Phone Number", icon: Phone },
               { id: "social", label: "Social Handle", icon: AtSign },
@@ -185,24 +228,95 @@ export default function CheckPage() {
           </div>
 
           <form onSubmit={handleSubmit}>
-            <div style={{ marginBottom: 12 }}>
-              <textarea
-                className="textarea"
-                rows={3}
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                placeholder={
-                  type === "message"
-                    ? "Paste message text: e.g., 'Dear customer your SBI account is suspended...'"
-                    : type === "url"
-                    ? "Paste website link: e.g., http://sbi-secure-login.co.in"
-                    : type === "phone"
-                    ? "Enter phone number: e.g., +918888123456"
-                    : "Enter social handle: e.g., @fraud_account"
-                }
-                style={{ fontSize: 14 }}
-              />
-            </div>
+            {type === "image" ? (
+              <div style={{ marginBottom: 14 }}>
+                <div
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    if (e.dataTransfer.files?.[0]) handleImageChange(e.dataTransfer.files[0]);
+                  }}
+                  style={{
+                    border: "2px dashed rgba(117, 103, 248, 0.4)",
+                    borderRadius: "var(--radius-md)",
+                    padding: "24px 16px",
+                    textAlign: "center",
+                    background: "rgba(117, 103, 248, 0.04)",
+                    cursor: "pointer",
+                    position: "relative",
+                  }}
+                >
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleImageChange(e.target.files?.[0])}
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      width: "100%",
+                      height: "100%",
+                      opacity: 0,
+                      cursor: "pointer",
+                    }}
+                  />
+                  {imagePreview ? (
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
+                      <img
+                        src={imagePreview}
+                        alt="Screenshot Preview"
+                        style={{ maxHeight: 180, maxWidth: "100%", borderRadius: 8, objectFit: "contain", border: "1px solid var(--surface-border)" }}
+                      />
+                      <span style={{ fontSize: 12, color: "var(--text-secondary)" }}>
+                        {imageFile?.name} (Click or drop another image to replace)
+                      </span>
+                    </div>
+                  ) : (
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
+                      <div
+                        style={{
+                          width: 44,
+                          height: 44,
+                          borderRadius: "50%",
+                          background: "rgba(117, 103, 248, 0.15)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          color: "var(--accent)",
+                        }}
+                      >
+                        <UploadCloud size={24} />
+                      </div>
+                      <div style={{ fontSize: 14, fontWeight: 600, color: "#FFFFFF" }}>
+                        Drop suspicious screenshot here or click to browse
+                      </div>
+                      <div style={{ fontSize: 12, color: "var(--text-muted)" }}>
+                        Supports WhatsApp chats, SMS screenshots, fake receipts (PNG, JPG, WEBP up to 10MB)
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div style={{ marginBottom: 12 }}>
+                <textarea
+                  className="textarea"
+                  rows={3}
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  placeholder={
+                    type === "message"
+                      ? "Paste message text: e.g., 'Dear customer your SBI account is suspended...'"
+                      : type === "url"
+                      ? "Paste website link: e.g., http://sbi-secure-login.co.in"
+                      : type === "phone"
+                      ? "Enter phone number: e.g., +918888123456"
+                      : "Enter social handle: e.g., @fraud_account"
+                  }
+                  style={{ fontSize: 14 }}
+                />
+              </div>
+            )}
 
             {/* Quick 1-Click Samples */}
             <div
@@ -283,7 +397,7 @@ export default function CheckPage() {
                 )}
                 <button
                   type="submit"
-                  disabled={loading || !content.trim()}
+                  disabled={loading || (type === "image" ? !imageFile : !content.trim())}
                   className="btn btn-primary"
                   style={{ minWidth: 140 }}
                 >
@@ -359,17 +473,69 @@ export default function CheckPage() {
                     )}
                   </div>
                   <div>
-                    <h2 style={{ fontSize: 20, fontWeight: 800, color: "#FFFFFF", marginBottom: 2 }}>
-                      {result.riskLevel === "HIGH_RISK"
-                        ? "🚨 High-Risk Scam Detected"
-                        : result.riskLevel === "NEEDS_CAUTION"
-                        ? "⚠️ Suspicious — Needs Caution"
-                        : "✅ Low Threat Signals"}
-                    </h2>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 4 }}>
+                      <h2 style={{ fontSize: 20, fontWeight: 800, color: "#FFFFFF", margin: 0 }}>
+                        {result.verdictTitle ||
+                          (result.riskLevel === "HIGH_RISK"
+                            ? "🚨 High-Risk Scam Detected"
+                            : result.riskLevel === "NEEDS_CAUTION"
+                            ? "⚠️ Suspicious — Needs Caution"
+                            : "✅ Low Threat Signals")}
+                      </h2>
+                      {result.threatType && (
+                        <span
+                          style={{
+                            background: "rgba(117, 103, 248, 0.25)",
+                            color: "#C4B5FD",
+                            border: "1px solid rgba(117, 103, 248, 0.4)",
+                            padding: "2px 8px",
+                            borderRadius: "4px",
+                            fontSize: 11,
+                            fontWeight: 600,
+                          }}
+                        >
+                          {result.threatType}
+                        </span>
+                      )}
+                      {result.aiAnalysis?.enabled && (
+                        <span
+                          style={{
+                            background: "rgba(16, 185, 129, 0.15)",
+                            color: "#6EE7B7",
+                            border: "1px solid rgba(16, 185, 129, 0.3)",
+                            padding: "2px 8px",
+                            borderRadius: "4px",
+                            fontSize: 11,
+                            fontWeight: 600,
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 4,
+                          }}
+                        >
+                          <Sparkles size={11} />
+                          <span>AI Evaluated ({result.aiAnalysis.confidence}% conf)</span>
+                        </span>
+                      )}
+                    </div>
                     <div style={{ fontSize: 13, color: "var(--text-secondary)" }}>
                       Risk Score: <strong>{Math.round((result.riskScore || 0) * 100)} / 100</strong> •{" "}
                       {result.evidence?.length || 0} threat pattern(s) identified
                     </div>
+                    {result.verdictSummary && (
+                      <div
+                        style={{
+                          marginTop: 8,
+                          fontSize: 13,
+                          color: "#E2E8F0",
+                          background: "rgba(0, 0, 0, 0.25)",
+                          padding: "8px 12px",
+                          borderRadius: "6px",
+                          borderLeft: "3px solid var(--accent)",
+                        }}
+                      >
+                        <strong>AI Assessment:</strong> {result.verdictSummary}
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -435,6 +601,46 @@ export default function CheckPage() {
             {/* Mode A: Plain Language Verdict */}
             {resultView === "simple" ? (
               <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                {/* Extracted Screenshot Text (if Image) */}
+                {result.ocrText && (
+                  <div className="card" style={{ background: "rgba(117, 103, 248, 0.05)", border: "1px solid rgba(117, 103, 248, 0.25)" }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8, flexWrap: "wrap", gap: 6 }}>
+                      <h3 style={{ fontSize: 14, fontWeight: 700, margin: 0, display: "flex", alignItems: "center", gap: 6, color: "#C7D2FE" }}>
+                        <FileText size={16} style={{ color: "var(--accent)" }} />
+                        <span>Extracted Text from Screenshot (OCR)</span>
+                      </h3>
+                      {result.imageUrl && (
+                        <a
+                          href={result.imageUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          style={{ fontSize: 11, color: "var(--accent)", textDecoration: "underline" }}
+                        >
+                          View uploaded image
+                        </a>
+                      )}
+                    </div>
+                    <pre
+                      style={{
+                        background: "#080C1A",
+                        padding: 12,
+                        borderRadius: 6,
+                        border: "1px solid var(--surface-border)",
+                        fontSize: 12,
+                        fontFamily: "monospace",
+                        whiteSpace: "pre-wrap",
+                        wordBreak: "break-word",
+                        color: "#E2E8F0",
+                        margin: 0,
+                        maxHeight: 180,
+                        overflowY: "auto",
+                      }}
+                    >
+                      {result.ocrText}
+                    </pre>
+                  </div>
+                )}
+
                 {/* What Is This Scam */}
                 <div className="card">
                   <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 10 }}>
@@ -475,19 +681,58 @@ export default function CheckPage() {
                   <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 10 }}>
                     What you should do right now:
                   </h3>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 10 }}>
-                    <div style={{ background: "rgba(239, 68, 68, 0.08)", border: "1px solid rgba(239, 68, 68, 0.2)", padding: "12px", borderRadius: "8px", fontSize: 13, color: "#FCA5A5", display: "flex", alignItems: "center", gap: 8 }}>
-                      <XCircle size={16} style={{ flexShrink: 0 }} />
-                      <span><strong>Do NOT</strong> click any link or send an OTP</span>
-                    </div>
-                    <div style={{ background: "rgba(239, 68, 68, 0.08)", border: "1px solid rgba(239, 68, 68, 0.2)", padding: "12px", borderRadius: "8px", fontSize: 13, color: "#FCA5A5", display: "flex", alignItems: "center", gap: 8 }}>
-                      <XCircle size={16} style={{ flexShrink: 0 }} />
-                      <span><strong>Do NOT</strong> call the sender number</span>
-                    </div>
-                    <div style={{ background: "rgba(16, 185, 129, 0.08)", border: "1px solid rgba(16, 185, 129, 0.2)", padding: "12px", borderRadius: "8px", fontSize: 13, color: "#6EE7B7", display: "flex", alignItems: "center", gap: 8 }}>
-                      <CheckCircle2 size={16} style={{ flexShrink: 0 }} />
-                      <span><strong>Block & delete</strong> the message</span>
-                    </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 10 }}>
+                    {result.nextSteps?.map((step, idx) => {
+                      const isEmergency = step.includes("🚨") || step.includes("EMERGENCY") || step.includes("CRITICAL");
+                      const isWarning = step.includes("⚠️") || step.includes("Do NOT") || step.includes("Do not") || step.includes("Never");
+                      const isSafe = step.includes("✅") || step.includes("Block") || step.includes("Report") || step.includes("Verify") || step.includes("Contact") || step.includes("Screenshot") || step.includes("File") || step.includes("Check") || step.includes("Talk") || step.includes("community report");
+
+                      const bg = isEmergency
+                        ? "rgba(239, 68, 68, 0.12)"
+                        : isWarning
+                        ? "rgba(239, 68, 68, 0.08)"
+                        : isSafe
+                        ? "rgba(16, 185, 129, 0.08)"
+                        : "rgba(245, 158, 11, 0.08)";
+
+                      const border = isEmergency
+                        ? "1px solid rgba(239, 68, 68, 0.3)"
+                        : isWarning
+                        ? "1px solid rgba(239, 68, 68, 0.2)"
+                        : isSafe
+                        ? "1px solid rgba(16, 185, 129, 0.2)"
+                        : "1px solid rgba(245, 158, 11, 0.2)";
+
+                      const color = isEmergency
+                        ? "#FCA5A5"
+                        : isWarning
+                        ? "#FCA5A5"
+                        : isSafe
+                        ? "#6EE7B7"
+                        : "#FCD34D";
+
+                      const Icon = isWarning || isEmergency ? XCircle : CheckCircle2;
+
+                      return (
+                        <div
+                          key={idx}
+                          style={{
+                            background: bg,
+                            border,
+                            padding: "12px",
+                            borderRadius: "8px",
+                            fontSize: 13,
+                            color,
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 8,
+                          }}
+                        >
+                          <Icon size={16} style={{ flexShrink: 0 }} />
+                          <span>{step}</span>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               </div>

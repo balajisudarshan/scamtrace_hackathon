@@ -17,6 +17,9 @@ import {
   Phone,
   AtSign,
   HelpCircle,
+  UploadCloud,
+  Image,
+  Sparkles,
 } from "lucide-react";
 
 export default function ReportPage() {
@@ -27,6 +30,8 @@ export default function ReportPage() {
   const [platform, setPlatform] = useState(location.state?.initialPlatform || "SMS");
   const [targetRegion, setTargetRegion] = useState("IN");
   const [consent, setConsent] = useState(false);
+  const [ocrLoading, setOcrLoading] = useState(false);
+  const [ocrSuccess, setOcrSuccess] = useState(false);
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
@@ -40,6 +45,29 @@ export default function ReportPage() {
       .replace(/(?:\+91|0)?[6-9]\d{9}/g, "[PHONE_REDACTED]")
       .replace(/(\b\d{4}[ -]?\d{4}[ -]?\d{4}\b)/g, "[ID_REDACTED]")
       .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, "[EMAIL_REDACTED]");
+  };
+
+  const handleScreenshotUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setOcrLoading(true);
+    setError(null);
+    setOcrSuccess(false);
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
+      const res = await api.check.analyzeImage(formData);
+      if (res && res.ocrText) {
+        setContent(res.ocrText);
+        setOcrSuccess(true);
+      } else {
+        setError("Could not extract readable text from this screenshot. Please paste manually.");
+      }
+    } catch (err) {
+      setError(err?.message || "Failed to process screenshot evidence.");
+    } finally {
+      setOcrLoading(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -229,9 +257,42 @@ export default function ReportPage() {
 
             {/* Field 2: Content */}
             <div style={{ marginBottom: 20 }}>
-              <label className="input-label" htmlFor="report-content">
-                Suspicious Content or Evidence Text *
-              </label>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6, flexWrap: "wrap", gap: 8 }}>
+                <label className="input-label" htmlFor="report-content" style={{ margin: 0 }}>
+                  Suspicious Content or Evidence Text *
+                </label>
+                <label
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
+                    padding: "4px 10px",
+                    background: "rgba(117, 103, 248, 0.12)",
+                    border: "1px solid rgba(117, 103, 248, 0.3)",
+                    borderRadius: "4px",
+                    color: "#C7D2FE",
+                    fontSize: 12,
+                    cursor: "pointer",
+                    fontWeight: 600,
+                  }}
+                >
+                  <UploadCloud size={13} style={{ color: "var(--accent)" }} />
+                  <span>{ocrLoading ? "Extracting text..." : "Auto-fill from Screenshot"}</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleScreenshotUpload}
+                    disabled={ocrLoading}
+                    style={{ display: "none" }}
+                  />
+                </label>
+              </div>
+              {ocrSuccess && (
+                <div style={{ fontSize: 12, color: "#34D399", marginBottom: 6, display: "flex", alignItems: "center", gap: 6 }}>
+                  <Sparkles size={13} />
+                  <span>Text successfully extracted from screenshot and populated below!</span>
+                </div>
+              )}
               <textarea
                 id="report-content"
                 className="textarea"
