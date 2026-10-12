@@ -17,15 +17,35 @@ const fixBigInt = (arr) => {
 // ─── GET /api/admin/queue — Triage Queue ─────────────────────────────────────
 export const getTriageQueueController = async (req, res) => {
   try {
-    const { status = "RECEIVED", page = 1, limit = 20 } = req.query;
+    const { status, contentType, riskLevel, page = 1, limit = 20 } = req.query;
     const offset = (parseInt(page) - 1) * parseInt(limit);
     const safeLimit = Math.min(parseInt(limit), 100);
 
+    const conditions = [];
+    const params = [];
+    let idx = 1;
+
     const validStatus = ["RECEIVED", "UNDER_REVIEW", "CORROBORATED", "DISPUTED", "REJECTED", "PUBLISHED"];
-    const safeStatus = validStatus.includes(status) ? status : "RECEIVED";
+    const normStatus = status ? status.toUpperCase() : "RECEIVED";
+    if (normStatus !== "ALL" && validStatus.includes(normStatus)) {
+      conditions.push(`r.status::text = $${idx++}`);
+      params.push(normStatus);
+    }
+
+    if (contentType && contentType !== "ALL") {
+      conditions.push(`LOWER(r."contentType") = LOWER($${idx++})`);
+      params.push(contentType);
+    }
+
+    if (riskLevel && riskLevel !== "ALL") {
+      conditions.push(`r."riskLevel"::text = $${idx++}`);
+      params.push(riskLevel);
+    }
+
+    const whereClause = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
 
     const countRes = await prisma.$queryRawUnsafe(
-      `SELECT COUNT(*) as total FROM "Report" WHERE status=$1`, safeStatus
+      `SELECT COUNT(*) as total FROM "Report" r ${whereClause}`, ...params
     );
     const total = parseInt(countRes[0].total);
 
@@ -36,13 +56,13 @@ export const getTriageQueueController = async (req, res) => {
               u.email as "submittedByEmail"
        FROM "Report" r
        LEFT JOIN "User" u ON u.id=r."submittedById"
-       WHERE r.status=$1
+       ${whereClause}
        ORDER BY r."riskScore" DESC, r."createdAt" DESC
-       LIMIT $2 OFFSET $3`,
-      safeStatus, safeLimit, offset
+       LIMIT $${idx++} OFFSET $${idx++}`,
+      ...params, safeLimit, offset
     );
 
-    return res.json({ success: true, total, page: parseInt(page), totalPages: Math.ceil(total / safeLimit), reports: fixBigInt(reports) });
+    return res.json({ success: true, total, page: parseInt(page), totalPages: Math.ceil(total / safeLimit) || 1, reports: fixBigInt(reports) });
   } catch (err) {
     console.error("Triage queue error:", err);
     return res.status(500).json({ success: false, message: "Internal server error" });
@@ -88,13 +108,34 @@ export const getAnalystCaseController = async (req, res) => {
     );
 
     // Log access
+    const analystId = req.user?.id || req.user?.userId || null;
     await prisma.$queryRawUnsafe(
       `INSERT INTO "AuditEvent" (id,"userId","reportId",action,detail,"createdAt")
        VALUES (gen_random_uuid()::text,$1,$2,'ACCESS_RESTRICTED_DATA',$3,NOW())`,
-      req.user.id, id, JSON.stringify({ reason: "analyst_case_detail" })
+      analystId, id, JSON.stringify({ reason: "analyst_case_detail" })
     );
 
-    return res.json({ success: true, report, indicators, decisions, caseNotes, auditLog });
+    // Look up targeted brand profile if available for asset comparison
+    let brandProfile = null;
+    try {
+      const brandInd = indicators.find(i => i.type === 'BRAND');
+      let brandTargetName = brandInd?.value;
+      if (!brandTargetName) {
+        try {
+          const parsed = JSON.parse(report.rawContent);
+          brandTargetName = parsed.targetBrand;
+        } catch (_) {}
+      }
+      if (brandTargetName) {
+        const bRows = await prisma.$queryRawUnsafe(
+          `SELECT * FROM "BrandProfile" WHERE LOWER(name) = LOWER($1) OR id = $1 LIMIT 1`,
+          brandTargetName
+        );
+        if (bRows.length) brandProfile = bRows[0];
+      }
+    } catch (_) {}
+
+    return res.json({ success: true, report, indicators, decisions, caseNotes, auditLog, brandProfile });
   } catch (err) {
     console.error("Analyst case error:", err);
     return res.status(500).json({ success: false, message: "Internal server error" });
@@ -106,6 +147,7 @@ export const reviewReportController = async (req, res) => {
   try {
     const { id } = req.params;
     const { status, rationale, publicSummary, redactions } = req.body;
+    const reviewerId = req.user?.id || req.user?.userId || null;
 
     const validStatus = ["UNDER_REVIEW", "CORROBORATED", "DISPUTED", "REJECTED", "PUBLISHED"];
     if (!validStatus.includes(status))
@@ -118,9 +160,6 @@ export const reviewReportController = async (req, res) => {
     if (!existing.length) return res.status(404).json({ success: false, message: "Report not found" });
 
     // Update report status
-    const updateFields = [`status='${status}'`, `"updatedAt"=NOW()`];
-    if (publicSummary) updateFields.push(`"publicSummary"=$2`);
-    
     if (publicSummary) {
       await prisma.$queryRawUnsafe(
         `UPDATE "Report" SET status=$1, "publicSummary"=$2, "updatedAt"=NOW() WHERE id=$3`,
@@ -137,7 +176,7 @@ export const reviewReportController = async (req, res) => {
     await prisma.$queryRawUnsafe(
       `INSERT INTO "ReviewDecision" (id,"reportId","reviewerId",status,rationale,redactions,"createdAt")
        VALUES (gen_random_uuid()::text,$1,$2,$3,$4,$5,NOW())`,
-      id, req.user.id, status, rationale, JSON.stringify(redactions ?? [])
+      id, reviewerId, status, rationale, JSON.stringify(redactions ?? [])
     );
 
     // Audit
@@ -146,7 +185,7 @@ export const reviewReportController = async (req, res) => {
     await prisma.$queryRawUnsafe(
       `INSERT INTO "AuditEvent" (id,"userId","reportId",action,detail,"createdAt")
        VALUES (gen_random_uuid()::text,$1,$2,$3,$4,NOW())`,
-      req.user.id, id, action, JSON.stringify({ status, rationale: rationale.slice(0, 200) })
+      reviewerId, id, action, JSON.stringify({ status, rationale: rationale.slice(0, 200) })
     );
 
     return res.json({ success: true, reportId: id, newStatus: status, message: `Report marked as ${status}` });
@@ -161,6 +200,7 @@ export const addCaseNoteController = async (req, res) => {
   try {
     const { id } = req.params;
     const { content } = req.body;
+    const authorId = req.user?.id || req.user?.userId || null;
 
     if (!content || content.length < 5)
       return res.status(400).json({ success: false, message: "content is required (min 5 chars)" });
@@ -168,13 +208,13 @@ export const addCaseNoteController = async (req, res) => {
     const noteId = await prisma.$queryRawUnsafe(
       `INSERT INTO "CaseNote" (id,"reportId","authorId",content,"createdAt")
        VALUES (gen_random_uuid()::text,$1,$2,$3,NOW()) RETURNING id`,
-      id, req.user.id, content
+      id, authorId, content
     );
 
     await prisma.$queryRawUnsafe(
       `INSERT INTO "AuditEvent" (id,"userId","reportId",action,detail,"createdAt")
        VALUES (gen_random_uuid()::text,$1,$2,'CASE_NOTE_ADDED',$3,NOW())`,
-      req.user.id, id, JSON.stringify({ noteLength: content.length })
+      authorId, id, JSON.stringify({ noteLength: content.length })
     );
 
     return res.status(201).json({ success: true, noteId: noteId[0].id });

@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }) => {
     } else {
       localStorage.removeItem("st_user");
     }
-    if (token) {
+    if (token && token !== "undefined" && token !== "null") {
       localStorage.setItem("st_token", token);
       localStorage.setItem("accessToken", token);
     }
@@ -122,23 +122,23 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const fetchUser = async () => {
       const token = localStorage.getItem("st_token") || localStorage.getItem("accessToken");
-      if (!token) {
+      if (!token || token === "undefined" || token === "null") {
         setLoading(false);
         return;
       }
       try {
         const res = await getCurrentUser();
         if (res && res.success && res.user) {
-          // Preserve role if present
-          const existingUser = JSON.parse(localStorage.getItem("st_user") || "{}");
-          const role = res.user.role || existingUser.role || "PUBLIC";
+          const role = res.user.role || "PUBLIC";
           const updated = { ...res.user, role };
           saveAuthSession(updated);
         } else {
           clearAuthSession();
         }
-      } catch {
-        // If network error, keep current local storage session unless 401
+      } catch (err) {
+        if (err.status === 401 || err.status === 403) {
+          clearAuthSession();
+        }
       } finally {
         setLoading(false);
       }
@@ -162,6 +162,8 @@ export const AuthProvider = ({ children }) => {
         registerEmail,
         logoutUser,
         setError,
+        saveAuthSession,
+        clearAuthSession,
       }}
     >
       {children}

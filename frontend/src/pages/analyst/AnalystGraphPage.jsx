@@ -21,15 +21,27 @@ export default function AnalystGraphPage() {
 
   useEffect(() => {
     let isMounted = true;
-    api.reports
-      .list({ limit: 12, status: "PUBLISHED" })
+    // Use admin queue to get reports of all statuses for analysts
+    api.admin
+      .getQueue({ status: "RECEIVED", page: 1, limit: 6 })
       .then((res) => {
         if (isMounted && res.success && Array.isArray(res.reports)) {
           setReports(res.reports);
           if (res.reports[0]) setSelectedNode({ type: "report", data: res.reports[0] });
         }
       })
-      .catch((err) => console.warn("Failed to load reports for graph:", err.message))
+      .catch(() => {
+        // Fallback to published if admin fails
+        api.reports
+          .list({ limit: 12, status: "PUBLISHED" })
+          .then((res) => {
+            if (isMounted && res.success && Array.isArray(res.reports)) {
+              setReports(res.reports);
+              if (res.reports[0]) setSelectedNode({ type: "report", data: res.reports[0] });
+            }
+          })
+          .catch((err) => console.warn("Failed to load reports for graph:", err.message));
+      })
       .finally(() => {
         if (isMounted) setLoading(false);
       });

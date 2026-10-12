@@ -72,11 +72,40 @@ function levenshtein(a, b) {
 export function lookalikeName(rawCandidate, brandName) {
   const c = foldHomoglyphs(rawCandidate);
   const b = foldHomoglyphs(brandName);
+  const cNoSpace = c.replace(/\s+/g, "");
+  const bNoSpace = b.replace(/\s+/g, "");
   const techniques = [];
   let score = 0;
 
   // Exact match
   if (c === b) { score = 1.0; techniques.push("exact match"); return { score, techniques }; }
+
+  // Spacing changes (e.g. "S B I" vs "SBI", "Pay tm" vs "Paytm")
+  if (cNoSpace === bNoSpace && c !== b) {
+    score = 0.92;
+    techniques.push("spacing modification (inserted/removed spaces)");
+    return { score, techniques };
+  }
+
+  // Exact match after homoglyph normalization (e.g. Cyrillic or leetspeak like "SB1")
+  const rawLower = String(rawCandidate || "").toLowerCase();
+  const brandLower = String(brandName || "").toLowerCase();
+  if (cNoSpace === bNoSpace && rawLower.replace(/\s+/g, "") !== brandLower.replace(/\s+/g, "")) {
+    score = 0.94;
+    techniques.push("character substitution (homoglyphs/leetspeak)");
+    return { score, techniques };
+  }
+
+  // Spacing variation contains brand name (e.g. "S B I Official Support")
+  if (cNoSpace.includes(bNoSpace) && !c.includes(b)) {
+    score = 0.86;
+    techniques.push("spacing variation contains brand name");
+    if (IMPERSONATION_WORDS.some((w) => cNoSpace.includes(w))) {
+      techniques.push("impersonation word added");
+      score = Math.min(1.0, score + 0.10);
+    }
+    return { score, techniques: [...new Set(techniques)] };
+  }
 
   // Contains brand name
   if (c.includes(b)) {
@@ -86,16 +115,26 @@ export function lookalikeName(rawCandidate, brandName) {
       techniques.push("impersonation word added");
       score = Math.min(1.0, score + 0.10);
     }
-    return { score, techniques };
+    return { score, techniques: [...new Set(techniques)] };
   }
 
-  // Levenshtein distance
+  // Levenshtein distance on normalized text
   const dist = levenshtein(c, b);
   const maxLen = Math.max(c.length, b.length);
   if (maxLen > 0 && dist / maxLen < 0.35) {
     score = Math.min(0.88, 0.5 + (1 - dist / maxLen) * 0.4);
     techniques.push(dist === 1 ? "single character swap" : `${dist} character edit(s)`);
     if (c.length > b.length + 3) techniques.push("brand name + extra words");
+  }
+
+  // Levenshtein on unspaced strings
+  if (score === 0) {
+    const distNoSpace = levenshtein(cNoSpace, bNoSpace);
+    const maxLenNoSpace = Math.max(cNoSpace.length, bNoSpace.length);
+    if (maxLenNoSpace > 0 && distNoSpace / maxLenNoSpace < 0.35) {
+      score = Math.min(0.85, 0.5 + (1 - distNoSpace / maxLenNoSpace) * 0.4);
+      techniques.push(distNoSpace === 1 ? "single character substitution" : `${distNoSpace} character edit(s)`);
+    }
   }
 
   // Homoglyph detection (original had special chars that normalized to brand)

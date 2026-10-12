@@ -12,6 +12,7 @@ import CommunityPage from "./pages/CommunityPage";
 import ReportDetailPage from "./pages/ReportDetailPage";
 import DamageControlPage from "./pages/DamageControlPage";
 import ScamPulsePage from "./pages/ScamPulsePage";
+import BrandMonitorPage from "./pages/BrandMonitorPage";
 
 // Auth Pages
 import Login from "./pages/Login";
@@ -40,6 +41,7 @@ export default function App() {
             {/* ─── Portal A: SCAMTRACE Protect (Public) ─── */}
             <Route path="/" element={<HomePage />} />
             <Route path="/check" element={<CheckPage />} />
+            <Route path="/brand-monitor" element={<BrandMonitorPage />} />
             <Route path="/report" element={<ReportPage />} />
             <Route path="/community" element={<CommunityPage />} />
             <Route path="/reports/:id" element={<ReportDetailPage />} />

@@ -8,10 +8,30 @@ import {
   explainController,
   demoScanController,
   uploadMiddleware,
+  listBrandProfilesController,
+  getBrandProfileController,
+  createBrandProfileController,
+  updateBrandProfileController,
+  deleteBrandProfileController,
+  analyzeSocialController,
+  analyzeAppController,
+  submitBrandCaseController,
 } from "./brand.controller.js";
 import { optionalAuth } from "../../middlewares/auth.middleware.js";
 
 const router = express.Router();
+
+// Brand Profiles Management (Public / Authenticated)
+router.get("/profiles", listBrandProfilesController);                 // GET /api/brand/profiles
+router.get("/profiles/:id", getBrandProfileController);               // GET /api/brand/profiles/:id
+router.post("/profiles", optionalAuth, createBrandProfileController); // POST /api/brand/profiles
+router.put("/profiles/:id", optionalAuth, updateBrandProfileController); // PUT /api/brand/profiles/:id
+router.delete("/profiles/:id", optionalAuth, deleteBrandProfileController); // DELETE /api/brand/profiles/:id
+
+// Social & App Impersonation Analysis
+router.post("/analyze-social", analyzeSocialController);               // POST /api/brand/analyze-social
+router.post("/analyze-app", analyzeAppController);                     // POST /api/brand/analyze-app
+router.post("/submit-case", optionalAuth, submitBrandCaseController);  // POST /api/brand/submit-case
 
 // Public endpoints (no auth required — for hackathon demo ease)
 router.get("/demo", demoScanController);                              // GET /api/brand/demo

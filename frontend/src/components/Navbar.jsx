@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import {
   ShieldAlert,
+  ShieldCheck,
   Search,
   Users,
   LifeBuoy,
@@ -88,6 +89,7 @@ export default function Navbar() {
 
   const navLinks = [
     { label: "Check Scam", path: "/check", icon: Search },
+    { label: "Brand Monitor", path: "/brand-monitor", icon: ShieldCheck },
     { label: "Report Scam", path: "/report", icon: PlusCircle },
     { label: "Emergency Help", path: "/damage-control", icon: LifeBuoy },
     { label: "Community Intel", path: "/community", icon: Users },

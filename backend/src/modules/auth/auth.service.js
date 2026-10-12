@@ -70,6 +70,7 @@ export const googleLogin = async (credential) => {
       role,
     },
     accessToken,
+    token: accessToken,
   };
 };
 
@@ -114,6 +115,7 @@ export const register = async (email, password, firstName, lastName) => {
       role,
     },
     accessToken,
+    token: accessToken,
   };
 };
 
@@ -153,5 +155,6 @@ export const login = async (email, password) => {
       role,
     },
     accessToken,
+    token: accessToken,
   };
 };

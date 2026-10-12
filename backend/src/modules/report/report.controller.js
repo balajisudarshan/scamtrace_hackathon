@@ -177,7 +177,7 @@ export const getReportController = async (req, res) => {
               "nextStepsJson",caveat,platform,"targetRegion",status,"sourceType","datasetSource",
               "createdAt","updatedAt"
               ${isAnalyst ? ', "rawContent"' : ''}
-       FROM "Report" WHERE id=$1 AND (status='PUBLISHED' OR status='CORROBORATED' ${isAnalyst ? "OR TRUE" : ""})`,
+       FROM "Report" WHERE id=$1`,
       id
     );
 

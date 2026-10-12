@@ -21,6 +21,10 @@ import {
   GitCompare,
   User,
   ScrollText,
+  Building2,
+  Smartphone,
+  AtSign,
+  ExternalLink,
 } from "lucide-react";
 
 export default function AnalystCasePage() {
@@ -136,7 +140,14 @@ export default function AnalystCasePage() {
     );
   }
 
-  const { report, indicators = [], decisions = [], caseNotes = [], auditLog = [] } = data;
+  const { report, indicators = [], decisions = [], caseNotes = [], auditLog = [], brandProfile = null } = data;
+
+  let parsedAsset = null;
+  try {
+    if (report.rawContent && report.rawContent.trim().startsWith("{")) {
+      parsedAsset = JSON.parse(report.rawContent);
+    }
+  } catch (_) {}
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
@@ -253,6 +264,145 @@ export default function AnalystCasePage() {
           </p>
         </div>
       </div>
+
+      {/* ── Brand Asset Comparison & Impersonation Investigation ── */}
+      {(brandProfile || parsedAsset || report.contentType === "social" || report.contentType === "app") && (
+        <div
+          className="card"
+          style={{
+            background: "linear-gradient(135deg, rgba(117, 103, 248, 0.08) 0%, #11182B 100%)",
+            border: "1px solid rgba(117, 103, 248, 0.3)",
+            padding: "20px 24px",
+          }}
+        >
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16, flexWrap: "wrap", gap: 10 }}>
+            <h2 style={{ fontSize: 16, fontWeight: 700, display: "flex", alignItems: "center", gap: 8, margin: 0 }}>
+              <Building2 size={18} style={{ color: "var(--accent)" }} />
+              <span>Brand Impersonation & Asset Comparison</span>
+            </h2>
+
+            {/* Quick Action Presets */}
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              <button
+                type="button"
+                onClick={() => {
+                  setReviewStatus("CORROBORATED");
+                  setRationale(`Confirmed impersonation: Submitted asset mimics official brand identity of ${brandProfile?.name || parsedAsset?.targetBrand || "the brand"} without authorization.`);
+                  if (!customSummary) setCustomSummary(`[VERIFIED IMPERSONATION] Unofficial ${report.contentType} asset confirmed impersonating ${brandProfile?.name || parsedAsset?.targetBrand || "brand"}.`);
+                }}
+                className="btn btn-outline btn-sm"
+                style={{ fontSize: 11, borderColor: "var(--risk-high)", color: "#FCA5A5" }}
+              >
+                🚨 Mark as Potential Impersonation
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setReviewStatus("REJECTED");
+                  setRationale(`Verified legitimate asset: Identifier belongs to authorized brand entity or is a benign fan/unaffiliated account.`);
+                  if (!customSummary) setCustomSummary(`[VERIFIED LEGITIMATE] Asset verified as non-malicious / legitimate.`);
+                }}
+                className="btn btn-outline btn-sm"
+                style={{ fontSize: 11, borderColor: "#10B981", color: "#6EE7B7" }}
+              >
+                ✅ Mark as Legitimate
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setReviewStatus("UNDER_REVIEW");
+                  setRationale("Requires active investigation: Cross-checking domain registrar, publisher history, and social verification.");
+                }}
+                className="btn btn-outline btn-sm"
+                style={{ fontSize: 11, borderColor: "#F59E0B", color: "#FDE68A" }}
+              >
+                ⚠️ Needs Investigation
+              </button>
+            </div>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 16 }}>
+            {/* Left: Submitted Candidate */}
+            <div style={{ background: "rgba(0, 0, 0, 0.25)", padding: 16, borderRadius: 8, border: "1px solid var(--surface-border)" }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "#EF4444", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                Candidate Under Investigation
+              </div>
+              <div style={{ fontSize: 13, display: "flex", flexDirection: "column", gap: 6 }}>
+                <div>
+                  <span style={{ color: "var(--text-muted)" }}>Asset Type: </span>
+                  <strong style={{ textTransform: "capitalize", color: "#FFFFFF" }}>{parsedAsset?.assetType || report.contentType}</strong>
+                </div>
+                <div>
+                  <span style={{ color: "var(--text-muted)" }}>Target Platform: </span>
+                  <strong style={{ color: "#FFFFFF" }}>{report.platform || parsedAsset?.candidate?.platform || parsedAsset?.candidate?.store || "Direct Submission"}</strong>
+                </div>
+                <div>
+                  <span style={{ color: "var(--text-muted)" }}>Identifier: </span>
+                  <strong style={{ color: "var(--accent)", fontFamily: "monospace" }}>
+                    {parsedAsset?.candidate?.handle ? `@${parsedAsset.candidate.handle}` : parsedAsset?.candidate?.appId || report.platform || "Asset Ref"}
+                  </strong>
+                </div>
+                {parsedAsset?.candidate?.publisher && (
+                  <div>
+                    <span style={{ color: "var(--text-muted)" }}>Publisher: </span>
+                    <strong style={{ color: "#FCA5A5" }}>{parsedAsset.candidate.publisher}</strong>
+                  </div>
+                )}
+                {parsedAsset?.candidate?.link && (
+                  <div>
+                    <span style={{ color: "var(--text-muted)" }}>Link: </span>
+                    <a href={parsedAsset.candidate.link} target="_blank" rel="noreferrer" style={{ color: "var(--accent)", fontSize: 12 }}>
+                      {parsedAsset.candidate.link}
+                    </a>
+                  </div>
+                )}
+                {(parsedAsset?.candidate?.bio || parsedAsset?.candidate?.description) && (
+                  <div style={{ marginTop: 4, background: "rgba(255,255,255,0.03)", padding: 8, borderRadius: 4, fontSize: 12, color: "var(--text-secondary)" }}>
+                    "{parsedAsset?.candidate?.bio || parsedAsset?.candidate?.description}"
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Right: Official Brand Reference */}
+            <div style={{ background: "rgba(0, 0, 0, 0.25)", padding: 16, borderRadius: 8, border: "1px solid var(--surface-border)" }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "#10B981", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                Official Brand Reference ({brandProfile?.name || parsedAsset?.targetBrand || "Brand Reference"})
+              </div>
+              <div style={{ fontSize: 13, display: "flex", flexDirection: "column", gap: 6 }}>
+                <div>
+                  <span style={{ color: "var(--text-muted)" }}>Official Domain: </span>
+                  <strong style={{ color: "#FFFFFF" }}>{brandProfile?.domain || parsedAsset?.targetDomain || "Registered Brand Domain"}</strong>
+                </div>
+                <div>
+                  <span style={{ color: "var(--text-muted)" }}>Official Social Handles: </span>
+                  <span style={{ color: "#6EE7B7", fontSize: 12 }}>
+                    {(brandProfile?.officialSocial || []).map(s => `@${s.handle}`).join(", ") || "TheOfficialSBI, StateBankOfIndia"}
+                  </span>
+                </div>
+                <div>
+                  <span style={{ color: "var(--text-muted)" }}>Official App Package(s): </span>
+                  <span style={{ color: "#6EE7B7", fontSize: 12 }}>
+                    {(brandProfile?.officialApps || []).map(a => `${a.appId} (${a.publisher})`).join(", ") || "com.sbi.lotusintouch (State Bank of India)"}
+                  </span>
+                </div>
+                {parsedAsset?.analysisResult?.techniques && (
+                  <div style={{ marginTop: 6 }}>
+                    <span style={{ color: "var(--text-muted)", fontSize: 12, display: "block", marginBottom: 4 }}>Technique Signatures:</span>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+                      {parsedAsset.analysisResult.techniques.map((t, idx) => (
+                        <span key={idx} style={{ background: "rgba(239, 68, 68, 0.2)", border: "1px solid rgba(239, 68, 68, 0.3)", color: "#FCA5A5", fontSize: 11, padding: "2px 6px", borderRadius: 4 }}>
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── Action Grid: Review & Decisions (Left) / Extracted Indicators (Right) ── */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))", gap: 20 }}>

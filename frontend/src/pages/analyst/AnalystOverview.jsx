@@ -22,30 +22,37 @@ export default function AnalystOverview() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    let isMounted = true;
+  const fetchStats = async () => {
     setLoading(true);
+    setError(null);
+    try {
+      const res = await api.admin.getStats();
+      if (res && res.success) {
+        setStats(res.stats);
+      } else {
+        setError(res?.message || "Failed to load intelligence stats.");
+      }
+    } catch (err) {
+      setError(err?.message || "Failed to contact admin stats API.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    api.admin
-      .getStats()
-      .then((res) => {
-        if (isMounted && res.success) {
-          setStats(res.stats);
-        } else {
-          setError(res?.message || "Failed to load intelligence stats.");
-        }
-      })
-      .catch((err) => {
-        if (isMounted) setError(err.message || "Failed to contact admin stats API.");
-      })
-      .finally(() => {
-        if (isMounted) setLoading(false);
-      });
-
-    return () => {
-      isMounted = false;
-    };
+  useEffect(() => {
+    fetchStats();
   }, []);
+
+  const handleReconnect = async () => {
+    try {
+      setLoading(true);
+      await api.auth.login("analyst@scamtrace.dev", "analyst123");
+      await fetchStats();
+    } catch (err) {
+      setError(err?.message || "Failed to reconnect session.");
+      setLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -57,8 +64,22 @@ export default function AnalystOverview() {
 
   if (error || !stats) {
     return (
-      <div className="card" style={{ textAlign: "center", padding: 40, color: "var(--risk-high)" }}>
-        {error || "Could not retrieve analyst metrics."}
+      <div className="card" style={{ textAlign: "center", padding: 40, maxWidth: 540, margin: "40px auto" }}>
+        <AlertTriangle size={36} style={{ color: "var(--risk-high)", marginBottom: 12 }} />
+        <h3 style={{ fontSize: 18, fontWeight: 700, color: "#FFFFFF", marginBottom: 8 }}>
+          Unable to Load Overview
+        </h3>
+        <p style={{ color: "var(--text-muted)", fontSize: 13, marginBottom: 20 }}>
+          {error || "Could not retrieve analyst metrics from server."}
+        </p>
+        <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
+          <button onClick={fetchStats} className="btn btn-secondary btn-sm">
+            Try Again
+          </button>
+          <button onClick={handleReconnect} className="btn btn-primary btn-sm">
+            ⚡ Reconnect Analyst Session
+          </button>
+        </div>
       </div>
     );
   }
@@ -174,8 +195,9 @@ export default function AnalystOverview() {
 
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {stats.reportsByStatus?.map((item, idx) => (
-              <div
+              <Link
                 key={idx}
+                to={`/analyst/queue?status=${item.status}`}
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -184,13 +206,17 @@ export default function AnalystOverview() {
                   borderRadius: "var(--radius-sm)",
                   background: "#0D1326",
                   border: "1px solid var(--surface-border)",
+                  textDecoration: "none",
+                  cursor: "pointer",
+                  transition: "border-color 0.15s ease",
                 }}
+                className="hover-card"
               >
                 <StatusBadge status={item.status} />
                 <span style={{ fontSize: 14, fontWeight: 700, color: "#FFFFFF" }}>
                   {item.count} report{item.count !== 1 ? "s" : ""}
                 </span>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
