@@ -5,6 +5,14 @@ import { prisma } from "../../lib/prisma.js";
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
+// Helper: get user role via raw SQL (role column added after Prisma generate)
+const getUserRole = async (userId) => {
+  try {
+    const rows = await prisma.$queryRawUnsafe(`SELECT role FROM "User" WHERE id=$1`, userId);
+    return rows[0]?.role ?? "PUBLIC";
+  } catch (_) { return "PUBLIC"; }
+};
+
 // ─── Google OAuth ─────────────────────────────────────────────
 export const googleLogin = async (credential) => {
   const ticket = await client.verifyIdToken({
@@ -44,8 +52,10 @@ export const googleLogin = async (credential) => {
     });
   }
 
+  const role = await getUserRole(user.id);
+
   const accessToken = jwt.sign(
-    { userId: user.id, email: user.email },
+    { userId: user.id, id: user.id, email: user.email, role },
     process.env.JWT_SECRET,
     { expiresIn: "7d" }
   );
@@ -57,6 +67,7 @@ export const googleLogin = async (credential) => {
       firstName: user.firstName,
       lastName: user.lastName,
       avatarUrl: user.avatarUrl,
+      role,
     },
     accessToken,
   };
@@ -85,8 +96,10 @@ export const register = async (email, password, firstName, lastName) => {
     },
   });
 
+  const role = await getUserRole(user.id);
+
   const accessToken = jwt.sign(
-    { userId: user.id, email: user.email },
+    { userId: user.id, id: user.id, email: user.email, role },
     process.env.JWT_SECRET,
     { expiresIn: "7d" }
   );
@@ -98,6 +111,7 @@ export const register = async (email, password, firstName, lastName) => {
       firstName: user.firstName,
       lastName: user.lastName,
       avatarUrl: user.avatarUrl,
+      role,
     },
     accessToken,
   };
@@ -121,8 +135,10 @@ export const login = async (email, password) => {
     throw new Error("Invalid password");
   }
 
+  const role = await getUserRole(user.id);
+
   const accessToken = jwt.sign(
-    { userId: user.id, email: user.email },
+    { userId: user.id, id: user.id, email: user.email, role },
     process.env.JWT_SECRET,
     { expiresIn: "7d" }
   );
@@ -134,6 +150,7 @@ export const login = async (email, password) => {
       firstName: user.firstName,
       lastName: user.lastName,
       avatarUrl: user.avatarUrl,
+      role,
     },
     accessToken,
   };
