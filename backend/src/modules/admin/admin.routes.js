@@ -25,6 +25,7 @@ router.get("/queue", getTriageQueueController);
 // Case Management
 router.get("/reports/:id", getAnalystCaseController);
 router.post("/reports/:id/review", reviewReportController);
+router.patch("/reports/:id/review", reviewReportController);
 router.post("/reports/:id/notes", addCaseNoteController);
 
 // Scam DNA

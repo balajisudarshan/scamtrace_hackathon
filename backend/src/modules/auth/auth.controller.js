@@ -86,7 +86,7 @@ export const getCurrentUserController = async (req, res) => {
       return res.status(404).json({ success: false, message: "User not found" });
     }
 
-    return res.status(200).json({ success: true, user, message: "User fetched successfully" });
+    return res.status(200).json({ success: true, user: { ...user, role: req.user.role }, message: "User fetched successfully" });
   } catch (err) {
     console.error("Get current user error:", err);
     return res.status(500).json({ success: false, message: "Internal server error" });

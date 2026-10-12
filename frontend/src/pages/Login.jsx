@@ -1,14 +1,21 @@
 import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import useAuth from "../hooks/useAuth";
-import { useNavigate } from "react-router-dom";
-import { Search, Network, Compass, Lock, ShieldCheck, AlertCircle } from "lucide-react";
+import {
+  Search,
+  Network,
+  Compass,
+  Lock,
+  ShieldCheck,
+  AlertCircle,
+  Terminal,
+  User,
+  ArrowRight,
+  LogIn,
+} from "lucide-react";
 import "./auth-pages.css";
 
-/**
- * Custom SCAMTRACE Brand Monogram
- * Precision-cut geometric shield with internal forensic trace node
- */
 function BrandLogo({ size = 32 }) {
   return (
     <div className="scamtrace-brand-mark" aria-hidden="true">
@@ -51,9 +58,12 @@ function BrandLogo({ size = 32 }) {
 }
 
 export default function Login() {
-  const { loginGoogle, error, setError } = useAuth();
+  const { loginGoogle, loginEmail, error, setError } = useAuth();
   const navigate = useNavigate();
+
   const [authProcessing, setAuthProcessing] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleGoogleSuccess = async (credentialResponse) => {
     if (!credentialResponse?.credential) {
@@ -65,10 +75,14 @@ export default function Login() {
     try {
       const res = await loginGoogle(credentialResponse.credential);
       if (res?.success) {
-        navigate("/dashboard");
+        if (res.user?.role === "ANALYST" || res.user?.role === "ADMIN") {
+          navigate("/analyst");
+        } else {
+          navigate("/");
+        }
       }
     } catch (err) {
-      setError(err?.message || "Authentication failed. Please verify connection.");
+      setError(err?.message || "Google authentication failed. Please verify connection.");
     } finally {
       setAuthProcessing(false);
     }
@@ -78,24 +92,60 @@ export default function Login() {
     setError("Google sign-in was closed or could not be completed.");
   };
 
-  const benefits = [
-    {
-      icon: Search,
-      label: "Check suspicious messages and links."
-    },
-    {
-      icon: Network,
-      label: "Discover connections between reported scams."
-    },
-    {
-      icon: Compass,
-      label: "Get clear, practical safety guidance."
+  const handleEmailSubmit = async (e) => {
+    e.preventDefault();
+    if (!email || !password) {
+      setError("Email and password are required.");
+      return;
     }
+
+    setAuthProcessing(true);
+    setError(null);
+    try {
+      const res = await loginEmail(email, password);
+      if (res?.success) {
+        if (res.user?.role === "ANALYST" || res.user?.role === "ADMIN") {
+          navigate("/analyst");
+        } else {
+          navigate("/");
+        }
+      }
+    } catch (err) {
+      setError(err?.message || "Invalid credentials or login failed.");
+    } finally {
+      setAuthProcessing(false);
+    }
+  };
+
+  const handleQuickDemoLogin = async (demoEmail, demoPass) => {
+    setEmail(demoEmail);
+    setPassword(demoPass);
+    setAuthProcessing(true);
+    setError(null);
+    try {
+      const res = await loginEmail(demoEmail, demoPass);
+      if (res?.success) {
+        if (res.user?.role === "ANALYST" || res.user?.role === "ADMIN") {
+          navigate("/analyst");
+        } else {
+          navigate("/");
+        }
+      }
+    } catch (err) {
+      setError(err?.message || "Demo login failed.");
+    } finally {
+      setAuthProcessing(false);
+    }
+  };
+
+  const benefits = [
+    { icon: Search, label: "Check suspicious messages, links, and unknown caller IDs." },
+    { icon: Network, label: "Discover connected patterns across community intelligence." },
+    { icon: Compass, label: "Get practical, calm damage control and containment guidance." },
   ];
 
   return (
     <div className="scamtrace-login-root">
-      {/* Ambient background refractive luminous blooms for glassmorphism */}
       <div className="glass-ambient-orb glass-orb-top" aria-hidden="true" />
       <div className="glass-ambient-orb glass-orb-bottom" aria-hidden="true" />
       <div className="glass-grid-overlay" aria-hidden="true" />
@@ -117,7 +167,6 @@ export default function Login() {
               Check suspicious messages, uncover connected scam reports, and make safer decisions with evidence you can understand.
             </p>
 
-            {/* Compact Benefits in Frosted Glass Tiles */}
             <ul className="brand-benefits-grid" aria-label="Key Capabilities">
               {benefits.map((item, idx) => {
                 const IconComponent = item.icon;
@@ -141,36 +190,139 @@ export default function Login() {
           </footer>
         </section>
 
-        {/* ── Right Section: Frosted Glass Login Card ── */}
+        {/* ── Right Section: Login Card ── */}
         <section className="scamtrace-card-col" aria-label="Sign in">
-          <div className="frost-login-card">
-            {/* Specular glass highlight line */}
+          <div className="frost-login-card" style={{ maxWidth: 440 }}>
             <div className="glass-card-rim" aria-hidden="true" />
 
             <header className="frost-card-header">
               <h2 className="frost-card-title">Welcome to SCAMTRACE</h2>
               <p className="frost-card-sub">
-                Sign in to continue to your safety workspace.
+                Sign in to access community intelligence or the analyst desk.
               </p>
             </header>
 
             <div className="frost-card-interactive">
-              {/* Subtle divider */}
-              <div className="glass-divider" aria-hidden="true">
-                <span className="glass-divider-line" />
-                <span className="glass-divider-tag">Secure Access</span>
-                <span className="glass-divider-line" />
-              </div>
-
-              {/* Error feedback banner */}
               {error && (
-                <div className="frost-error-alert" role="alert">
+                <div className="frost-error-alert" role="alert" style={{ marginBottom: 14 }}>
                   <AlertCircle size={15} className="frost-error-icon" aria-hidden="true" />
                   <span>{error}</span>
                 </div>
               )}
 
-              {/* Prominent Google Authentication Button */}
+              {/* ── Quick Demo Login Accounts (For Reviewers & Judges) ── */}
+              <div
+                style={{
+                  background: "#0D1326",
+                  border: "1px solid var(--surface-border-strong)",
+                  borderRadius: "var(--radius-md)",
+                  padding: "12px",
+                  marginBottom: 16,
+                }}
+              >
+                <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase", marginBottom: 8 }}>
+                  ⚡ Quick Demo Accounts:
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                  <button
+                    type="button"
+                    onClick={() => handleQuickDemoLogin("analyst@scamtrace.dev", "analyst123")}
+                    disabled={authProcessing}
+                    style={{
+                      background: "rgba(117, 103, 248, 0.15)",
+                      border: "1px solid rgba(117, 103, 248, 0.4)",
+                      borderRadius: "6px",
+                      padding: "8px 10px",
+                      color: "#C7D2FE",
+                      fontSize: 11,
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      textAlign: "left",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 6,
+                    }}
+                  >
+                    <Terminal size={13} style={{ color: "var(--accent)" }} />
+                    <div>
+                      <div>Analyst (Priya)</div>
+                      <div style={{ fontSize: 9, color: "var(--text-muted)", fontWeight: 400 }}>Full Desk Access</div>
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleQuickDemoLogin("user@scamtrace.dev", "user123")}
+                    disabled={authProcessing}
+                    style={{
+                      background: "rgba(255, 255, 255, 0.04)",
+                      border: "1px solid var(--surface-border)",
+                      borderRadius: "6px",
+                      padding: "8px 10px",
+                      color: "var(--text-secondary)",
+                      fontSize: 11,
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      textAlign: "left",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 6,
+                    }}
+                  >
+                    <User size={13} />
+                    <div>
+                      <div>Public User</div>
+                      <div style={{ fontSize: 9, color: "var(--text-muted)", fontWeight: 400 }}>Standard Protect</div>
+                    </div>
+                  </button>
+                </div>
+              </div>
+
+              {/* ── Standard Email / Password Form ── */}
+              <form onSubmit={handleEmailSubmit} style={{ marginBottom: 16 }}>
+                <div style={{ marginBottom: 12 }}>
+                  <label className="input-label" htmlFor="login-email">Email Address</label>
+                  <input
+                    id="login-email"
+                    type="email"
+                    className="input"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="name@scamtrace.dev"
+                    required
+                  />
+                </div>
+
+                <div style={{ marginBottom: 16 }}>
+                  <label className="input-label" htmlFor="login-password">Password</label>
+                  <input
+                    id="login-password"
+                    type="password"
+                    className="input"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    required
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={authProcessing || !email || !password}
+                  className="btn btn-primary w-full"
+                >
+                  {authProcessing ? "Signing in..." : "Sign In with Email"}
+                </button>
+              </form>
+
+              {/* Subtle divider */}
+              <div className="glass-divider" aria-hidden="true" style={{ margin: "14px 0" }}>
+                <span className="glass-divider-line" />
+                <span className="glass-divider-tag">or Google OAuth</span>
+                <span className="glass-divider-line" />
+              </div>
+
+              {/* Google OAuth Button */}
               <div
                 className={`frost-google-container ${authProcessing ? "is-processing" : ""}`}
                 aria-live="polite"
@@ -186,34 +338,26 @@ export default function Login() {
                 />
               </div>
 
-              {/* Privacy Assurance Note */}
-              <div className="frost-privacy-banner">
+              {/* Sign up prompt */}
+              <div style={{ textAlign: "center", marginTop: 14, fontSize: 13, color: "var(--text-muted)" }}>
+                Don't have an account?{" "}
+                <Link to="/register" style={{ color: "var(--accent)", fontWeight: 600 }}>
+                  Create an account
+                </Link>
+              </div>
+
+              <div className="frost-privacy-banner" style={{ marginTop: 14 }}>
                 <Lock size={14} className="frost-privacy-icon" aria-hidden="true" />
                 <p className="frost-privacy-text">
-                  We never ask for your passwords or OTPs to analyze a suspicious message.
+                  We never ask for passwords or OTPs to analyze suspicious messages.
                 </p>
               </div>
             </div>
 
-            {/* Footer with Legal Links */}
             <footer className="frost-card-footer">
-              <nav className="frost-legal-nav" aria-label="Terms and Privacy">
-                <a
-                  href="#privacy"
-                  className="frost-legal-link"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  Privacy
-                </a>
-                <span className="frost-legal-separator" aria-hidden="true">·</span>
-                <a
-                  href="#terms"
-                  className="frost-legal-link"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  Terms
-                </a>
-              </nav>
+              <Link to="/" style={{ fontSize: 12, color: "var(--text-muted)", textDecoration: "none" }}>
+                ← Return to SCAMTRACE Protect
+              </Link>
             </footer>
           </div>
         </section>

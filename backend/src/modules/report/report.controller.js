@@ -29,7 +29,7 @@ export const submitReportController = async (req, res) => {
     const publicSummary = buildPublicSummary(type, analysis);
 
     // Create report via raw SQL (prisma Client doesn't know about new tables yet until generate)
-    const { rows } = await prisma.$queryRawUnsafe(`
+    const rows = await prisma.$queryRawUnsafe(`
       INSERT INTO "Report" (id,"submittedById","contentType","rawContent","publicSummary",
         platform,"targetRegion","riskLevel","riskScore","evidenceJson","storyModeJson",
         "nextStepsJson",caveat,status,"sourceType","createdAt","updatedAt")

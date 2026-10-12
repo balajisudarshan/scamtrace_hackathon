@@ -18,7 +18,7 @@ export default function Register() {
 
   const handleGoogleSuccess = async (credentialResponse) => {
     const res = await loginGoogle(credentialResponse.credential);
-    if (res?.success) navigate("/dashboard");
+    if (res?.success) navigate("/");
   };
 
   const handleRegister = async (e) => {
@@ -32,7 +32,7 @@ export default function Register() {
       e.target.password.value
     );
     setFormLoading(false);
-    if (res?.success) navigate("/dashboard");
+    if (res?.success) navigate("/");
   };
 
   return (

@@ -11,11 +11,35 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem("st_user");
-    return saved ? JSON.parse(saved) : null;
+    try {
+      const saved = localStorage.getItem("st_user");
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const saveAuthSession = (userData, token) => {
+    setUser(userData);
+    if (userData) {
+      localStorage.setItem("st_user", JSON.stringify(userData));
+    } else {
+      localStorage.removeItem("st_user");
+    }
+    if (token) {
+      localStorage.setItem("st_token", token);
+      localStorage.setItem("accessToken", token);
+    }
+  };
+
+  const clearAuthSession = () => {
+    setUser(null);
+    localStorage.removeItem("st_user");
+    localStorage.removeItem("st_token");
+    localStorage.removeItem("accessToken");
+  };
 
   // ─── Google Login ──────────────────────────────────────────
   const loginGoogle = async (credential) => {
@@ -24,15 +48,15 @@ export const AuthProvider = ({ children }) => {
     try {
       const res = await loginWithGoogle(credential);
       if (res.success) {
-        setUser(res.user);
-        localStorage.setItem("st_user", JSON.stringify(res.user));
-        localStorage.setItem("st_token", res.accessToken);
+        saveAuthSession(res.user, res.accessToken);
+        return res;
       } else {
         setError(res.message || "Google login failed");
+        return res;
       }
-      return res;
     } catch (err) {
       setError(err.message || "Google login failed");
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -45,15 +69,15 @@ export const AuthProvider = ({ children }) => {
     try {
       const res = await loginWithEmail(email, password);
       if (res.success) {
-        setUser(res.user);
-        localStorage.setItem("st_user", JSON.stringify(res.user));
-        localStorage.setItem("st_token", res.accessToken);
+        saveAuthSession(res.user, res.accessToken);
+        return res;
       } else {
         setError(res.message || "Login failed");
+        return res;
       }
-      return res;
     } catch (err) {
       setError(err.message || "Login failed");
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -66,15 +90,15 @@ export const AuthProvider = ({ children }) => {
     try {
       const res = await registerWithEmail(firstName, lastName, email, password);
       if (res.success) {
-        setUser(res.user);
-        localStorage.setItem("st_user", JSON.stringify(res.user));
-        localStorage.setItem("st_token", res.accessToken);
+        saveAuthSession(res.user, res.accessToken);
+        return res;
       } else {
         setError(res.message || "Registration failed");
+        return res;
       }
-      return res;
     } catch (err) {
       setError(err.message || "Registration failed");
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -86,12 +110,10 @@ export const AuthProvider = ({ children }) => {
     setError(null);
     try {
       await logout();
-      setUser(null);
-      localStorage.removeItem("st_user");
-      localStorage.removeItem("st_token");
-    } catch (err) {
-      setError(err.message || "Logout failed");
+    } catch (_) {
+      // ignore server errors during logout
     } finally {
+      clearAuthSession();
       setLoading(false);
     }
   };
@@ -99,20 +121,24 @@ export const AuthProvider = ({ children }) => {
   // ─── Revalidate on mount ───────────────────────────────────
   useEffect(() => {
     const fetchUser = async () => {
+      const token = localStorage.getItem("st_token") || localStorage.getItem("accessToken");
+      if (!token) {
+        setLoading(false);
+        return;
+      }
       try {
         const res = await getCurrentUser();
         if (res && res.success && res.user) {
-          setUser(res.user);
-          localStorage.setItem("st_user", JSON.stringify(res.user));
+          // Preserve role if present
+          const existingUser = JSON.parse(localStorage.getItem("st_user") || "{}");
+          const role = res.user.role || existingUser.role || "PUBLIC";
+          const updated = { ...res.user, role };
+          saveAuthSession(updated);
         } else {
-          setUser(null);
-          localStorage.removeItem("st_user");
-          localStorage.removeItem("st_token");
+          clearAuthSession();
         }
       } catch {
-        setUser(null);
-        localStorage.removeItem("st_user");
-        localStorage.removeItem("st_token");
+        // If network error, keep current local storage session unless 401
       } finally {
         setLoading(false);
       }
@@ -120,9 +146,23 @@ export const AuthProvider = ({ children }) => {
     fetchUser();
   }, []);
 
+  const isAnalyst = Boolean(
+    user && (user.role === "ANALYST" || user.role === "ADMIN")
+  );
+
   return (
     <AuthContext.Provider
-      value={{ user, loading, error, loginGoogle, loginEmail, registerEmail, logoutUser, setError }}
+      value={{
+        user,
+        loading,
+        error,
+        isAnalyst,
+        loginGoogle,
+        loginEmail,
+        registerEmail,
+        logoutUser,
+        setError,
+      }}
     >
       {children}
     </AuthContext.Provider>

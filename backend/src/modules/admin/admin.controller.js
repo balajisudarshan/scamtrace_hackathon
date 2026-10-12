@@ -6,6 +6,14 @@
 import { prisma } from "../../lib/prisma.js";
 import { computeScamDNA } from "../../lib/similarityMatcher.js";
 
+// Helper: fix BigInt in query results
+const fixBigInt = (arr) => {
+  if (!Array.isArray(arr)) return arr;
+  return arr.map(row =>
+    Object.fromEntries(Object.entries(row).map(([k,v]) => [k, typeof v === 'bigint' ? Number(v) : v]))
+  );
+};
+
 // ─── GET /api/admin/queue — Triage Queue ─────────────────────────────────────
 export const getTriageQueueController = async (req, res) => {
   try {
@@ -24,7 +32,7 @@ export const getTriageQueueController = async (req, res) => {
     const reports = await prisma.$queryRawUnsafe(
       `SELECT r.id, r."contentType", r."rawContent", r."publicSummary", r."riskLevel", r."riskScore",
               r.platform, r.status, r."sourceType", r."datasetSource", r."createdAt",
-              (SELECT COUNT(*) FROM "ReportIndicator" ri WHERE ri."reportId"=r.id) as "indicatorCount",
+              (SELECT COUNT(*)::int FROM "ReportIndicator" ri WHERE ri."reportId"=r.id) as "indicatorCount",
               u.email as "submittedByEmail"
        FROM "Report" r
        LEFT JOIN "User" u ON u.id=r."submittedById"
@@ -34,7 +42,7 @@ export const getTriageQueueController = async (req, res) => {
       safeStatus, safeLimit, offset
     );
 
-    return res.json({ success: true, total, page: parseInt(page), totalPages: Math.ceil(total / safeLimit), reports });
+    return res.json({ success: true, total, page: parseInt(page), totalPages: Math.ceil(total / safeLimit), reports: fixBigInt(reports) });
   } catch (err) {
     console.error("Triage queue error:", err);
     return res.status(500).json({ success: false, message: "Internal server error" });
@@ -228,10 +236,6 @@ export const compareDNAController = async (req, res) => {
   }
 };
 
-// Helper: fix BigInt in query results
-const fixBigInt = (arr) => arr.map(row =>
-  Object.fromEntries(Object.entries(row).map(([k,v]) => [k, typeof v === 'bigint' ? Number(v) : v]))
-);
 
 // ─── GET /api/admin/stats — Analyst overview ─────────────────────────────────
 export const getStatsController = async (req, res) => {
