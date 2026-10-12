@@ -1,0 +1,282 @@
+// ============================================================
+// GENERATORS & DATASOURCE
+// ============================================================
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================================
+// ENUMS
+// ============================================================
+
+enum UserRole {
+  PUBLIC
+  ANALYST
+  ADMIN
+}
+
+enum ReportStatus {
+  RECEIVED
+  UNDER_REVIEW
+  CORROBORATED
+  DISPUTED
+  REJECTED
+  PUBLISHED
+}
+
+enum RiskLevel {
+  LOW_SIGNAL
+  NEEDS_CAUTION
+  HIGH_RISK
+}
+
+enum IndicatorType {
+  DOMAIN
+  URL
+  PHONE
+  EMAIL
+  PHRASE
+  SOCIAL_HANDLE
+  TACTIC
+  BRAND
+}
+
+enum SourceType {
+  COMMUNITY
+  SEEDED
+  IMPORTED
+  SYNTHETIC
+}
+
+enum AuditAction {
+  REPORT_SUBMITTED
+  REPORT_REVIEWED
+  REPORT_PUBLISHED
+  REPORT_REJECTED
+  REPORT_DISPUTED
+  INDICATOR_EXTRACTED
+  CASE_NOTE_ADDED
+  ACCESS_RESTRICTED_DATA
+}
+
+// ============================================================
+// USER
+// ============================================================
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String?
+  firstName String?
+  lastName  String?
+  avatarUrl String?
+  googleId  String?  @unique
+  role      UserRole @default(PUBLIC)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  reports         Report[]
+  reviewDecisions ReviewDecision[]
+  caseNotes       CaseNote[]
+  auditEvents     AuditEvent[]
+
+  @@index([email])
+  @@index([role])
+}
+
+// ============================================================
+// REPORT
+// ============================================================
+
+model Report {
+  id              String       @id @default(cuid())
+  submittedById   String?
+  submittedBy     User?        @relation(fields: [submittedById], references: [id])
+
+  // What was submitted
+  contentType     String       // "message" | "url" | "phone" | "social"
+  rawContent      String       // full submitted text (restricted access)
+  publicSummary   String?      // safe redacted version shown publicly
+  platform        String?      // e.g. "WhatsApp", "SMS", "Email"
+  targetRegion    String?      // e.g. "IN", "US"
+
+  // Risk assessment (computed on ingest)
+  riskLevel       RiskLevel    @default(NEEDS_CAUTION)
+  riskScore       Float        @default(0)
+  evidenceJson    Json?        // [{ field, value, why }]
+  storyModeJson   Json?        // [{ phrase, tactic, explanation }]
+  nextStepsJson   Json?        // string[]
+  caveat          String?
+
+  // Workflow
+  status          ReportStatus @default(RECEIVED)
+  sourceType      SourceType   @default(COMMUNITY)
+
+  // Timestamps
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  indicators      ReportIndicator[]
+  reviewDecisions ReviewDecision[]
+  caseNotes       CaseNote[]
+  auditEvents     AuditEvent[]
+  matchesAsA      MatchEvidence[]   @relation("MatchReportA")
+  matchesAsB      MatchEvidence[]   @relation("MatchReportB")
+  trendSnapshots  TrendSnapshot[]
+
+  @@index([status])
+  @@index([riskLevel])
+  @@index([contentType])
+  @@index([sourceType])
+  @@index([createdAt])
+}
+
+// ============================================================
+// INDICATOR — normalized extracted signals
+// ============================================================
+
+model Indicator {
+  id        String        @id @default(cuid())
+  type      IndicatorType
+  value     String        // normalized value (lowercase domain, E.164 phone, etc.)
+  metadata  Json?         // extra info: brand, tactic label, first seen, etc.
+
+  createdAt DateTime      @default(now())
+
+  reports   ReportIndicator[]
+
+  @@unique([type, value])
+  @@index([type])
+  @@index([value])
+}
+
+// ============================================================
+// REPORT ↔ INDICATOR (join)
+// ============================================================
+
+model ReportIndicator {
+  id          String    @id @default(cuid())
+  reportId    String
+  indicatorId String
+  context     String?   // snippet from raw content where found
+
+  report      Report    @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  indicator   Indicator @relation(fields: [indicatorId], references: [id], onDelete: Cascade)
+
+  @@unique([reportId, indicatorId])
+  @@index([reportId])
+  @@index([indicatorId])
+}
+
+// ============================================================
+// MATCH EVIDENCE — scam DNA: why two reports are related
+// ============================================================
+
+model MatchEvidence {
+  id             String  @id @default(cuid())
+  reportAId      String
+  reportBId      String
+  similarityScore Float   // 0–1 weighted overlap score
+  matchedClues   Json    // [{ field, valueA, valueB, weight, explanation }]
+  differences    Json    // [{ field, valueA, valueB }]
+
+  createdAt      DateTime @default(now())
+
+  reportA        Report  @relation("MatchReportA", fields: [reportAId], references: [id], onDelete: Cascade)
+  reportB        Report  @relation("MatchReportB", fields: [reportBId], references: [id], onDelete: Cascade)
+
+  @@unique([reportAId, reportBId])
+  @@index([reportAId])
+  @@index([reportBId])
+  @@index([similarityScore])
+}
+
+// ============================================================
+// REVIEW DECISION — analyst action on a report
+// ============================================================
+
+model ReviewDecision {
+  id         String       @id @default(cuid())
+  reportId   String
+  reviewerId String
+  status     ReportStatus
+  rationale  String
+  redactions Json?        // fields that were redacted from public view
+
+  createdAt  DateTime     @default(now())
+
+  report     Report       @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  reviewer   User         @relation(fields: [reviewerId], references: [id])
+
+  @@index([reportId])
+  @@index([reviewerId])
+}
+
+// ============================================================
+// CASE NOTE — analyst notes on a report
+// ============================================================
+
+model CaseNote {
+  id        String   @id @default(cuid())
+  reportId  String
+  authorId  String
+  content   String
+
+  createdAt DateTime @default(now())
+
+  report    Report   @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  author    User     @relation(fields: [authorId], references: [id])
+
+  @@index([reportId])
+}
+
+// ============================================================
+// AUDIT EVENT — immutable log of all analyst actions
+// ============================================================
+
+model AuditEvent {
+  id        String      @id @default(cuid())
+  userId    String?
+  reportId  String?
+  action    AuditAction
+  detail    Json?       // contextual info
+
+  createdAt DateTime    @default(now())
+
+  user      User?       @relation(fields: [userId], references: [id])
+  report    Report?     @relation(fields: [reportId], references: [id])
+
+  @@index([userId])
+  @@index([reportId])
+  @@index([action])
+  @@index([createdAt])
+}
+
+// ============================================================
+// TREND SNAPSHOT — aggregated counts for ScamPulse
+// ============================================================
+
+model TrendSnapshot {
+  id           String   @id @default(cuid())
+  date         DateTime @db.Date
+  contentType  String?
+  riskLevel    RiskLevel?
+  tactic       String?
+  reportCount  Int      @default(0)
+  sampleReport String?  // example report ID
+
+  reportId     String?
+  report       Report?  @relation(fields: [reportId], references: [id])
+
+  createdAt    DateTime @default(now())
+
+  @@index([date])
+  @@index([contentType])
+  @@index([riskLevel])
+}
