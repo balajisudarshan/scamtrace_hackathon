@@ -2,6 +2,7 @@ import React from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { BrandMark } from "./Navbar";
+import ThemeToggle from "./ThemeToggle";
 import {
   LayoutDashboard,
   ShieldAlert,
@@ -27,16 +28,17 @@ export default function AdminLayout() {
   ];
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: "var(--bg-base)" }}>
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: "var(--bg-base)", transition: "background-color var(--transition-normal)" }}>
       {/* ─── Admin Navigation Header ─── */}
       <header
         style={{
           position: "sticky",
           top: 0,
           zIndex: 50,
-          background: "rgba(11, 16, 32, 0.95)",
+          background: "var(--nav-bg)",
           backdropFilter: "blur(12px)",
           borderBottom: "1px solid var(--surface-border)",
+          transition: "background-color var(--transition-normal)",
         }}
       >
         <div
@@ -89,7 +91,7 @@ export default function AdminLayout() {
                     borderRadius: "var(--radius-md)",
                     fontSize: 14,
                     fontWeight: 600,
-                    color: isActive ? "#FFFFFF" : "var(--text-secondary)",
+                    color: isActive ? "var(--text-primary)" : "var(--text-secondary)",
                     background: isActive ? "rgba(117, 103, 248, 0.16)" : "transparent",
                     border: isActive ? "1px solid rgba(117, 103, 248, 0.3)" : "1px solid transparent",
                     transition: "var(--transition-fast)",
@@ -102,8 +104,10 @@ export default function AdminLayout() {
             })}
           </nav>
 
-          {/* User Info & Logout */}
-          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          {/* Theme Toggle, User Info & Logout */}
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <ThemeToggle />
+
             <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "var(--text-secondary)" }}>
               <div
                 style={{

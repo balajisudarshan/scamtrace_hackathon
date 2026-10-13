@@ -8,7 +8,7 @@ export function AdminRoute({ children }) {
 
   if (loading) {
     return (
-      <div className="flex-center" style={{ minHeight: "100vh", background: "#0B1020" }}>
+      <div className="flex-center" style={{ minHeight: "100vh", background: "var(--bg-base)" }}>
         <div className="spinner" />
       </div>
     );
@@ -26,7 +26,7 @@ export default function ProtectedRoute({ children, requiredRoles = null }) {
 
   if (loading) {
     return (
-      <div className="flex-center" style={{ minHeight: "100vh", background: "#0B1020" }}>
+      <div className="flex-center" style={{ minHeight: "100vh", background: "var(--bg-base)" }}>
         <div className="spinner" />
       </div>
     );
@@ -42,8 +42,8 @@ export default function ProtectedRoute({ children, requiredRoles = null }) {
         className="flex-center"
         style={{
           minHeight: "100vh",
-          background: "#0B1020",
-          color: "#F8FAFC",
+          background: "var(--bg-base)",
+          color: "var(--text-primary)",
           padding: "24px",
         }}
       >
@@ -51,7 +51,7 @@ export default function ProtectedRoute({ children, requiredRoles = null }) {
           style={{
             maxWidth: 480,
             width: "100%",
-            background: "#11182B",
+            background: "var(--surface-card)",
             border: "1px solid rgba(239, 68, 68, 0.3)",
             borderRadius: 16,
             padding: 32,

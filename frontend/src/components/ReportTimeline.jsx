@@ -81,7 +81,7 @@ export default function ReportTimeline({ statusTimeline = [], currentStatus = "R
                 style={{
                   fontSize: 13,
                   color: "var(--text-secondary)",
-                  background: "#0D1326",
+                  background: "var(--bg-subtle)",
                   padding: "8px 12px",
                   borderRadius: "6px",
                   border: "1px solid var(--surface-border)",

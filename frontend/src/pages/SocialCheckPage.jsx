@@ -251,7 +251,7 @@ export default function SocialCheckPage() {
               borderRadius: "9999px",
               background: "rgba(117, 103, 248, 0.12)",
               border: "1px solid rgba(117, 103, 248, 0.25)",
-              color: "#C7D2FE",
+              color: "var(--accent)",
               fontSize: 12,
               fontWeight: 600,
               marginBottom: 12,
@@ -344,7 +344,7 @@ export default function SocialCheckPage() {
                         borderRadius: "var(--radius-md)",
                         border: platform === p ? "1px solid var(--accent)" : "1px solid var(--surface-border)",
                         background: platform === p ? "rgba(117, 103, 248, 0.18)" : "var(--surface-elevated)",
-                        color: platform === p ? "#FFFFFF" : "var(--text-secondary)",
+                        color: platform === p ? "var(--accent)" : "var(--text-secondary)",
                         cursor: "pointer",
                         transition: "var(--transition-fast)",
                       }}

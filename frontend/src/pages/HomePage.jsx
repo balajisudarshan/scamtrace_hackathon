@@ -198,7 +198,7 @@ export default function HomePage() {
               borderRadius: "9999px",
               background: "rgba(117, 103, 248, 0.12)",
               border: "1px solid rgba(117, 103, 248, 0.3)",
-              color: "#C7D2FE",
+              color: "var(--accent)",
               fontSize: 12,
               fontWeight: 600,
               marginBottom: 16,
@@ -273,7 +273,7 @@ export default function HomePage() {
                       borderRadius: "var(--radius-sm)",
                       border: active ? "1px solid var(--accent)" : "1px solid var(--surface-border)",
                       background: active ? "rgba(59, 130, 246, 0.12)" : "var(--surface-card)",
-                      color: active ? "#FFFFFF" : "var(--text-secondary)",
+                      color: active ? "var(--accent)" : "var(--text-secondary)",
                       fontSize: 13,
                       fontWeight: 500,
                       cursor: "pointer",
@@ -497,7 +497,7 @@ export default function HomePage() {
                     )}
                   </div>
                   <div>
-                    <div style={{ fontSize: 18, fontWeight: 800, color: "#FFFFFF" }}>
+                    <div style={{ fontSize: 18, fontWeight: 800, color: "var(--text-primary)" }}>
                       {inlineResult.riskLevel === "HIGH_RISK"
                         ? "🚨 High-Risk Scam Detected"
                         : inlineResult.riskLevel === "NEEDS_CAUTION"
@@ -524,7 +524,7 @@ export default function HomePage() {
                     marginBottom: 16,
                   }}
                 >
-                  <div style={{ fontSize: 11, fontWeight: 700, color: "#93C5FD", textTransform: "uppercase", marginBottom: 4 }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: "var(--accent)", textTransform: "uppercase", marginBottom: 4 }}>
                     📷 Extracted Text from Screenshot (OCR):
                   </div>
                   <p style={{ fontSize: 13, color: "var(--text-primary)", fontStyle: "italic", margin: 0, lineHeight: 1.5 }}>
@@ -536,7 +536,7 @@ export default function HomePage() {
               {/* Plain English Summary */}
               <div
                 style={{
-                  background: "#0D1326",
+                  background: "var(--bg-subtle)",
                   border: "1px solid var(--surface-border)",
                   borderRadius: "var(--radius-md)",
                   padding: "14px 16px",
@@ -948,7 +948,7 @@ export default function HomePage() {
           {loadingReports ? (
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 14 }}>
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="card" style={{ height: 120, background: "#0E1428" }} />
+                <div key={i} className="card" style={{ height: 120, background: "var(--surface-card)" }} />
               ))}
             </div>
           ) : recentReports.length > 0 ? (

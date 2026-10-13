@@ -73,7 +73,7 @@ export default function ScanProgressFeedback({
         <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
           <AlertCircle size={18} style={{ color: isTimeout ? "#F59E0B" : "#EF4444", flexShrink: 0, marginTop: 2 }} />
           <div style={{ flex: 1 }}>
-            <div style={{ fontWeight: 600, color: "#FFFFFF", marginBottom: 3 }}>
+            <div style={{ fontWeight: 600, color: "var(--text-primary)", marginBottom: 3 }}>
               {isTimeout ? "Connection Response Delayed" : "Scan Could Not Be Completed"}
             </div>
             <div style={{ lineHeight: 1.5, marginBottom: onRetry ? 10 : 0 }}>
@@ -93,7 +93,7 @@ export default function ScanProgressFeedback({
                   style={{
                     background: "rgba(59, 130, 246, 0.2)",
                     border: "1px solid var(--accent)",
-                    color: "#93C5FD",
+                    color: "var(--accent)",
                     fontSize: 12,
                     display: "inline-flex",
                     alignItems: "center",
@@ -136,7 +136,7 @@ export default function ScanProgressFeedback({
     >
       <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 260 }}>
         <div className="spinner" style={{ width: 14, height: 14, borderWidth: 2, flexShrink: 0 }} />
-        <span style={{ color: "#FFFFFF", fontWeight: 500 }}>{statusText}</span>
+        <span style={{ color: "var(--text-primary)", fontWeight: 500 }}>{statusText}</span>
       </div>
 
       <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 11, color: "var(--text-muted)" }}>

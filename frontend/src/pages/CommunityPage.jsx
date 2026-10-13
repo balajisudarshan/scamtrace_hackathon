@@ -265,7 +265,7 @@ export default function CommunityPage() {
         ) : loading ? (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 16 }}>
             {[1, 2, 3, 4, 5, 6].map((n) => (
-              <div key={n} className="card" style={{ height: 200, background: "#0E1428" }} />
+              <div key={n} className="card" style={{ height: 200, background: "var(--surface-card)" }} />
             ))}
           </div>
         ) : reports.length === 0 ? (

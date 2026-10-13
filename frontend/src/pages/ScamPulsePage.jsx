@@ -76,7 +76,7 @@ export default function ScamPulsePage() {
           </div>
 
           {/* Time Window Buttons */}
-          <div style={{ display: "flex", gap: 6, background: "#0E1428", padding: "4px", borderRadius: "8px", border: "1px solid var(--surface-border)" }}>
+          <div style={{ display: "flex", gap: 6, background: "var(--tab-nav-bg)", padding: "4px", borderRadius: "8px", border: "1px solid var(--surface-border)" }}>
             {[
               { label: "Last 7 Days", val: 7 },
               { label: "Last 30 Days", val: 30 },
@@ -106,7 +106,7 @@ export default function ScamPulsePage() {
         {/* ─── Methodology Transparency Notice ─── */}
         <div
           style={{
-            background: "#0D1326",
+            background: "var(--bg-subtle)",
             border: "1px solid var(--surface-border)",
             borderRadius: "var(--radius-md)",
             padding: "12px 16px",
@@ -154,7 +154,7 @@ export default function ScamPulsePage() {
             >
               <div className="card">
                 <div style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 6 }}>Total Submissions</div>
-                <div style={{ fontSize: 26, fontWeight: 800, color: "#FFFFFF" }}>{summary.totalReports || 0}</div>
+                <div style={{ fontSize: 26, fontWeight: 800, color: "var(--text-primary)" }}>{summary.totalReports || 0}</div>
                 <div style={{ fontSize: 12, color: "var(--accent)", marginTop: 4 }}>
                   In past {days} days
                 </div>
@@ -213,7 +213,7 @@ export default function ScamPulsePage() {
                             </span>
                             <span style={{ color: "var(--text-muted)" }}>{tac.count} reports</span>
                           </div>
-                          <div style={{ height: 6, borderRadius: 3, background: "#0D1326", overflow: "hidden" }}>
+                          <div style={{ height: 6, borderRadius: 3, background: "var(--bg-subtle)", overflow: "hidden" }}>
                             <div
                               style={{
                                 height: "100%",
@@ -254,7 +254,7 @@ export default function ScamPulsePage() {
                             </span>
                             <span style={{ color: "var(--text-muted)" }}>{plat.count} reports</span>
                           </div>
-                          <div style={{ height: 6, borderRadius: 3, background: "#0D1326", overflow: "hidden" }}>
+                          <div style={{ height: 6, borderRadius: 3, background: "var(--bg-subtle)", overflow: "hidden" }}>
                             <div
                               style={{
                                 height: "100%",
@@ -299,7 +299,7 @@ export default function ScamPulsePage() {
                         borderRadius: "4px",
                         border: "1px solid var(--surface-border)",
                         background: selectedIndType === it ? "var(--surface-card)" : "transparent",
-                        color: selectedIndType === it ? "#FFFFFF" : "var(--text-secondary)",
+                        color: selectedIndType === it ? "var(--text-primary)" : "var(--text-secondary)",
                         fontSize: 11,
                         fontWeight: 600,
                         cursor: "pointer",
@@ -326,7 +326,7 @@ export default function ScamPulsePage() {
                     <tbody>
                       {indicatorData.map((ind, idx) => (
                         <tr key={idx}>
-                          <td style={{ fontFamily: "monospace", color: "#F8FAFC", fontWeight: 500 }}>
+                          <td style={{ fontFamily: "monospace", color: "var(--text-primary)", fontWeight: 500 }}>
                             {ind.value}
                           </td>
                           <td>

@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { ThemeProvider } from "./context/ThemeContext";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute, { AdminRoute } from "./components/ProtectedRoute";
 
@@ -34,8 +35,9 @@ const GOOGLE_CLIENT_ID =
 export default function App() {
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-      <AuthProvider>
-        <BrowserRouter>
+      <ThemeProvider>
+        <AuthProvider>
+          <BrowserRouter>
           <Routes>
             {/* ─── Public Portal Routes ─── */}
             <Route path="/" element={<HomePage />} />
@@ -78,6 +80,7 @@ export default function App() {
           </Routes>
         </BrowserRouter>
       </AuthProvider>
-    </GoogleOAuthProvider>
-  );
+    </ThemeProvider>
+  </GoogleOAuthProvider>
+);
 }

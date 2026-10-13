@@ -211,7 +211,7 @@ export default function ScanUploadZone({
           >
             <IconComponent size={24} />
           </div>
-          <div style={{ fontSize: 14, fontWeight: 600, color: "#FFFFFF" }}>{label}</div>
+          <div style={{ fontSize: 14, fontWeight: 600, color: "var(--text-primary)" }}>{label}</div>
           <div style={{ fontSize: 12, color: "var(--text-muted)" }}>{sublabel}</div>
         </div>
       )}

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import { BrandMark } from "../../components/Navbar";
+import ThemeToggle from "../../components/ThemeToggle";
 import { ShieldCheck, Lock, Mail, ArrowRight, AlertTriangle, KeyRound } from "lucide-react";
 
 export default function AdminLoginPage() {
@@ -44,6 +45,7 @@ export default function AdminLoginPage() {
         display: "flex",
         flexDirection: "column",
         background: "var(--bg-base)",
+        transition: "background-color var(--transition-normal)",
       }}
     >
       {/* Minimal Top Bar */}
@@ -59,18 +61,21 @@ export default function AdminLoginPage() {
         <Link to="/">
           <BrandMark size={28} />
         </Link>
-        <Link
-          to="/"
-          style={{
-            fontSize: 13,
-            color: "var(--text-secondary)",
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-          }}
-        >
-          Return to Public Site
-        </Link>
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <ThemeToggle />
+          <Link
+            to="/"
+            style={{
+              fontSize: 13,
+              color: "var(--text-secondary)",
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+            }}
+          >
+            Return to Public Site
+          </Link>
+        </div>
       </div>
 
       <div

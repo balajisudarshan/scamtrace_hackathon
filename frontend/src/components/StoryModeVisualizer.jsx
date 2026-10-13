@@ -65,7 +65,7 @@ export default function StoryModeVisualizer({ storyMode = [], rawContent = "" })
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          background: "#0E1428",
+          background: "var(--table-header-bg)",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -127,7 +127,7 @@ export default function StoryModeVisualizer({ storyMode = [], rawContent = "" })
                 style={{
                   padding: "12px 14px",
                   borderRadius: "var(--radius-md)",
-                  background: isSelected ? "var(--surface-card)" : "#0D1326",
+                  background: isSelected ? "var(--surface-card)" : "var(--bg-subtle)",
                   border: isSelected
                     ? "1px solid var(--accent)"
                     : "1px solid var(--surface-border)",

@@ -16,6 +16,7 @@ import {
   Lock,
   Sparkles,
 } from "lucide-react";
+import ThemeToggle from "./ThemeToggle";
 
 export function BrandMark({ size = 28 }) {
   return (
@@ -58,7 +59,7 @@ export function BrandMark({ size = 28 }) {
             fontSize: 16,
             fontWeight: 800,
             letterSpacing: "0.06em",
-            color: "#FFFFFF",
+            color: "var(--text-primary)",
             lineHeight: 1,
           }}
         >
@@ -164,9 +165,10 @@ export default function Navbar() {
         position: "sticky",
         top: 0,
         zIndex: 50,
-        backgroundColor: "rgba(11, 16, 32, 0.92)",
+        backgroundColor: "var(--nav-bg)",
         backdropFilter: "blur(12px)",
         borderBottom: "1px solid var(--surface-border)",
+        transition: "background-color var(--transition-normal)",
       }}
     >
       <div
@@ -209,7 +211,7 @@ export default function Navbar() {
                   borderRadius: "var(--radius-md)",
                   fontSize: 13,
                   fontWeight: 600,
-                  color: isActive ? "#FFFFFF" : "var(--text-secondary)",
+                  color: isActive ? "var(--text-primary)" : "var(--text-secondary)",
                   backgroundColor: isActive ? "var(--surface-card)" : "transparent",
                   border: isActive
                     ? "1px solid var(--surface-border-strong)"
@@ -224,8 +226,10 @@ export default function Navbar() {
           })}
         </nav>
 
-        {/* Right Section: Admin Dashboard Link if logged in, or Sign In */}
+        {/* Right Section: Theme Toggle, Admin Dashboard Link, Sign In / Profile */}
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <ThemeToggle />
+
           {isAdmin && (
             <Link
               to="/admin/dashboard"
@@ -285,7 +289,7 @@ export default function Navbar() {
       {mobileOpen && (
         <div
           style={{
-            background: "#0E1428",
+            background: "var(--surface-elevated)",
             borderBottom: "1px solid var(--surface-border)",
             padding: "14px 20px",
             display: "flex",
@@ -307,7 +311,7 @@ export default function Navbar() {
                   gap: 10,
                   padding: "9px 12px",
                   borderRadius: "var(--radius-md)",
-                  color: isActive ? "#FFFFFF" : "var(--text-secondary)",
+                  color: isActive ? "var(--text-primary)" : "var(--text-secondary)",
                   background: isActive ? "var(--surface-card)" : "transparent",
                   fontSize: 13,
                   fontWeight: 600,

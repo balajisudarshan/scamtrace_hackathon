@@ -222,7 +222,7 @@ export default function CheckPage() {
                       borderRadius: "var(--radius-sm)",
                       border: active ? "1px solid var(--accent)" : "1px solid var(--surface-border)",
                       background: active ? "rgba(59, 130, 246, 0.12)" : "var(--surface-card)",
-                      color: active ? "#FFFFFF" : "var(--text-secondary)",
+                      color: active ? "var(--accent)" : "var(--text-secondary)",
                       fontSize: 13,
                       fontWeight: 500,
                       cursor: "pointer",
@@ -435,7 +435,7 @@ export default function CheckPage() {
                   </div>
                   <div>
                     <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 4 }}>
-                      <h2 style={{ fontSize: 20, fontWeight: 800, color: "#FFFFFF", margin: 0 }}>
+                      <h2 style={{ fontSize: 20, fontWeight: 800, color: "var(--text-primary)", margin: 0 }}>
                         {result.verdictTitle ||
                           (result.riskLevel === "HIGH_RISK"
                             ? "🚨 High-Risk Scam Detected"
@@ -447,7 +447,7 @@ export default function CheckPage() {
                         <span
                           style={{
                             background: "rgba(59, 130, 246, 0.12)",
-                            color: "#93C5FD",
+                            color: "var(--accent)",
                             border: "1px solid rgba(59, 130, 246, 0.25)",
                             padding: "2px 8px",
                             borderRadius: "4px",
@@ -535,7 +535,7 @@ export default function CheckPage() {
                     borderRadius: "4px",
                     border: "none",
                     background: resultView === "simple" ? "var(--surface-card)" : "transparent",
-                    color: resultView === "simple" ? "#FFFFFF" : "var(--text-secondary)",
+                    color: resultView === "simple" ? "var(--text-primary)" : "var(--text-secondary)",
                     fontSize: 12,
                     fontWeight: 600,
                     cursor: "pointer",
@@ -551,7 +551,7 @@ export default function CheckPage() {
                     borderRadius: "4px",
                     border: "none",
                     background: resultView === "forensic" ? "var(--surface-card)" : "transparent",
-                    color: resultView === "forensic" ? "#FFFFFF" : "var(--text-secondary)",
+                    color: resultView === "forensic" ? "var(--text-primary)" : "var(--text-secondary)",
                     fontSize: 12,
                     fontWeight: 600,
                     cursor: "pointer",
@@ -622,13 +622,13 @@ export default function CheckPage() {
                             fontSize: 13,
                             color: "var(--text-primary)",
                             padding: "8px 12px",
-                            background: "#0D1326",
+                            background: "var(--bg-subtle)",
                             borderRadius: "6px",
                           }}
                         >
                           <span style={{ color: "var(--risk-high)", fontWeight: 700 }}>•</span>
                           <div>
-                            <strong style={{ color: "#FCA5A5" }}>{ev.value}</strong>: {ev.why}
+                            <strong style={{ color: "var(--risk-high)" }}>{ev.value}</strong>: {ev.why}
                           </div>
                         </div>
                       ))
@@ -736,7 +736,7 @@ export default function CheckPage() {
                         key={idx}
                         style={{
                           fontSize: 12,
-                          background: "#0D1326",
+                          background: "var(--bg-subtle)",
                           border: "1px solid var(--surface-border)",
                           padding: "4px 10px",
                           borderRadius: "4px",
@@ -766,7 +766,7 @@ export default function CheckPage() {
 
                 {/* Caveat */}
                 {result.caveat && (
-                  <div style={{ fontSize: 12, color: "var(--text-muted)", background: "#0E1428", padding: 12, borderRadius: 6, border: "1px solid var(--surface-border)" }}>
+                  <div style={{ fontSize: 12, color: "var(--text-muted)", background: "var(--bg-subtle)", padding: 12, borderRadius: 6, border: "1px solid var(--surface-border)" }}>
                     <strong>Forensic Caveat:</strong> {result.caveat}
                   </div>
                 )}

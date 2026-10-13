@@ -151,7 +151,7 @@ export default function ReportDetailPage() {
                 </span>
                 <StatusBadge status={report.status} />
               </div>
-              <h1 style={{ fontSize: 22, fontWeight: 700, color: "#FFFFFF" }}>
+              <h1 style={{ fontSize: 22, fontWeight: 700, color: "var(--text-primary)" }}>
                 Incident Investigation Report
               </h1>
             </div>
@@ -164,7 +164,7 @@ export default function ReportDetailPage() {
           {/* Public Summary */}
           <div
             style={{
-              background: "#0D1326",
+              background: "var(--bg-subtle)",
               border: "1px solid var(--surface-border)",
               borderRadius: "var(--radius-md)",
               padding: "16px 20px",
@@ -224,7 +224,7 @@ export default function ReportDetailPage() {
                   <div
                     key={idx}
                     style={{
-                      background: "#0D1326",
+                      background: "var(--bg-subtle)",
                       border: "1px solid var(--surface-border)",
                       padding: "10px 14px",
                       borderRadius: "var(--radius-sm)",
@@ -246,7 +246,7 @@ export default function ReportDetailPage() {
                       >
                         {ind.type}
                       </span>
-                      <span style={{ fontSize: 13, fontFamily: "monospace", color: "#F8FAFC" }}>
+                      <span style={{ fontSize: 13, fontFamily: "monospace", color: "var(--text-primary)" }}>
                         {ind.value}
                       </span>
                     </div>

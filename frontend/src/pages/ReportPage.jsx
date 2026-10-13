@@ -162,7 +162,7 @@ export default function ReportPage() {
             {/* Report Reference Details Box */}
             <div
               style={{
-                background: "#0D1326",
+                background: "var(--bg-subtle)",
                 border: "1px solid var(--surface-border)",
                 borderRadius: "var(--radius-md)",
                 padding: "16px 20px",
@@ -244,7 +244,7 @@ export default function ReportPage() {
                         borderRadius: "var(--radius-sm)",
                         border: active ? "1px solid var(--accent)" : "1px solid var(--surface-border)",
                         background: active ? "rgba(117, 103, 248, 0.15)" : "var(--surface-card)",
-                        color: active ? "#FFFFFF" : "var(--text-secondary)",
+                        color: active ? "var(--accent)" : "var(--text-secondary)",
                         fontSize: 13,
                         fontWeight: 600,
                         cursor: "pointer",
@@ -352,7 +352,7 @@ export default function ReportPage() {
             {/* Privacy Redaction Preview */}
             <div
               style={{
-                background: "#0D1326",
+                background: "var(--bg-subtle)",
                 border: "1px solid var(--surface-border)",
                 borderRadius: "var(--radius-md)",
                 padding: "16px",

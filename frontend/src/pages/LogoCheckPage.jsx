@@ -252,7 +252,7 @@ export default function LogoCheckPage() {
               borderRadius: "9999px",
               background: "rgba(117, 103, 248, 0.12)",
               border: "1px solid rgba(117, 103, 248, 0.3)",
-              color: "#C7D2FE",
+              color: "var(--accent)",
               fontSize: 12,
               fontWeight: 600,
               marginBottom: 14,
@@ -331,7 +331,7 @@ export default function LogoCheckPage() {
                         alt={p.title}
                         style={{ width: 24, height: 24, borderRadius: 4, objectFit: "contain", background: "#000" }}
                       />
-                      <span style={{ fontSize: 12, fontWeight: 700, color: active ? "#FFFFFF" : "var(--text-primary)" }}>
+                      <span style={{ fontSize: 12, fontWeight: 700, color: active ? "var(--accent)" : "var(--text-primary)" }}>
                         {p.title}
                       </span>
                     </div>
@@ -543,7 +543,7 @@ export default function LogoCheckPage() {
                         <BadgeIcon size={26} />
                       </div>
                       <div>
-                        <div style={{ fontSize: 20, fontWeight: 800, color: "#FFFFFF" }}>
+                        <div style={{ fontSize: 20, fontWeight: 800, color: "var(--text-primary)" }}>
                           {result.conclusionTitle}
                         </div>
                         <div style={{ fontSize: 13, color: "var(--text-secondary)" }}>
@@ -629,7 +629,7 @@ export default function LogoCheckPage() {
                       <div style={{ fontSize: 12, color: "var(--text-secondary)", lineHeight: 1.5 }}>
                         Resolution: <strong>{result.uploadedMeta?.width}x{result.uploadedMeta?.height} px</strong>
                         {result.uploadedMeta?.dominantColor && (
-                          <span> • Color: <span style={{ fontFamily: "monospace", color: "#93C5FD" }}>{result.uploadedMeta.dominantColor}</span></span>
+                          <span> • Color: <span style={{ fontFamily: "monospace", color: "var(--accent)" }}>{result.uploadedMeta.dominantColor}</span></span>
                         )}
                       </div>
                     </div>
@@ -776,7 +776,7 @@ export default function LogoCheckPage() {
                   {/* ── Plain English Explanation & Security Notice ── */}
                   <div
                     style={{
-                      background: "#0D1326",
+                      background: "var(--bg-subtle)",
                       border: "1px solid var(--surface-border)",
                       borderRadius: "var(--radius-md)",
                       padding: "16px",
@@ -798,7 +798,7 @@ export default function LogoCheckPage() {
                           border: "1px solid rgba(59, 130, 246, 0.2)",
                           borderRadius: "6px",
                           fontSize: 12,
-                          color: "#93C5FD",
+                          color: "var(--accent)",
                           lineHeight: 1.5,
                         }}
                       >
@@ -850,7 +850,7 @@ export default function LogoCheckPage() {
                                   >
                                     {diff.category}
                                   </span>
-                                  <strong style={{ fontSize: 13, color: "#FFFFFF" }}>{diff.title}</strong>
+                                  <strong style={{ fontSize: 13, color: "var(--text-primary)" }}>{diff.title}</strong>
                                 </div>
                               </div>
                               <p style={{ margin: "4px 0 0", fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.5 }}>

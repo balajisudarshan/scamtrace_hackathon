@@ -14,6 +14,7 @@ import {
   ArrowRight,
   LogIn,
 } from "lucide-react";
+import ThemeToggle from "../components/ThemeToggle";
 import "./auth-pages.css";
 
 function BrandLogo({ size = 32 }) {
@@ -153,8 +154,9 @@ export default function Login() {
       <main className="scamtrace-split-viewport" id="login-container">
         {/* ── Left Section: Brand & Value Proposition ── */}
         <section className="scamtrace-brand-col" aria-labelledby="brand-title">
-          <header className="brand-header-wrap">
+          <header className="brand-header-wrap" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <BrandLogo size={32} />
+            <ThemeToggle />
           </header>
 
           <div className="brand-copy-stack">

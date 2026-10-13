@@ -345,7 +345,7 @@ export default function AppCheckPage() {
                         borderRadius: "var(--radius-md)",
                         border: store === s ? "1px solid var(--accent)" : "1px solid var(--surface-border)",
                         background: store === s ? "rgba(117, 103, 248, 0.18)" : "var(--surface-elevated)",
-                        color: store === s ? "#FFFFFF" : "var(--text-secondary)",
+                        color: store === s ? "var(--accent)" : "var(--text-secondary)",
                         cursor: "pointer",
                         transition: "var(--transition-fast)",
                       }}

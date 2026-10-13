@@ -249,7 +249,7 @@ export default function DamageControlPage() {
               <PhoneCall size={20} />
             </div>
             <div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: "#FFFFFF" }}>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)" }}>
                 National Cyber Crime Helpline: Dial 1930
               </div>
               <div style={{ fontSize: 12, color: "#FCA5A5" }}>
@@ -323,7 +323,7 @@ export default function DamageControlPage() {
                     <Icon size={16} />
                   </div>
                   <div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: active ? "#FFFFFF" : "var(--text-primary)" }}>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: active ? "var(--accent)" : "var(--text-primary)" }}>
                       {sc.title}
                     </div>
                     <div style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 2 }}>
@@ -369,7 +369,7 @@ export default function DamageControlPage() {
               >
                 Urgency: {current.urgency}
               </span>
-              <h2 style={{ fontSize: 20, fontWeight: 700, color: "#FFFFFF" }}>
+              <h2 style={{ fontSize: 20, fontWeight: 700, color: "var(--text-primary)" }}>
                 {current.title}
               </h2>
               <p style={{ fontSize: 14, color: "var(--text-secondary)", marginTop: 4 }}>
@@ -393,7 +393,7 @@ export default function DamageControlPage() {
                   style={{
                     padding: "16px 18px",
                     borderRadius: "var(--radius-md)",
-                    background: checked ? "rgba(16, 185, 129, 0.06)" : "#0D1326",
+                    background: checked ? "rgba(16, 185, 129, 0.06)" : "var(--bg-subtle)",
                     border: checked
                       ? "1px solid rgba(16, 185, 129, 0.3)"
                       : "1px solid var(--surface-border)",
@@ -427,7 +427,7 @@ export default function DamageControlPage() {
                       style={{
                         fontSize: 14,
                         fontWeight: 600,
-                        color: checked ? "#34D399" : "#FFFFFF",
+                        color: checked ? "var(--risk-low)" : "var(--text-primary)",
                         textDecoration: checked ? "line-through" : "none",
                         marginBottom: 4,
                       }}

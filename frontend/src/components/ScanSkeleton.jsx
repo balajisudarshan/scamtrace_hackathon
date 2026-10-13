@@ -36,7 +36,7 @@ export function CheckResultSkeleton({ scanType = "screenshot" }) {
         className="card"
         style={{
           padding: "24px",
-          background: "linear-gradient(135deg, rgba(30, 41, 59, 0.4) 0%, #11182B 100%)",
+          background: "var(--surface-elevated)",
           border: "1px solid var(--surface-border)",
         }}
       >
