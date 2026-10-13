@@ -129,8 +129,8 @@ export default function ReportPage() {
           <div
             className="card fade-in"
             style={{
-              background: "#11182B",
-              border: "1px solid rgba(16, 185, 129, 0.4)",
+              background: "var(--surface-elevated)",
+              border: "1px solid var(--risk-low-border)",
               padding: 32,
               textAlign: "center",
             }}
@@ -140,8 +140,8 @@ export default function ReportPage() {
                 width: 56,
                 height: 56,
                 borderRadius: "50%",
-                background: "rgba(16, 185, 129, 0.15)",
-                color: "#10B981",
+                background: "var(--risk-low-bg)",
+                color: "var(--risk-low)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -368,12 +368,12 @@ export default function ReportPage() {
               </p>
               <div
                 style={{
-                  background: "#080C1A",
+                  background: "var(--input-bg)",
                   padding: "10px 12px",
                   borderRadius: "6px",
-                  border: "1px solid rgba(255,255,255,0.04)",
+                  border: "1px solid var(--surface-border)",
                   fontSize: 12,
-                  color: "#94A3B8",
+                  color: "var(--text-secondary)",
                   fontFamily: "monospace",
                   whiteSpace: "pre-wrap",
                 }}

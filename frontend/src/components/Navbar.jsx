@@ -127,7 +127,7 @@ export function Footer() {
               fontSize: 12,
               padding: "4px 8px",
               borderRadius: "var(--radius-sm)",
-              border: "1px solid rgba(255, 255, 255, 0.05)",
+              border: "1px solid var(--surface-border)",
             }}
           >
             <Lock size={11} />
@@ -239,9 +239,9 @@ export default function Navbar() {
                 gap: 6,
                 padding: "6px 12px",
                 borderRadius: "var(--radius-md)",
-                background: "rgba(117, 103, 248, 0.15)",
-                border: "1px solid rgba(117, 103, 248, 0.35)",
-                color: "#C7D2FE",
+                background: "var(--accent-subtle)",
+                border: "1px solid var(--accent-glow)",
+                color: "var(--accent)",
                 fontSize: 12,
                 fontWeight: 700,
                 textDecoration: "none",

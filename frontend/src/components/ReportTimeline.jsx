@@ -16,12 +16,12 @@ export default function ReportTimeline({ statusTimeline = [], currentStatus = "R
 
   const getIcon = (status) => {
     switch ((status || "").toUpperCase()) {
-      case "PUBLISHED": return <Globe2 size={14} color="#A5B4FC" />;
-      case "CORROBORATED": return <CheckCircle2 size={14} color="#34D399" />;
-      case "UNDER_REVIEW": return <Eye size={14} color="#60A5FA" />;
-      case "DISPUTED": return <AlertCircle size={14} color="#FBBF24" />;
-      case "REJECTED": return <XCircle size={14} color="#F87171" />;
-      default: return <Clock size={14} color="#CBD5E1" />;
+      case "PUBLISHED": return <Globe2 size={14} style={{ color: "var(--status-published)" }} />;
+      case "CORROBORATED": return <CheckCircle2 size={14} style={{ color: "var(--status-corroborated)" }} />;
+      case "UNDER_REVIEW": return <Eye size={14} style={{ color: "var(--status-review)" }} />;
+      case "DISPUTED": return <AlertCircle size={14} style={{ color: "var(--status-disputed)" }} />;
+      case "REJECTED": return <XCircle size={14} style={{ color: "var(--status-rejected)" }} />;
+      default: return <Clock size={14} style={{ color: "var(--status-received)" }} />;
     }
   };
 
@@ -56,7 +56,7 @@ export default function ReportTimeline({ statusTimeline = [], currentStatus = "R
               width: 24,
               height: 24,
               borderRadius: "50%",
-              background: "#0E152D",
+              background: "var(--surface-card)",
               border: "1px solid var(--surface-border)",
               display: "flex",
               alignItems: "center",

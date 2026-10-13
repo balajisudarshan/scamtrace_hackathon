@@ -239,8 +239,8 @@ export default function DamageControlPage() {
                 width: 40,
                 height: 40,
                 borderRadius: "10px",
-                background: "rgba(239, 68, 68, 0.2)",
-                color: "#EF4444",
+                background: "var(--risk-high-bg)",
+                color: "var(--risk-high)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -252,7 +252,7 @@ export default function DamageControlPage() {
               <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)" }}>
                 National Cyber Crime Helpline: Dial 1930
               </div>
-              <div style={{ fontSize: 12, color: "#FCA5A5" }}>
+              <div style={{ fontSize: 12, color: "var(--risk-high)" }}>
                 Available 24x7 across India for immediate financial fraud lien & freeze assistance.
               </div>
             </div>
@@ -265,7 +265,7 @@ export default function DamageControlPage() {
             className="btn btn-outline btn-sm"
             style={{
               borderColor: "var(--risk-high-border)",
-              color: "#FCA5A5",
+              color: "var(--risk-high)",
               display: "inline-flex",
               alignItems: "center",
               gap: 6,
@@ -357,11 +357,11 @@ export default function DamageControlPage() {
                   borderRadius: "4px",
                   background:
                     current.riskLevel === "CRITICAL" || current.riskLevel === "HIGH"
-                      ? "rgba(239, 68, 68, 0.15)"
-                      : "rgba(59, 130, 246, 0.12)",
+                      ? "var(--risk-high-bg)"
+                      : "var(--accent-glow)",
                   color:
                     current.riskLevel === "CRITICAL" || current.riskLevel === "HIGH"
-                      ? "#EF4444"
+                      ? "var(--risk-high)"
                       : "var(--accent)",
                   marginBottom: 8,
                   display: "inline-block",
@@ -409,8 +409,8 @@ export default function DamageControlPage() {
                       width: 22,
                       height: 22,
                       borderRadius: "6px",
-                      border: checked ? "1px solid #10B981" : "1px solid var(--surface-border-strong)",
-                      background: checked ? "#10B981" : "transparent",
+                      border: checked ? "1px solid var(--risk-low)" : "1px solid var(--surface-border-strong)",
+                      background: checked ? "var(--risk-low)" : "transparent",
                       color: "#FFFFFF",
                       display: "flex",
                       alignItems: "center",

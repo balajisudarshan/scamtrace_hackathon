@@ -31,18 +31,18 @@ export default function StoryModeVisualizer({ storyMode = [], rawContent = "" })
   const getTacticBadge = (tactic) => {
     const t = (tactic || "").toLowerCase();
     if (t.includes("urgency") || t.includes("deadline")) {
-      return { label: "Artificial Urgency", color: "#F87171", bg: "rgba(239, 68, 68, 0.15)" };
+      return { label: "Artificial Urgency", color: "var(--risk-high)", bg: "var(--risk-high-bg)" };
     }
     if (t.includes("authority") || t.includes("impersonat")) {
-      return { label: "False Authority", color: "#FBBF24", bg: "rgba(245, 158, 11, 0.15)" };
+      return { label: "False Authority", color: "var(--risk-caution)", bg: "var(--risk-caution-bg)" };
     }
     if (t.includes("reward") || t.includes("lure")) {
-      return { label: "Bait / Reward", color: "#34D399", bg: "rgba(16, 185, 129, 0.15)" };
+      return { label: "Bait / Reward", color: "var(--risk-low)", bg: "var(--risk-low-bg)" };
     }
     if (t.includes("otp") || t.includes("credential")) {
-      return { label: "Credential Harvesting", color: "#EF4444", bg: "rgba(239, 68, 68, 0.2)" };
+      return { label: "Credential Harvesting", color: "var(--risk-high)", bg: "var(--risk-high-bg)" };
     }
-    return { label: tactic.replace(/_/g, " "), color: "#93C5FD", bg: "rgba(59, 130, 246, 0.12)" };
+    return { label: tactic.replace(/_/g, " "), color: "var(--accent)", bg: "var(--accent-subtle)" };
   };
 
   const activeItem = storyMode[selectedIdx] || storyMode[0];
@@ -153,7 +153,7 @@ export default function StoryModeVisualizer({ storyMode = [], rawContent = "" })
                     style={{
                       fontSize: 13,
                       fontWeight: 500,
-                      color: isSelected ? "#FFFFFF" : "var(--text-secondary)",
+                      color: isSelected ? "var(--text-primary)" : "var(--text-secondary)",
                       fontStyle: "italic",
                     }}
                   >
@@ -175,7 +175,7 @@ export default function StoryModeVisualizer({ storyMode = [], rawContent = "" })
         {/* Right: Forensic Explanation Card */}
         <div
           style={{
-            background: "#0E152D",
+            background: "var(--surface-card)",
             border: "1px solid var(--surface-border)",
             borderRadius: "var(--radius-md)",
             padding: "20px",
@@ -211,11 +211,11 @@ export default function StoryModeVisualizer({ storyMode = [], rawContent = "" })
               </div>
               <div
                 style={{
-                  background: "rgba(239, 68, 68, 0.1)",
-                  border: "1px solid rgba(239, 68, 68, 0.25)",
+                  background: "var(--risk-high-bg)",
+                  border: "1px solid var(--risk-high-border)",
                   borderRadius: "8px",
                   padding: "10px 14px",
-                  color: "#FECACA",
+                  color: "var(--risk-high)",
                   fontSize: 14,
                   fontWeight: 500,
                   fontFamily: "monospace",

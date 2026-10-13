@@ -88,9 +88,9 @@ export default function DNAMatchCard({ match, currentReportId = null }) {
                 borderRadius: "4px",
                 background:
                   similarity > 60
-                    ? "rgba(239, 68, 68, 0.15)"
-                    : "rgba(59, 130, 246, 0.12)",
-                color: similarity > 60 ? "#EF4444" : "var(--accent)",
+                    ? "var(--risk-high-bg)"
+                    : "var(--accent-subtle)",
+                color: similarity > 60 ? "var(--risk-high)" : "var(--accent)",
                 border: "1px solid currentColor",
               }}
             >
@@ -106,7 +106,7 @@ export default function DNAMatchCard({ match, currentReportId = null }) {
 
       {/* Matched Clues */}
       {clues.length > 0 && (
-        <div style={{ background: "#0E152D", padding: "10px 12px", borderRadius: "8px", border: "1px solid var(--surface-border)" }}>
+        <div style={{ background: "var(--bg-subtle)", padding: "10px 12px", borderRadius: "8px", border: "1px solid var(--surface-border)" }}>
           <div style={{ fontSize: 11, fontWeight: 600, color: "var(--text-muted)", textTransform: "uppercase", marginBottom: 6 }}>
             Matched Forensic Clues ({clues.length}):
           </div>

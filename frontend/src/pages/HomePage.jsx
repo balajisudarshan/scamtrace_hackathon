@@ -451,10 +451,10 @@ export default function HomePage() {
                 textAlign: "left",
                 background:
                   inlineResult.riskLevel === "HIGH_RISK"
-                    ? "linear-gradient(135deg, rgba(239, 68, 68, 0.12) 0%, #11182B 100%)"
+                    ? "linear-gradient(135deg, var(--risk-high-bg) 0%, var(--surface-card) 100%)"
                     : inlineResult.riskLevel === "NEEDS_CAUTION"
-                    ? "linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, #11182B 100%)"
-                    : "linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, #11182B 100%)",
+                    ? "linear-gradient(135deg, var(--risk-caution-bg) 0%, var(--surface-card) 100%)"
+                    : "linear-gradient(135deg, var(--risk-low-bg) 0%, var(--surface-card) 100%)",
                 border:
                   inlineResult.riskLevel === "HIGH_RISK"
                     ? "1px solid var(--risk-high-border)"
@@ -473,16 +473,16 @@ export default function HomePage() {
                       borderRadius: "12px",
                       background:
                         inlineResult.riskLevel === "HIGH_RISK"
-                          ? "rgba(239, 68, 68, 0.2)"
+                          ? "var(--risk-high-bg)"
                           : inlineResult.riskLevel === "NEEDS_CAUTION"
-                          ? "rgba(245, 158, 11, 0.2)"
-                          : "rgba(16, 185, 129, 0.2)",
+                          ? "var(--risk-caution-bg)"
+                          : "var(--risk-low-bg)",
                       color:
                         inlineResult.riskLevel === "HIGH_RISK"
-                          ? "#EF4444"
+                          ? "var(--risk-high)"
                           : inlineResult.riskLevel === "NEEDS_CAUTION"
-                          ? "#F59E0B"
-                          : "#10B981",
+                          ? "var(--risk-caution)"
+                          : "var(--risk-low)",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -517,8 +517,8 @@ export default function HomePage() {
               {inlineResult.ocrText && (
                 <div
                   style={{
-                    background: "rgba(59, 130, 246, 0.08)",
-                    border: "1px solid rgba(59, 130, 246, 0.25)",
+                    background: "var(--accent-subtle)",
+                    border: "1px solid var(--accent-glow)",
                     borderRadius: "var(--radius-md)",
                     padding: "12px 16px",
                     marginBottom: 16,
@@ -559,15 +559,15 @@ export default function HomePage() {
                   What you should do right now:
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 10 }}>
-                  <div style={{ background: "rgba(239, 68, 68, 0.08)", border: "1px solid rgba(239, 68, 68, 0.25)", padding: "10px 12px", borderRadius: "8px", fontSize: 12, color: "#FCA5A5", display: "flex", alignItems: "center", gap: 8 }}>
+                  <div style={{ background: "var(--risk-high-bg)", border: "1px solid var(--risk-high-border)", padding: "10px 12px", borderRadius: "8px", fontSize: 12, color: "var(--risk-high)", display: "flex", alignItems: "center", gap: 8 }}>
                     <XCircle size={15} style={{ flexShrink: 0 }} />
                     <span><strong>Do NOT</strong> click the link or send OTP</span>
                   </div>
-                  <div style={{ background: "rgba(239, 68, 68, 0.08)", border: "1px solid rgba(239, 68, 68, 0.25)", padding: "10px 12px", borderRadius: "8px", fontSize: 12, color: "#FCA5A5", display: "flex", alignItems: "center", gap: 8 }}>
+                  <div style={{ background: "var(--risk-high-bg)", border: "1px solid var(--risk-high-border)", padding: "10px 12px", borderRadius: "8px", fontSize: 12, color: "var(--risk-high)", display: "flex", alignItems: "center", gap: 8 }}>
                     <XCircle size={15} style={{ flexShrink: 0 }} />
                     <span><strong>Do NOT</strong> call the provided number</span>
                   </div>
-                  <div style={{ background: "rgba(16, 185, 129, 0.08)", border: "1px solid rgba(16, 185, 129, 0.25)", padding: "10px 12px", borderRadius: "8px", fontSize: 12, color: "#6EE7B7", display: "flex", alignItems: "center", gap: 8 }}>
+                  <div style={{ background: "var(--risk-low-bg)", border: "1px solid var(--risk-low-border)", padding: "10px 12px", borderRadius: "8px", fontSize: 12, color: "var(--risk-low)", display: "flex", alignItems: "center", gap: 8 }}>
                     <CheckCircle2 size={15} style={{ flexShrink: 0 }} />
                     <span><strong>Block</strong> and delete the message</span>
                   </div>
@@ -718,7 +718,7 @@ export default function HomePage() {
                   transition: "all 0.2s ease",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = "#10B981";
+                  e.currentTarget.style.borderColor = "var(--risk-low)";
                   e.currentTarget.style.transform = "translateY(-2px)";
                 }}
                 onMouseLeave={(e) => {
@@ -733,7 +733,7 @@ export default function HomePage() {
                       height: 42,
                       borderRadius: "10px",
                       background: "rgba(16, 185, 129, 0.14)",
-                      color: "#10B981",
+                      color: "var(--risk-low)",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -751,7 +751,7 @@ export default function HomePage() {
                     </div>
                   </div>
                 </div>
-                <ArrowRight size={16} style={{ color: "#10B981", flexShrink: 0 }} />
+                <ArrowRight size={16} style={{ color: "var(--risk-low)", flexShrink: 0 }} />
               </Link>
 
               <Link
@@ -866,7 +866,7 @@ export default function HomePage() {
                   height: 36,
                   borderRadius: "8px",
                   background: "rgba(16, 185, 129, 0.15)",
-                  color: "#10B981",
+                  color: "var(--risk-low)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",

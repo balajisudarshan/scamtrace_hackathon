@@ -33,7 +33,7 @@ export default function BrandMonitorPage() {
               borderRadius: "9999px",
               background: "rgba(117, 103, 248, 0.12)",
               border: "1px solid rgba(117, 103, 248, 0.25)",
-              color: "#C7D2FE",
+              color: "var(--accent)",
               fontSize: 12,
               fontWeight: 600,
               marginBottom: 16,
@@ -192,7 +192,7 @@ export default function BrandMonitorPage() {
               transition: "transform 0.2s ease, border-color 0.2s ease",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = "#10B981";
+              e.currentTarget.style.borderColor = "var(--risk-low)";
               e.currentTarget.style.transform = "translateY(-4px)";
             }}
             onMouseLeave={(e) => {
@@ -219,7 +219,7 @@ export default function BrandMonitorPage() {
                   height: 56,
                   borderRadius: "var(--radius-lg)",
                   background: "rgba(16, 185, 129, 0.15)",
-                  color: "#10B981",
+                  color: "var(--risk-low)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -245,7 +245,7 @@ export default function BrandMonitorPage() {
                   "App icon imitation & visual comparison",
                 ].map((item, idx) => (
                   <div key={idx} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: "var(--text-secondary)" }}>
-                    <CheckCircle2 size={15} style={{ color: "#10B981", flexShrink: 0 }} />
+                    <CheckCircle2 size={15} style={{ color: "var(--risk-low)", flexShrink: 0 }} />
                     <span>{item}</span>
                   </div>
                 ))}
@@ -257,7 +257,7 @@ export default function BrandMonitorPage() {
               style={{
                 width: "100%",
                 padding: "14px 20px",
-                background: "#10B981",
+                background: "var(--risk-low)",
                 borderRadius: "var(--radius-md)",
                 color: "#FFFFFF",
                 fontSize: 15,

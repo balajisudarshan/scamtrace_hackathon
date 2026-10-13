@@ -198,27 +198,27 @@ export default function LogoCheckPage() {
     switch (conclusion) {
       case "LIKELY_VISUAL_MATCH":
         return {
-          bg: "rgba(16, 185, 129, 0.15)",
-          border: "rgba(16, 185, 129, 0.35)",
-          color: "#10B981",
+          bg: "var(--risk-low-bg)",
+          border: "var(--risk-low-border)",
+          color: "var(--risk-low)",
           icon: ShieldCheck,
           label: "Likely Visual Match",
           badgeClass: "badge-low",
         };
       case "DIFFERENCES_DETECTED":
         return {
-          bg: "rgba(239, 68, 68, 0.15)",
-          border: "rgba(239, 68, 68, 0.35)",
-          color: "#EF4444",
+          bg: "var(--risk-high-bg)",
+          border: "var(--risk-high-border)",
+          color: "var(--risk-high)",
           icon: ShieldAlert,
           label: "Differences Detected",
           badgeClass: "badge-high",
         };
       case "INSUFFICIENT_EVIDENCE":
         return {
-          bg: "rgba(245, 158, 11, 0.15)",
-          border: "rgba(245, 158, 11, 0.35)",
-          color: "#F59E0B",
+          bg: "var(--risk-caution-bg)",
+          border: "var(--risk-caution-border)",
+          color: "var(--risk-caution)",
           icon: AlertTriangle,
           label: "Insufficient Evidence",
           badgeClass: "badge-caution",
@@ -226,9 +226,9 @@ export default function LogoCheckPage() {
       case "UNABLE_TO_VERIFY":
       default:
         return {
-          bg: "rgba(148, 163, 184, 0.15)",
-          border: "rgba(148, 163, 184, 0.3)",
-          color: "#94A3B8",
+          bg: "var(--bg-subtle)",
+          border: "var(--surface-border)",
+          color: "var(--text-secondary)",
           icon: HelpCircle,
           label: "Unable to Verify",
           badgeClass: "badge-neutral",
@@ -329,7 +329,7 @@ export default function LogoCheckPage() {
                       <img
                         src={p.imageUrl}
                         alt={p.title}
-                        style={{ width: 24, height: 24, borderRadius: 4, objectFit: "contain", background: "#000" }}
+                        style={{ width: 24, height: 24, borderRadius: 4, objectFit: "contain", background: "var(--bg-subtle)" }}
                       />
                       <span style={{ fontSize: 12, fontWeight: 700, color: active ? "var(--accent)" : "var(--text-primary)" }}>
                         {p.title}
@@ -604,8 +604,8 @@ export default function LogoCheckPage() {
                         style={{
                           width: 160,
                           height: 160,
-                          background: "#080C1A",
-                          border: "1px solid var(--surface-border-strong)",
+                          background: "var(--bg-subtle)",
+                          border: "1px solid var(--surface-border)",
                           borderRadius: 14,
                           display: "flex",
                           alignItems: "center",
@@ -637,8 +637,8 @@ export default function LogoCheckPage() {
                     {/* Right: Retrieved Official Reference Logo */}
                     <div
                       style={{
-                        background: result.referenceLogo ? "var(--surface-card)" : "rgba(15, 23, 42, 0.4)",
-                        border: result.referenceLogo ? "1px solid rgba(16, 185, 129, 0.3)" : "1px dashed var(--surface-border)",
+                        background: result.referenceLogo ? "var(--surface-card)" : "var(--bg-subtle)",
+                        border: result.referenceLogo ? "1px solid var(--risk-low-border)" : "1px dashed var(--surface-border)",
                         borderRadius: "var(--radius-lg)",
                         padding: "20px",
                         display: "flex",
@@ -647,7 +647,7 @@ export default function LogoCheckPage() {
                         textAlign: "center",
                       }}
                     >
-                      <div style={{ fontSize: 12, fontWeight: 700, color: "#10B981", textTransform: "uppercase", marginBottom: 12, display: "flex", alignItems: "center", gap: 6 }}>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: "var(--risk-low)", textTransform: "uppercase", marginBottom: 12, display: "flex", alignItems: "center", gap: 6 }}>
                         <CheckCircle2 size={14} />
                         <span>Authoritative Reference Logo:</span>
                       </div>
@@ -658,8 +658,8 @@ export default function LogoCheckPage() {
                             style={{
                               width: 160,
                               height: 160,
-                              background: "#080C1A",
-                              border: "1px solid rgba(16, 185, 129, 0.4)",
+                              background: "var(--bg-subtle)",
+                              border: "1px solid var(--risk-low-border)",
                               borderRadius: 14,
                               display: "flex",
                               alignItems: "center",
@@ -681,7 +681,7 @@ export default function LogoCheckPage() {
                           </div>
 
                           <div style={{ fontSize: 12, color: "var(--text-secondary)", lineHeight: 1.5, maxWidth: 320 }}>
-                            <div style={{ color: "#E2E8F0", fontWeight: 600, marginBottom: 2 }}>
+                            <div style={{ color: "var(--text-primary)", fontWeight: 600, marginBottom: 2 }}>
                               Source: {result.referenceLogo.sourceType}
                             </div>
                             <div style={{ fontSize: 11, color: "var(--text-muted)" }}>
@@ -707,15 +707,15 @@ export default function LogoCheckPage() {
                             color: "var(--text-muted)",
                           }}
                         >
-                          <HelpCircle size={36} style={{ opacity: 0.5, color: result.searchStatus === "SEARCH_PROVIDER_ERROR" ? "#F59E0B" : "inherit" }} />
-                          <div style={{ fontSize: 14, fontWeight: 700, color: result.searchStatus === "SEARCH_PROVIDER_ERROR" ? "#FCD34D" : "var(--text-secondary)" }}>
+                          <HelpCircle size={36} style={{ opacity: 0.5, color: result.searchStatus === "SEARCH_PROVIDER_ERROR" ? "var(--risk-caution)" : "inherit" }} />
+                          <div style={{ fontSize: 14, fontWeight: 700, color: result.searchStatus === "SEARCH_PROVIDER_ERROR" ? "var(--risk-caution)" : "var(--text-secondary)" }}>
                             {result.conclusionTitle || "Unable to Verify Original Logo"}
                           </div>
                           <div style={{ fontSize: 12, maxWidth: 280, lineHeight: 1.5, color: "var(--text-muted)" }}>
                             {result.plainExplanation || "No authoritative reference asset could be retrieved from verified repositories for this claimed brand."}
                           </div>
                           {result.searchStatus === "SEARCH_PROVIDER_ERROR" && (
-                            <span style={{ fontSize: 11, color: "#F59E0B", background: "rgba(245, 158, 11, 0.12)", padding: "2px 8px", borderRadius: 4 }}>
+                            <span style={{ fontSize: 11, color: "var(--risk-caution)", background: "var(--risk-caution-bg)", padding: "2px 8px", borderRadius: 4 }}>
                               Search Provider Issue
                             </span>
                           )}
@@ -728,7 +728,7 @@ export default function LogoCheckPage() {
                   {result.scoreBreakdown && (
                     <div
                       style={{
-                        background: "#090D1C",
+                        background: "var(--bg-subtle)",
                         border: "1px solid var(--surface-border)",
                         borderRadius: "var(--radius-md)",
                         padding: "16px",
@@ -740,27 +740,27 @@ export default function LogoCheckPage() {
                       </div>
 
                       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 12, marginBottom: 10 }}>
-                        <div style={{ background: "var(--surface-card)", padding: "10px 12px", borderRadius: 8 }}>
+                        <div style={{ background: "var(--surface-card)", padding: "10px 12px", borderRadius: 8, border: "1px solid var(--surface-border)" }}>
                           <div style={{ fontSize: 11, color: "var(--text-muted)" }}>Perceptual dHash Match</div>
-                          <div style={{ fontSize: 16, fontWeight: 800, color: "#93C5FD" }}>{result.scoreBreakdown.hashSimilarity}%</div>
+                          <div style={{ fontSize: 16, fontWeight: 800, color: "var(--accent)" }}>{result.scoreBreakdown.hashSimilarity}%</div>
                           <div style={{ fontSize: 10, color: "var(--text-muted)" }}>Hamming dist: {result.scoreBreakdown.hammingDistance}/64</div>
                         </div>
 
-                        <div style={{ background: "var(--surface-card)", padding: "10px 12px", borderRadius: 8 }}>
+                        <div style={{ background: "var(--surface-card)", padding: "10px 12px", borderRadius: 8, border: "1px solid var(--surface-border)" }}>
                           <div style={{ fontSize: 11, color: "var(--text-muted)" }}>Color Palette Similarity</div>
-                          <div style={{ fontSize: 16, fontWeight: 800, color: "#A7F3D0" }}>{result.scoreBreakdown.colorSimilarity}%</div>
+                          <div style={{ fontSize: 16, fontWeight: 800, color: "var(--risk-low)" }}>{result.scoreBreakdown.colorSimilarity}%</div>
                           <div style={{ fontSize: 10, color: "var(--text-muted)" }}>RGB centroid distance</div>
                         </div>
 
                         {typeof result.scoreBreakdown.textSimilarity === "number" && (
-                          <div style={{ background: "var(--surface-card)", padding: "10px 12px", borderRadius: 8 }}>
+                          <div style={{ background: "var(--surface-card)", padding: "10px 12px", borderRadius: 8, border: "1px solid var(--surface-border)" }}>
                             <div style={{ fontSize: 11, color: "var(--text-muted)" }}>Text & Spelling Match</div>
-                            <div style={{ fontSize: 16, fontWeight: 800, color: "#FDE68A" }}>{result.scoreBreakdown.textSimilarity}%</div>
+                            <div style={{ fontSize: 16, fontWeight: 800, color: "var(--risk-caution)" }}>{result.scoreBreakdown.textSimilarity}%</div>
                             <div style={{ fontSize: 10, color: "var(--text-muted)" }}>Levenshtein alignment</div>
                           </div>
                         )}
 
-                        <div style={{ background: "var(--surface-card)", padding: "10px 12px", borderRadius: 8 }}>
+                        <div style={{ background: "var(--surface-card)", padding: "10px 12px", borderRadius: 8, border: "1px solid var(--surface-border)" }}>
                           <div style={{ fontSize: 11, color: "var(--text-muted)" }}>Overall Visual Similarity</div>
                           <div style={{ fontSize: 16, fontWeight: 800, color: badge.color }}>{result.similarityScore}%</div>
                           <div style={{ fontSize: 10, color: "var(--text-muted)" }}>Weighted synthesis</div>
@@ -823,14 +823,14 @@ export default function LogoCheckPage() {
                               key={idx}
                               style={{
                                 background: isMatch
-                                  ? "rgba(16, 185, 129, 0.06)"
+                                  ? "var(--risk-low-bg)"
                                   : isHigh
-                                  ? "rgba(239, 68, 68, 0.08)"
+                                  ? "var(--risk-high-bg)"
                                   : "var(--surface-card)",
                                 border: isMatch
-                                  ? "1px solid rgba(16, 185, 129, 0.25)"
+                                  ? "1px solid var(--risk-low-border)"
                                   : isHigh
-                                  ? "1px solid rgba(239, 68, 68, 0.3)"
+                                  ? "1px solid var(--risk-high-border)"
                                   : "1px solid var(--surface-border)",
                                 borderRadius: "var(--radius-md)",
                                 padding: "12px 14px",
@@ -844,8 +844,8 @@ export default function LogoCheckPage() {
                                       borderRadius: 4,
                                       fontSize: 10,
                                       fontWeight: 700,
-                                      background: isMatch ? "rgba(16, 185, 129, 0.2)" : isHigh ? "rgba(239, 68, 68, 0.2)" : "rgba(255, 255, 255, 0.08)",
-                                      color: isMatch ? "#10B981" : isHigh ? "#EF4444" : "var(--text-secondary)",
+                                      background: isMatch ? "var(--risk-low-bg)" : isHigh ? "var(--risk-high-bg)" : "var(--surface-card-hover)",
+                                      color: isMatch ? "var(--risk-low)" : isHigh ? "var(--risk-high)" : "var(--text-secondary)",
                                     }}
                                   >
                                     {diff.category}

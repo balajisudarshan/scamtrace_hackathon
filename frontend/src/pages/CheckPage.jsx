@@ -389,10 +389,10 @@ export default function CheckPage() {
                 padding: "22px 24px",
                 background:
                   result.riskLevel === "HIGH_RISK"
-                    ? "linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, #11182B 100%)"
+                    ? "linear-gradient(135deg, var(--risk-high-bg) 0%, var(--surface-card) 100%)"
                     : result.riskLevel === "NEEDS_CAUTION"
-                    ? "linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, #11182B 100%)"
-                    : "linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, #11182B 100%)",
+                    ? "linear-gradient(135deg, var(--risk-caution-bg) 0%, var(--surface-card) 100%)"
+                    : "linear-gradient(135deg, var(--risk-low-bg) 0%, var(--surface-card) 100%)",
                 border:
                   result.riskLevel === "HIGH_RISK"
                     ? "1px solid var(--risk-high-border)"
@@ -410,16 +410,16 @@ export default function CheckPage() {
                       borderRadius: "12px",
                       background:
                         result.riskLevel === "HIGH_RISK"
-                          ? "rgba(239, 68, 68, 0.2)"
+                          ? "var(--risk-high-bg)"
                           : result.riskLevel === "NEEDS_CAUTION"
-                          ? "rgba(245, 158, 11, 0.2)"
-                          : "rgba(16, 185, 129, 0.2)",
+                          ? "var(--risk-caution-bg)"
+                          : "var(--risk-low-bg)",
                       color:
                         result.riskLevel === "HIGH_RISK"
-                          ? "#EF4444"
+                          ? "var(--risk-high)"
                           : result.riskLevel === "NEEDS_CAUTION"
-                          ? "#F59E0B"
-                          : "#10B981",
+                          ? "var(--risk-caution)"
+                          : "var(--risk-low)",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -446,9 +446,9 @@ export default function CheckPage() {
                       {result.threatType && (
                         <span
                           style={{
-                            background: "rgba(59, 130, 246, 0.12)",
+                            background: "var(--accent-subtle)",
                             color: "var(--accent)",
-                            border: "1px solid rgba(59, 130, 246, 0.25)",
+                            border: "1px solid var(--accent-glow)",
                             padding: "2px 8px",
                             borderRadius: "4px",
                             fontSize: 11,
@@ -463,9 +463,9 @@ export default function CheckPage() {
                       {result.aiAnalysis?.enabled && (
                         <span
                           style={{
-                            background: "rgba(148, 163, 184, 0.08)",
-                            color: "#94A3B8",
-                            border: "1px solid rgba(148, 163, 184, 0.2)",
+                            background: "var(--surface-card)",
+                            color: "var(--text-secondary)",
+                            border: "1px solid var(--surface-border)",
                             padding: "2px 8px",
                             borderRadius: "4px",
                             fontSize: 11,
@@ -490,8 +490,8 @@ export default function CheckPage() {
                         style={{
                           marginTop: 8,
                           fontSize: 13,
-                          color: "#E2E8F0",
-                          background: "var(--surface-card)",
+                          color: "var(--text-primary)",
+                          background: "var(--bg-subtle)",
                           padding: "8px 12px",
                           borderRadius: "6px",
                           borderLeft: "3px solid var(--accent)",
@@ -586,7 +586,7 @@ export default function CheckPage() {
                     </div>
                     <pre
                       style={{
-                        background: "#080C1A",
+                        background: "var(--input-bg)",
                         padding: 12,
                         borderRadius: 6,
                         border: "1px solid var(--surface-border)",
@@ -594,7 +594,7 @@ export default function CheckPage() {
                         fontFamily: "monospace",
                         whiteSpace: "pre-wrap",
                         wordBreak: "break-word",
-                        color: "#E2E8F0",
+                        color: "var(--text-primary)",
                         margin: 0,
                         maxHeight: 180,
                         overflowY: "auto",

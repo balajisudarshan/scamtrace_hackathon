@@ -174,7 +174,7 @@ export default function AnalystDNAPage() {
             style={{
               padding: "16px 20px",
               borderRadius: "var(--radius-md)",
-              background: "#0D1326",
+              background: "var(--bg-subtle)",
               border: "1px solid var(--surface-border)",
               display: "flex",
               alignItems: "center",
@@ -197,7 +197,7 @@ export default function AnalystDNAPage() {
           {/* Side-by-Side Incident Cards */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
             {/* Report A */}
-            <div className="card" style={{ background: "#0E152D" }}>
+            <div className="card" style={{ background: "var(--surface-card)" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                 <span style={{ fontSize: 13, fontWeight: 700, color: "var(--accent)" }}>
                   INCIDENT #{comparison.reportA?.id?.slice(0, 8)}...
@@ -217,11 +217,12 @@ export default function AnalystDNAPage() {
                     key={idx}
                     style={{
                       fontSize: 11,
-                      background: "rgba(255,255,255,0.05)",
+                      background: "var(--bg-subtle)",
                       border: "1px solid var(--surface-border)",
                       padding: "2px 8px",
                       borderRadius: 4,
                       fontFamily: "monospace",
+                      color: "var(--text-primary)",
                     }}
                   >
                     {i.type}: {i.value}
@@ -231,7 +232,7 @@ export default function AnalystDNAPage() {
             </div>
 
             {/* Report B */}
-            <div className="card" style={{ background: "#0E152D" }}>
+            <div className="card" style={{ background: "var(--surface-card)" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                 <span style={{ fontSize: 13, fontWeight: 700, color: "var(--accent)" }}>
                   INCIDENT #{comparison.reportB?.id?.slice(0, 8)}...
@@ -251,11 +252,12 @@ export default function AnalystDNAPage() {
                     key={idx}
                     style={{
                       fontSize: 11,
-                      background: "rgba(255,255,255,0.05)",
+                      background: "var(--bg-subtle)",
                       border: "1px solid var(--surface-border)",
                       padding: "2px 8px",
                       borderRadius: 4,
                       fontFamily: "monospace",
+                      color: "var(--text-primary)",
                     }}
                   >
                     {i.type}: {i.value}
@@ -273,14 +275,14 @@ export default function AnalystDNAPage() {
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
               {/* Overlapping clues */}
-              <div style={{ background: "#0D1326", padding: 16, borderRadius: "var(--radius-md)", border: "1px solid var(--surface-border)" }}>
-                <div style={{ fontSize: 12, fontWeight: 700, color: "#34D399", textTransform: "uppercase", marginBottom: 8 }}>
+              <div style={{ background: "var(--bg-subtle)", padding: 16, borderRadius: "var(--radius-md)", border: "1px solid var(--surface-border)" }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "var(--risk-low)", textTransform: "uppercase", marginBottom: 8 }}>
                   Shared / Overlapping Clues
                 </div>
                 {comparison.dna?.matchedClues?.length > 0 ? (
                   <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                     {comparison.dna.matchedClues.map((clue, idx) => (
-                      <div key={idx} style={{ fontSize: 12, color: "#F8FAFC", fontFamily: "monospace" }}>
+                      <div key={idx} style={{ fontSize: 12, color: "var(--text-primary)", fontFamily: "monospace" }}>
                         • {typeof clue === "string" ? clue : JSON.stringify(clue)}
                       </div>
                     ))}
@@ -293,8 +295,8 @@ export default function AnalystDNAPage() {
               </div>
 
               {/* Differences */}
-              <div style={{ background: "#0D1326", padding: 16, borderRadius: "var(--radius-md)", border: "1px solid var(--surface-border)" }}>
-                <div style={{ fontSize: 12, fontWeight: 700, color: "#FBBF24", textTransform: "uppercase", marginBottom: 8 }}>
+              <div style={{ background: "var(--bg-subtle)", padding: 16, borderRadius: "var(--radius-md)", border: "1px solid var(--surface-border)" }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "var(--risk-caution)", textTransform: "uppercase", marginBottom: 8 }}>
                   Divergence & Differences
                 </div>
                 {comparison.dna?.differences?.length > 0 ? (

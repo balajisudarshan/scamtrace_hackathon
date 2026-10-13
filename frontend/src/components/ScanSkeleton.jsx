@@ -67,7 +67,7 @@ export function CheckResultSkeleton({ scanType = "screenshot" }) {
               alignItems: "center",
               gap: 12,
               padding: "10px 16px",
-              background: "rgba(15, 23, 42, 0.6)",
+              background: "var(--bg-subtle)",
               borderRadius: "var(--radius-md)",
               border: "1px solid var(--surface-border)",
             }}
@@ -84,7 +84,7 @@ export function CheckResultSkeleton({ scanType = "screenshot" }) {
         <div
           style={{
             padding: "16px",
-            background: "rgba(15, 23, 42, 0.7)",
+            background: "var(--bg-subtle)",
             borderRadius: "var(--radius-md)",
             border: "1px solid var(--surface-border)",
             display: "flex",
@@ -125,7 +125,7 @@ export function CheckResultSkeleton({ scanType = "screenshot" }) {
               key={idx}
               style={{
                 padding: "14px 16px",
-                background: "rgba(15, 23, 42, 0.5)",
+                background: "var(--bg-subtle)",
                 border: "1px solid var(--surface-border)",
                 borderRadius: "var(--radius-md)",
                 display: "flex",
@@ -182,7 +182,7 @@ export function LogoResultSkeleton() {
         className="card"
         style={{
           padding: "24px",
-          background: "linear-gradient(135deg, rgba(30, 41, 59, 0.4) 0%, #11182B 100%)",
+          background: "var(--surface-elevated)",
           border: "1px solid var(--surface-border)",
         }}
       >
@@ -210,7 +210,7 @@ export function LogoResultSkeleton() {
           <div
             style={{
               padding: "10px 18px",
-              background: "rgba(15, 23, 42, 0.6)",
+              background: "var(--bg-subtle)",
               borderRadius: "var(--radius-md)",
               border: "1px solid var(--surface-border)",
               display: "flex",
@@ -251,7 +251,7 @@ export function LogoResultSkeleton() {
           <div
             style={{
               height: 180,
-              background: "#080C1A",
+              background: "var(--bg-subtle)",
               borderRadius: 10,
               border: "1px solid var(--surface-border)",
               display: "flex",
@@ -286,7 +286,7 @@ export function LogoResultSkeleton() {
           <div
             style={{
               height: 180,
-              background: "#080C1A",
+              background: "var(--bg-subtle)",
               borderRadius: 10,
               border: "1px solid var(--surface-border)",
               display: "flex",
@@ -321,7 +321,7 @@ export function LogoResultSkeleton() {
               key={i}
               style={{
                 padding: "12px 14px",
-                background: "rgba(15, 23, 42, 0.5)",
+                background: "var(--bg-subtle)",
                 border: "1px solid var(--surface-border)",
                 borderRadius: "var(--radius-md)",
                 display: "flex",
@@ -358,7 +358,7 @@ export function ProfileResultSkeleton() {
         className="card"
         style={{
           padding: "24px",
-          background: "linear-gradient(135deg, rgba(30, 41, 59, 0.4) 0%, #11182B 100%)",
+          background: "var(--surface-elevated)",
           border: "1px solid var(--surface-border)",
         }}
       >

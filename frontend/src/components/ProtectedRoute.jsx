@@ -52,7 +52,7 @@ export default function ProtectedRoute({ children, requiredRoles = null }) {
             maxWidth: 480,
             width: "100%",
             background: "var(--surface-card)",
-            border: "1px solid rgba(239, 68, 68, 0.3)",
+            border: "1px solid var(--risk-high-border)",
             borderRadius: 16,
             padding: 32,
             textAlign: "center",
@@ -63,8 +63,8 @@ export default function ProtectedRoute({ children, requiredRoles = null }) {
               width: 56,
               height: 56,
               borderRadius: "50%",
-              background: "rgba(239, 68, 68, 0.15)",
-              color: "#EF4444",
+              background: "var(--risk-high-bg)",
+              color: "var(--risk-high)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -73,13 +73,13 @@ export default function ProtectedRoute({ children, requiredRoles = null }) {
           >
             <ShieldAlert size={30} />
           </div>
-          <h2 style={{ fontSize: 22, fontWeight: 700, marginBottom: 8 }}>
+          <h2 style={{ fontSize: 22, fontWeight: 700, marginBottom: 8, color: "var(--text-primary)" }}>
             Restricted Access
           </h2>
-          <p style={{ color: "#94A3B8", fontSize: 14, lineHeight: 1.6, marginBottom: 24 }}>
+          <p style={{ color: "var(--text-secondary)", fontSize: 14, lineHeight: 1.6, marginBottom: 24 }}>
             The SCAMTRACE Intelligence Desk requires authorized <strong>Analyst</strong> or{" "}
             <strong>Admin</strong> credentials. Your current account role is{" "}
-            <code style={{ background: "#1E293B", padding: "2px 6px", borderRadius: 4 }}>
+            <code style={{ background: "var(--bg-subtle)", color: "var(--text-primary)", border: "1px solid var(--surface-border)", padding: "2px 6px", borderRadius: 4 }}>
               {user.role || "PUBLIC"}
             </code>
             .

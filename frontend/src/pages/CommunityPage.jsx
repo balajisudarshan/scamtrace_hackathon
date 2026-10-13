@@ -93,19 +93,19 @@ export default function CommunityPage() {
 
   const getProvenanceBadge = (sourceType, datasetSource) => {
     if (sourceType === "COMMUNITY") {
-      return { label: "User Submitted", bg: "rgba(59, 130, 246, 0.12)", color: "#93C5FD" };
+      return { label: "User Submitted", bg: "var(--accent-glow)", color: "var(--accent)" };
     }
     if (sourceType === "IMPORTED" || datasetSource) {
       return {
         label: datasetSource || "Imported Dataset",
-        bg: "rgba(16, 185, 129, 0.15)",
-        color: "#34D399",
+        bg: "var(--risk-low-bg)",
+        color: "var(--risk-low)",
       };
     }
     if (sourceType === "SEEDED") {
-      return { label: "Seeded Research Corpus", bg: "rgba(245, 158, 11, 0.15)", color: "#FBBF24" };
+      return { label: "Seeded Research Corpus", bg: "var(--risk-caution-bg)", color: "var(--risk-caution)" };
     }
-    return { label: "Verified Record", bg: "rgba(148, 163, 184, 0.12)", color: "#94A3B8" };
+    return { label: "Verified Record", bg: "var(--bg-subtle)", color: "var(--text-secondary)" };
   };
 
   return (

@@ -131,7 +131,7 @@ export default function ScanUploadZone({
             style={{
               position: "relative",
               padding: 8,
-              background: "#080C1A",
+              background: "var(--input-bg)",
               border: isScanning ? "1px solid rgba(56, 189, 248, 0.4)" : "1px solid var(--surface-border)",
               borderRadius: 10,
               maxWidth: "100%",

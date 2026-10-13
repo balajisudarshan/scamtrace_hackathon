@@ -147,21 +147,21 @@ export default function AdminReportsPage() {
   const getStatusBadge = (status) => {
     const s = String(status || "").toUpperCase();
     if (s === "RECEIVED" || s === "NEW") {
-      return { label: "New", color: "#60A5FA", bg: "rgba(59, 130, 246, 0.15)" };
+      return { label: "New", color: "var(--status-review)", bg: "var(--status-review-bg)" };
     }
     if (s === "UNDER_REVIEW") {
-      return { label: "Under Review", color: "#F59E0B", bg: "rgba(245, 158, 11, 0.15)" };
+      return { label: "Under Review", color: "var(--status-disputed)", bg: "var(--status-disputed-bg)" };
     }
     if (s === "CORROBORATED" || s === "PUBLISHED" || s === "CONFIRMED_SCAM") {
-      return { label: "Confirmed Scam", color: "#10B981", bg: "rgba(16, 185, 129, 0.15)" };
+      return { label: "Confirmed Scam", color: "var(--status-corroborated)", bg: "var(--status-corroborated-bg)" };
     }
     if (s === "REJECTED" || s === "DISMISSED") {
-      return { label: "Dismissed", color: "#EF4444", bg: "rgba(239, 68, 68, 0.15)" };
+      return { label: "Dismissed", color: "var(--risk-high)", bg: "var(--risk-high-bg)" };
     }
     if (s === "DISPUTED" || s === "DUPLICATE") {
-      return { label: "Duplicate", color: "#94A3B8", bg: "rgba(148, 163, 184, 0.15)" };
+      return { label: "Duplicate", color: "var(--text-muted)", bg: "var(--bg-subtle)" };
     }
-    return { label: status, color: "#94A3B8", bg: "rgba(148, 163, 184, 0.15)" };
+    return { label: status, color: "var(--text-muted)", bg: "var(--bg-subtle)" };
   };
 
   const filterTabs = [
@@ -227,8 +227,8 @@ export default function AdminReportsPage() {
                 fontWeight: 600,
                 borderRadius: "var(--radius-md)",
                 border: isActive ? "1px solid var(--accent)" : "1px solid var(--surface-border)",
-                background: isActive ? "rgba(117, 103, 248, 0.18)" : "var(--surface-elevated)",
-                color: isActive ? "#FFFFFF" : "var(--text-secondary)",
+                background: isActive ? "var(--accent-glow)" : "var(--surface-elevated)",
+                color: isActive ? "var(--text-primary)" : "var(--text-secondary)",
                 cursor: "pointer",
               }}
             >
@@ -361,11 +361,11 @@ export default function AdminReportsPage() {
               width: "100%",
               maxHeight: "90vh",
               overflowY: "auto",
-              background: "#11182B",
+              background: "var(--surface-elevated)",
               border: "1px solid var(--surface-border-strong)",
               borderRadius: "var(--radius-xl)",
               padding: "32px 28px",
-              boxShadow: "0 20px 60px rgba(0, 0, 0, 0.6)",
+              boxShadow: "var(--shadow-modal)",
               position: "relative",
             }}
           >
@@ -398,10 +398,10 @@ export default function AdminReportsPage() {
             <div
               style={{
                 padding: "10px 14px",
-                background: "rgba(245, 158, 11, 0.08)",
-                border: "1px solid rgba(245, 158, 11, 0.25)",
+                background: "var(--risk-caution-bg)",
+                border: "1px solid var(--risk-caution-border)",
                 borderRadius: "var(--radius-md)",
-                color: "#FDE68A",
+                color: "var(--text-primary)",
                 fontSize: 12,
                 display: "flex",
                 alignItems: "center",
@@ -409,7 +409,7 @@ export default function AdminReportsPage() {
                 marginBottom: 20,
               }}
             >
-              <AlertTriangle size={15} style={{ color: "#F59E0B", flexShrink: 0 }} />
+              <AlertTriangle size={15} style={{ color: "var(--risk-caution)", flexShrink: 0 }} />
               <span>Public allegation — do not automatically classify as fraudulent without verifying evidence.</span>
             </div>
 
@@ -425,10 +425,10 @@ export default function AdminReportsPage() {
                   <div
                     style={{
                       padding: "12px 14px",
-                      background: modalFeedback.type === "success" ? "rgba(16, 185, 129, 0.12)" : "rgba(239, 68, 68, 0.12)",
-                      border: modalFeedback.type === "success" ? "1px solid rgba(16, 185, 129, 0.3)" : "1px solid rgba(239, 68, 68, 0.3)",
+                      background: modalFeedback.type === "success" ? "var(--risk-low-bg)" : "var(--risk-high-bg)",
+                      border: modalFeedback.type === "success" ? "1px solid var(--risk-low-border)" : "1px solid var(--risk-high-border)",
                       borderRadius: "var(--radius-md)",
-                      color: modalFeedback.type === "success" ? "#6EE7B7" : "#FCA5A5",
+                      color: modalFeedback.type === "success" ? "var(--risk-low)" : "var(--risk-high)",
                       fontSize: 13,
                     }}
                   >

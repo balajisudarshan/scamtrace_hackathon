@@ -66,7 +66,7 @@ export default function AnalystOverview() {
     return (
       <div className="card" style={{ textAlign: "center", padding: 40, maxWidth: 540, margin: "40px auto" }}>
         <AlertTriangle size={36} style={{ color: "var(--risk-high)", marginBottom: 12 }} />
-        <h3 style={{ fontSize: 18, fontWeight: 700, color: "#FFFFFF", marginBottom: 8 }}>
+        <h3 style={{ fontSize: 18, fontWeight: 700, color: "var(--text-primary)", marginBottom: 8 }}>
           Unable to Load Overview
         </h3>
         <p style={{ color: "var(--text-muted)", fontSize: 13, marginBottom: 20 }}>
@@ -105,7 +105,7 @@ export default function AnalystOverview() {
         }}
       >
         <div>
-          <h1 style={{ fontSize: 24, fontWeight: 800, color: "#FFFFFF", marginBottom: 4 }}>
+          <h1 style={{ fontSize: 24, fontWeight: 800, color: "var(--text-primary)", marginBottom: 4 }}>
             Intelligence Desk Overview
           </h1>
           <p style={{ color: "var(--text-secondary)", fontSize: 13 }}>
@@ -133,7 +133,7 @@ export default function AnalystOverview() {
             <span style={{ fontSize: 12, color: "var(--text-muted)", fontWeight: 600 }}>Triage Queue Pending</span>
             <Inbox size={16} style={{ color: "var(--accent)" }} />
           </div>
-          <div style={{ fontSize: 28, fontWeight: 800, color: "#FFFFFF" }}>
+          <div style={{ fontSize: 28, fontWeight: 800, color: "var(--text-primary)" }}>
             {receivedCount + underReviewCount}
           </div>
           <div style={{ fontSize: 12, color: "var(--text-secondary)", marginTop: 4 }}>
@@ -145,9 +145,9 @@ export default function AnalystOverview() {
         <div className="card">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
             <span style={{ fontSize: 12, color: "var(--text-muted)", fontWeight: 600 }}>Total Verified Published</span>
-            <CheckCircle2 size={16} style={{ color: "#10B981" }} />
+            <CheckCircle2 size={16} style={{ color: "var(--risk-low)" }} />
           </div>
-          <div style={{ fontSize: 28, fontWeight: 800, color: "#10B981" }}>
+          <div style={{ fontSize: 28, fontWeight: 800, color: "var(--risk-low)" }}>
             {publishedCount}
           </div>
           <div style={{ fontSize: 12, color: "var(--text-secondary)", marginTop: 4 }}>
@@ -159,9 +159,9 @@ export default function AnalystOverview() {
         <div className="card">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
             <span style={{ fontSize: 12, color: "var(--text-muted)", fontWeight: 600 }}>Indexed Indicators</span>
-            <Tag size={16} style={{ color: "#60A5FA" }} />
+            <Tag size={16} style={{ color: "var(--status-review)" }} />
           </div>
-          <div style={{ fontSize: 28, fontWeight: 800, color: "#60A5FA" }}>
+          <div style={{ fontSize: 28, fontWeight: 800, color: "var(--status-review)" }}>
             {stats.totalIndicators || 0}
           </div>
           <div style={{ fontSize: 12, color: "var(--text-secondary)", marginTop: 4 }}>
@@ -173,9 +173,9 @@ export default function AnalystOverview() {
         <div className="card">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
             <span style={{ fontSize: 12, color: "var(--text-muted)", fontWeight: 600 }}>Scam DNA Matches</span>
-            <GitCompare size={16} style={{ color: "#F59E0B" }} />
+            <GitCompare size={16} style={{ color: "var(--status-disputed)" }} />
           </div>
-          <div style={{ fontSize: 28, fontWeight: 800, color: "#F59E0B" }}>
+          <div style={{ fontSize: 28, fontWeight: 800, color: "var(--status-disputed)" }}>
             {stats.totalDNAMatches || 0}
           </div>
           <div style={{ fontSize: 12, color: "var(--text-secondary)", marginTop: 4 }}>
@@ -204,7 +204,7 @@ export default function AnalystOverview() {
                   justifyContent: "space-between",
                   padding: "10px 14px",
                   borderRadius: "var(--radius-sm)",
-                  background: "#0D1326",
+                  background: "var(--bg-subtle)",
                   border: "1px solid var(--surface-border)",
                   textDecoration: "none",
                   cursor: "pointer",
@@ -213,7 +213,7 @@ export default function AnalystOverview() {
                 className="hover-card"
               >
                 <StatusBadge status={item.status} />
-                <span style={{ fontSize: 14, fontWeight: 700, color: "#FFFFFF" }}>
+                <span style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)" }}>
                   {item.count} report{item.count !== 1 ? "s" : ""}
                 </span>
               </Link>
@@ -238,7 +238,7 @@ export default function AnalystOverview() {
                     display: "flex",
                     alignItems: "center",
                     gap: 8,
-                    background: "#0D1326",
+                    background: "var(--bg-subtle)",
                     padding: "8px 12px",
                     borderRadius: "6px",
                     border: "1px solid var(--surface-border)",
@@ -258,7 +258,7 @@ export default function AnalystOverview() {
                 <div
                   key={idx}
                   style={{
-                    background: "#0D1326",
+                    background: "var(--bg-subtle)",
                     padding: "6px 12px",
                     borderRadius: "6px",
                     border: "1px solid var(--surface-border)",
@@ -266,7 +266,7 @@ export default function AnalystOverview() {
                   }}
                 >
                   <span style={{ color: "var(--text-muted)", textTransform: "capitalize" }}>{t.contentType}: </span>
-                  <strong style={{ color: "#FFFFFF" }}>{t.count}</strong>
+                  <strong style={{ color: "var(--text-primary)" }}>{t.count}</strong>
                 </div>
               ))}
             </div>

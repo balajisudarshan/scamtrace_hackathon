@@ -8,6 +8,15 @@
   <meta name="theme-color" content="#0B0F19" />
   <meta name="description" content="SCAMTRACE - AI-powered real-time scam detection, logo authenticity verification, and brand impersonation protection." />
   <title>SCAMTRACE — AI Scam Detection &amp; Brand Protection</title>
+  <script>
+    (function () {
+      try {
+        var theme = localStorage.getItem("scamtrace_theme") || "dark";
+        document.documentElement.setAttribute("data-theme", theme);
+        document.documentElement.classList.add(theme === "light" ? "theme-light" : "theme-dark");
+      } catch (_) {}
+    })();
+  </script>
 </head>
 
 <body>

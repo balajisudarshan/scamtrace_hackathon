@@ -53,7 +53,7 @@ export default function AnalystRadarPage() {
             <Radar size={14} />
             <span>THREAT SYNDICATE RADAR</span>
           </div>
-          <h1 style={{ fontSize: 24, fontWeight: 800, color: "#FFFFFF", marginBottom: 4 }}>
+          <h1 style={{ fontSize: 24, fontWeight: 800, color: "var(--text-primary)", marginBottom: 4 }}>
             Pattern Radar & Tactic Clusters
           </h1>
           <p style={{ color: "var(--text-secondary)", fontSize: 13 }}>
@@ -62,7 +62,7 @@ export default function AnalystRadarPage() {
         </div>
 
         {/* Window Selector */}
-        <div style={{ display: "flex", gap: 6, background: "#0E1428", padding: "4px", borderRadius: "8px", border: "1px solid var(--surface-border)" }}>
+        <div style={{ display: "flex", gap: 6, background: "var(--bg-subtle)", padding: "4px", borderRadius: "8px", border: "1px solid var(--surface-border)" }}>
           {[14, 30, 90].map((d) => (
             <button
               key={d}
@@ -108,7 +108,7 @@ export default function AnalystRadarPage() {
                   <div
                     key={idx}
                     style={{
-                      background: "#0D1326",
+                      background: "var(--bg-subtle)",
                       border: "1px solid var(--surface-border)",
                       padding: "10px 14px",
                       borderRadius: "6px",
@@ -118,7 +118,7 @@ export default function AnalystRadarPage() {
                     }}
                   >
                     <div>
-                      <span style={{ fontSize: 13, fontWeight: 600, color: "#FFFFFF", textTransform: "capitalize" }}>
+                      <span style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)", textTransform: "capitalize" }}>
                         {t.tactic?.replace(/_/g, " ")}
                       </span>
                     </div>
@@ -142,7 +142,7 @@ export default function AnalystRadarPage() {
             {/* Top Phishing Domains */}
             <div className="card">
               <h2 style={{ fontSize: 15, fontWeight: 700, marginBottom: 14, display: "flex", alignItems: "center", gap: 8 }}>
-                <Globe size={16} style={{ color: "#EF4444" }} />
+                <Globe size={16} style={{ color: "var(--risk-high)" }} />
                 <span>High-Frequency Phishing Domains ({radarData.domains?.length || 0})</span>
               </h2>
 
@@ -151,7 +151,7 @@ export default function AnalystRadarPage() {
                   <div
                     key={idx}
                     style={{
-                      background: "#0D1326",
+                      background: "var(--bg-subtle)",
                       border: "1px solid var(--surface-border)",
                       padding: "10px 14px",
                       borderRadius: "6px",
@@ -161,7 +161,7 @@ export default function AnalystRadarPage() {
                     }}
                   >
                     <div>
-                      <span style={{ fontSize: 13, fontWeight: 600, color: "#FFFFFF", fontFamily: "monospace" }}>
+                      <span style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)", fontFamily: "monospace" }}>
                         {d.domain}
                       </span>
                       {d.metadata?.brand && (
@@ -174,8 +174,8 @@ export default function AnalystRadarPage() {
                       style={{
                         fontSize: 12,
                         fontWeight: 700,
-                        background: "rgba(239,68,68,0.15)",
-                        color: "#EF4444",
+                        background: "var(--risk-high-bg)",
+                        color: "var(--risk-high)",
                         padding: "2px 8px",
                         borderRadius: "4px",
                       }}
@@ -193,7 +193,7 @@ export default function AnalystRadarPage() {
             {/* Active Phone Campaigns */}
             <div className="card">
               <h2 style={{ fontSize: 15, fontWeight: 700, marginBottom: 14, display: "flex", alignItems: "center", gap: 8 }}>
-                <Phone size={16} style={{ color: "#F59E0B" }} />
+                <Phone size={16} style={{ color: "var(--risk-caution)" }} />
                 <span>Active Fraudulent Phone Numbers</span>
               </h2>
 
@@ -203,7 +203,7 @@ export default function AnalystRadarPage() {
                     <div
                       key={idx}
                       style={{
-                        background: "#0D1326",
+                        background: "var(--bg-subtle)",
                         border: "1px solid var(--surface-border)",
                         padding: "10px 14px",
                         borderRadius: "6px",
@@ -213,7 +213,7 @@ export default function AnalystRadarPage() {
                       }}
                     >
                       <div>
-                        <span style={{ fontSize: 13, fontWeight: 600, color: "#FFFFFF", fontFamily: "monospace" }}>
+                        <span style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)", fontFamily: "monospace" }}>
                           {p.phone}
                         </span>
                         {p.metadata?.campaign && (
@@ -222,7 +222,7 @@ export default function AnalystRadarPage() {
                           </div>
                         )}
                       </div>
-                      <span style={{ fontSize: 12, fontWeight: 700, color: "#F59E0B" }}>
+                      <span style={{ fontSize: 12, fontWeight: 700, color: "var(--risk-caution)" }}>
                         {p.reportCount} reports
                       </span>
                     </div>
@@ -245,7 +245,7 @@ export default function AnalystRadarPage() {
                   <div
                     key={idx}
                     style={{
-                      background: "#0D1326",
+                      background: "var(--bg-subtle)",
                       border: "1px solid var(--surface-border)",
                       padding: "10px 14px",
                       borderRadius: "6px",
@@ -254,7 +254,7 @@ export default function AnalystRadarPage() {
                       alignItems: "center",
                     }}
                   >
-                    <span style={{ fontSize: 13, fontWeight: 600, color: "#FFFFFF" }}>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)" }}>
                       {plat.platform || "Direct Web"}
                     </span>
                     <span style={{ fontSize: 12, fontWeight: 700, color: "var(--text-secondary)" }}>

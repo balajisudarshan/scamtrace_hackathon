@@ -89,7 +89,7 @@ export default function AnalystGraphPage() {
           <Network size={14} />
           <span>INCIDENT TOPOLOGY ENGINE</span>
         </div>
-        <h1 style={{ fontSize: 24, fontWeight: 800, color: "#FFFFFF", marginBottom: 4 }}>
+        <h1 style={{ fontSize: 24, fontWeight: 800, color: "var(--text-primary)", marginBottom: 4 }}>
           Evidence Relationship Graph
         </h1>
         <p style={{ color: "var(--text-secondary)", fontSize: 13 }}>
@@ -108,7 +108,7 @@ export default function AnalystGraphPage() {
             className="card"
             style={{
               minHeight: 520,
-              background: "#080C1B",
+              background: "var(--bg-subtle)",
               position: "relative",
               overflow: "hidden",
               display: "flex",
@@ -129,7 +129,7 @@ export default function AnalystGraphPage() {
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#EF4444" }} />
+                <span style={{ width: 10, height: 10, borderRadius: "50%", background: "var(--risk-high)" }} />
                 <span>High Risk Incident</span>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
@@ -137,7 +137,7 @@ export default function AnalystGraphPage() {
                 <span>Shared Indicator Hub</span>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#10B981" }} />
+                <span style={{ width: 10, height: 10, borderRadius: "50%", background: "var(--risk-low)" }} />
                 <span>Verified Report</span>
               </div>
             </div>
@@ -285,7 +285,7 @@ export default function AnalystGraphPage() {
                   {selectedNode.type === "report" ? (
                     <div>
                       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
-                        <span style={{ fontSize: 13, fontWeight: 700, fontFamily: "monospace", color: "#FFFFFF" }}>
+                        <span style={{ fontSize: 13, fontWeight: 700, fontFamily: "monospace", color: "var(--text-primary)" }}>
                           REPORT #{selectedNode.data.id?.slice(0, 8)}
                         </span>
                         <RiskBadge level={selectedNode.data.riskLevel} size="sm" />
@@ -310,7 +310,7 @@ export default function AnalystGraphPage() {
                     </div>
                   ) : (
                     <div>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: "#FFFFFF", marginBottom: 4 }}>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", marginBottom: 4 }}>
                         {selectedNode.data.value}
                       </div>
                       <span
@@ -347,8 +347,8 @@ export default function AnalystGraphPage() {
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 6, fontSize: 12 }}>
                 {clusterGroups.map((cl, idx) => (
-                  <div key={idx} style={{ padding: "6px 8px", background: "#0D1326", borderRadius: 4 }}>
-                    <div style={{ fontWeight: 600, color: "#FFFFFF" }}>{cl.name}</div>
+                  <div key={idx} style={{ padding: "6px 8px", background: "var(--bg-subtle)", borderRadius: 4 }}>
+                    <div style={{ fontWeight: 600, color: "var(--text-primary)" }}>{cl.name}</div>
                     <div style={{ fontSize: 11, color: "var(--text-muted)" }}>{cl.domain}</div>
                   </div>
                 ))}

@@ -207,7 +207,7 @@ export default function AnalystCasePage() {
                 Source: {report.sourceType || "COMMUNITY"}
               </span>
             </div>
-            <h1 style={{ fontSize: 22, fontWeight: 700, color: "#FFFFFF" }}>
+            <h1 style={{ fontSize: 22, fontWeight: 700, color: "var(--text-primary)" }}>
               Analyst Case File
             </h1>
           </div>
@@ -220,15 +220,15 @@ export default function AnalystCasePage() {
         {/* Restricted Raw Evidence Panel (Analyst-Only) */}
         <div
           style={{
-            background: "#080C1A",
-            border: "1px solid rgba(239, 68, 68, 0.3)",
+            background: "var(--bg-subtle)",
+            border: "1px solid var(--risk-high-border)",
             borderRadius: "var(--radius-md)",
             padding: "16px",
             marginBottom: 18,
           }}
         >
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, fontWeight: 700, color: "#EF4444" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, fontWeight: 700, color: "var(--risk-high)" }}>
               <Lock size={13} />
               <span>ORIGINAL SUBMITTED RAW EVIDENCE (RESTRICTED TO ANALYSTS)</span>
             </div>
@@ -239,12 +239,12 @@ export default function AnalystCasePage() {
           <pre
             style={{
               fontSize: 13,
-              color: "#F8FAFC",
+              color: "var(--text-primary)",
               fontFamily: "monospace",
               whiteSpace: "pre-wrap",
               wordBreak: "break-all",
               margin: 0,
-              background: "#0D1326",
+              background: "var(--input-bg)",
               padding: "12px",
               borderRadius: "6px",
               border: "1px solid var(--surface-border)",
@@ -291,7 +291,7 @@ export default function AnalystCasePage() {
                   if (!customSummary) setCustomSummary(`[VERIFIED IMPERSONATION] Unofficial ${report.contentType} asset confirmed impersonating ${brandProfile?.name || parsedAsset?.targetBrand || "brand"}.`);
                 }}
                 className="btn btn-outline btn-sm"
-                style={{ fontSize: 11, borderColor: "var(--risk-high)", color: "#FCA5A5" }}
+                style={{ fontSize: 11, borderColor: "var(--risk-high-border)", color: "var(--risk-high)" }}
               >
                 🚨 Mark as Potential Impersonation
               </button>
@@ -303,7 +303,7 @@ export default function AnalystCasePage() {
                   if (!customSummary) setCustomSummary(`[VERIFIED LEGITIMATE] Asset verified as non-malicious / legitimate.`);
                 }}
                 className="btn btn-outline btn-sm"
-                style={{ fontSize: 11, borderColor: "#10B981", color: "#6EE7B7" }}
+                style={{ fontSize: 11, borderColor: "var(--risk-low-border)", color: "var(--risk-low)" }}
               >
                 ✅ Mark as Legitimate
               </button>
@@ -314,7 +314,7 @@ export default function AnalystCasePage() {
                   setRationale("Requires active investigation: Cross-checking domain registrar, publisher history, and social verification.");
                 }}
                 className="btn btn-outline btn-sm"
-                style={{ fontSize: 11, borderColor: "#F59E0B", color: "#FDE68A" }}
+                style={{ fontSize: 11, borderColor: "var(--risk-caution-border)", color: "var(--risk-caution)" }}
               >
                 ⚠️ Needs Investigation
               </button>
@@ -323,18 +323,18 @@ export default function AnalystCasePage() {
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 16 }}>
             {/* Left: Submitted Candidate */}
-            <div style={{ background: "rgba(0, 0, 0, 0.25)", padding: 16, borderRadius: 8, border: "1px solid var(--surface-border)" }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: "#EF4444", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+            <div style={{ background: "var(--bg-subtle)", padding: 16, borderRadius: 8, border: "1px solid var(--surface-border)" }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "var(--risk-high)", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.05em" }}>
                 Candidate Under Investigation
               </div>
               <div style={{ fontSize: 13, display: "flex", flexDirection: "column", gap: 6 }}>
                 <div>
                   <span style={{ color: "var(--text-muted)" }}>Asset Type: </span>
-                  <strong style={{ textTransform: "capitalize", color: "#FFFFFF" }}>{parsedAsset?.assetType || report.contentType}</strong>
+                  <strong style={{ textTransform: "capitalize", color: "var(--text-primary)" }}>{parsedAsset?.assetType || report.contentType}</strong>
                 </div>
                 <div>
                   <span style={{ color: "var(--text-muted)" }}>Target Platform: </span>
-                  <strong style={{ color: "#FFFFFF" }}>{report.platform || parsedAsset?.candidate?.platform || parsedAsset?.candidate?.store || "Direct Submission"}</strong>
+                  <strong style={{ color: "var(--text-primary)" }}>{report.platform || parsedAsset?.candidate?.platform || parsedAsset?.candidate?.store || "Direct Submission"}</strong>
                 </div>
                 <div>
                   <span style={{ color: "var(--text-muted)" }}>Identifier: </span>
@@ -345,7 +345,7 @@ export default function AnalystCasePage() {
                 {parsedAsset?.candidate?.publisher && (
                   <div>
                     <span style={{ color: "var(--text-muted)" }}>Publisher: </span>
-                    <strong style={{ color: "#FCA5A5" }}>{parsedAsset.candidate.publisher}</strong>
+                    <strong style={{ color: "var(--risk-high)" }}>{parsedAsset.candidate.publisher}</strong>
                   </div>
                 )}
                 {parsedAsset?.candidate?.link && (
@@ -365,24 +365,24 @@ export default function AnalystCasePage() {
             </div>
 
             {/* Right: Official Brand Reference */}
-            <div style={{ background: "rgba(0, 0, 0, 0.25)", padding: 16, borderRadius: 8, border: "1px solid var(--surface-border)" }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: "#10B981", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+            <div style={{ background: "var(--bg-subtle)", padding: 16, borderRadius: 8, border: "1px solid var(--surface-border)" }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "var(--risk-low)", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.05em" }}>
                 Official Brand Reference ({brandProfile?.name || parsedAsset?.targetBrand || "Brand Reference"})
               </div>
               <div style={{ fontSize: 13, display: "flex", flexDirection: "column", gap: 6 }}>
                 <div>
                   <span style={{ color: "var(--text-muted)" }}>Official Domain: </span>
-                  <strong style={{ color: "#FFFFFF" }}>{brandProfile?.domain || parsedAsset?.targetDomain || "Registered Brand Domain"}</strong>
+                  <strong style={{ color: "var(--text-primary)" }}>{brandProfile?.domain || parsedAsset?.targetDomain || "Registered Brand Domain"}</strong>
                 </div>
                 <div>
                   <span style={{ color: "var(--text-muted)" }}>Official Social Handles: </span>
-                  <span style={{ color: "#6EE7B7", fontSize: 12 }}>
+                  <span style={{ color: "var(--risk-low)", fontSize: 12 }}>
                     {(brandProfile?.officialSocial || []).map(s => `@${s.handle}`).join(", ") || "TheOfficialSBI, StateBankOfIndia"}
                   </span>
                 </div>
                 <div>
                   <span style={{ color: "var(--text-muted)" }}>Official App Package(s): </span>
-                  <span style={{ color: "#6EE7B7", fontSize: 12 }}>
+                  <span style={{ color: "var(--risk-low)", fontSize: 12 }}>
                     {(brandProfile?.officialApps || []).map(a => `${a.appId} (${a.publisher})`).join(", ") || "com.sbi.lotusintouch (State Bank of India)"}
                   </span>
                 </div>
@@ -391,7 +391,7 @@ export default function AnalystCasePage() {
                     <span style={{ color: "var(--text-muted)", fontSize: 12, display: "block", marginBottom: 4 }}>Technique Signatures:</span>
                     <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
                       {parsedAsset.analysisResult.techniques.map((t, idx) => (
-                        <span key={idx} style={{ background: "rgba(239, 68, 68, 0.2)", border: "1px solid rgba(239, 68, 68, 0.3)", color: "#FCA5A5", fontSize: 11, padding: "2px 6px", borderRadius: 4 }}>
+                        <span key={idx} style={{ background: "var(--risk-high-bg)", border: "1px solid var(--risk-high-border)", color: "var(--risk-high)", fontSize: 11, padding: "2px 6px", borderRadius: 4 }}>
                           {t}
                         </span>
                       ))}
@@ -512,7 +512,7 @@ export default function AnalystCasePage() {
                 <div
                   key={idx}
                   style={{
-                    background: "#0D1326",
+                    background: "var(--bg-subtle)",
                     border: "1px solid var(--surface-border)",
                     padding: "10px 14px",
                     borderRadius: "var(--radius-sm)",
@@ -534,7 +534,7 @@ export default function AnalystCasePage() {
                     >
                       {ind.type}
                     </span>
-                    <span style={{ fontSize: 13, fontFamily: "monospace", color: "#FFFFFF" }}>
+                    <span style={{ fontSize: 13, fontFamily: "monospace", color: "var(--text-primary)" }}>
                       {ind.value}
                     </span>
                   </div>
@@ -590,7 +590,7 @@ export default function AnalystCasePage() {
                 <div
                   key={note.id}
                   style={{
-                    background: "#0D1326",
+                    background: "var(--bg-subtle)",
                     border: "1px solid var(--surface-border)",
                     padding: "10px 14px",
                     borderRadius: "6px",
@@ -630,7 +630,7 @@ export default function AnalystCasePage() {
                   style={{
                     fontSize: 12,
                     padding: "8px 12px",
-                    background: "#0D1326",
+                    background: "var(--bg-subtle)",
                     borderRadius: "4px",
                     border: "1px solid var(--surface-border)",
                     display: "flex",
@@ -639,7 +639,7 @@ export default function AnalystCasePage() {
                   }}
                 >
                   <div>
-                    <span style={{ fontWeight: 600, color: "#A5B4FC" }}>{ev.action}</span>
+                    <span style={{ fontWeight: 600, color: "var(--accent)" }}>{ev.action}</span>
                     <span style={{ color: "var(--text-muted)", marginLeft: 6 }}>
                       by {ev.userEmail || "System"}
                     </span>

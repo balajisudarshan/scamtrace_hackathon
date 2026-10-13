@@ -162,7 +162,7 @@ export default function ScamPulsePage() {
 
               <div className="card">
                 <div style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 6 }}>High Risk Volume</div>
-                <div style={{ fontSize: 26, fontWeight: 800, color: "#EF4444" }}>{summary.highRisk || 0}</div>
+                <div style={{ fontSize: 26, fontWeight: 800, color: "var(--risk-high)" }}>{summary.highRisk || 0}</div>
                 <div style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 4 }}>
                   {summary.totalReports ? `${Math.round(((summary.highRisk || 0) / summary.totalReports) * 100)}% of total` : "0%"}
                 </div>
@@ -170,7 +170,7 @@ export default function ScamPulsePage() {
 
               <div className="card">
                 <div style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 6 }}>Needs Caution</div>
-                <div style={{ fontSize: 26, fontWeight: 800, color: "#F59E0B" }}>{summary.needsCaution || 0}</div>
+                <div style={{ fontSize: 26, fontWeight: 800, color: "var(--risk-caution)" }}>{summary.needsCaution || 0}</div>
                 <div style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 4 }}>
                   Moderate signal level
                 </div>
@@ -178,7 +178,7 @@ export default function ScamPulsePage() {
 
               <div className="card">
                 <div style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 6 }}>Published / Verified</div>
-                <div style={{ fontSize: 26, fontWeight: 800, color: "#10B981" }}>{summary.published || 0}</div>
+                <div style={{ fontSize: 26, fontWeight: 800, color: "var(--risk-low)" }}>{summary.published || 0}</div>
                 <div style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 4 }}>
                   Approved by analyst desk
                 </div>
@@ -218,7 +218,7 @@ export default function ScamPulsePage() {
                               style={{
                                 height: "100%",
                                 width: `${pct}%`,
-                                background: "linear-gradient(90deg, #3B82F6, #60A5FA)",
+                                background: "var(--accent)",
                                 borderRadius: 3,
                               }}
                             />
@@ -259,7 +259,7 @@ export default function ScamPulsePage() {
                               style={{
                                 height: "100%",
                                 width: `${pct}%`,
-                                background: "linear-gradient(90deg, #3B82F6, #60A5FA)",
+                                background: "var(--accent)",
                                 borderRadius: 3,
                               }}
                             />

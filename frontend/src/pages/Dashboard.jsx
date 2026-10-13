@@ -14,21 +14,21 @@ export default function Dashboard() {
     <div
       style={{
         minHeight: "100vh",
-        background: "#060b14",
+        background: "var(--bg-base)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         flexDirection: "column",
         gap: 24,
         fontFamily: "Inter, sans-serif",
-        color: "#e2e8f0",
+        color: "var(--text-primary)",
       }}
     >
       <div style={{ textAlign: "center" }}>
         <h1 style={{ fontFamily: "Space Grotesk, sans-serif", fontSize: 32, margin: "0 0 8px" }}>
           🛡️ ScamTrace Dashboard
         </h1>
-        <p style={{ color: "rgba(226,232,240,0.5)", margin: 0 }}>
+        <p style={{ color: "var(--text-secondary)", margin: 0 }}>
           Welcome, {user?.firstName || user?.email}!
         </p>
       </div>
@@ -36,7 +36,7 @@ export default function Dashboard() {
         onClick={handleLogout}
         style={{
           padding: "10px 24px",
-          background: "linear-gradient(135deg, #00d4ff, #0066cc)",
+          background: "var(--accent)",
           border: "none",
           borderRadius: 10,
           color: "#fff",

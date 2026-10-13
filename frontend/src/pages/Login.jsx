@@ -215,7 +215,7 @@ export default function Login() {
               {/* ── Quick Demo Login Accounts (For Reviewers & Judges) ── */}
               <div
                 style={{
-                  background: "#0D1326",
+                  background: "var(--bg-subtle)",
                   border: "1px solid var(--surface-border-strong)",
                   borderRadius: "var(--radius-md)",
                   padding: "12px",
@@ -257,7 +257,7 @@ export default function Login() {
                     onClick={() => handleQuickDemoLogin("user@scamtrace.dev", "user123")}
                     disabled={authProcessing}
                     style={{
-                      background: "rgba(255, 255, 255, 0.04)",
+                      background: "var(--bg-subtle)",
                       border: "1px solid var(--surface-border)",
                       borderRadius: "6px",
                       padding: "8px 10px",

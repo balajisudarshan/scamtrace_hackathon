@@ -205,24 +205,24 @@ export default function AppCheckPage() {
   const renderRiskHeader = (label) => {
     if (label === "High Risk") {
       return {
-        bg: "rgba(239, 68, 68, 0.12)",
-        border: "1px solid rgba(239, 68, 68, 0.4)",
-        color: "#EF4444",
+        bg: "var(--risk-high-bg)",
+        border: "1px solid var(--risk-high-border)",
+        color: "var(--risk-high)",
         icon: <ShieldAlert size={28} />,
       };
     }
     if (label === "Needs a Closer Look") {
       return {
-        bg: "rgba(245, 158, 11, 0.12)",
-        border: "1px solid rgba(245, 158, 11, 0.4)",
-        color: "#F59E0B",
+        bg: "var(--risk-caution-bg)",
+        border: "1px solid var(--risk-caution-border)",
+        color: "var(--risk-caution)",
         icon: <AlertTriangle size={28} />,
       };
     }
     return {
-      bg: "rgba(16, 185, 129, 0.12)",
-      border: "1px solid rgba(16, 185, 129, 0.4)",
-      color: "#10B981",
+      bg: "var(--risk-low-bg)",
+      border: "1px solid var(--risk-low-border)",
+      color: "var(--risk-low)",
       icon: <ShieldCheck size={28} />,
     };
   };
@@ -250,9 +250,9 @@ export default function AppCheckPage() {
               gap: 8,
               padding: "6px 14px",
               borderRadius: "9999px",
-              background: "rgba(16, 185, 129, 0.12)",
-              border: "1px solid rgba(16, 185, 129, 0.25)",
-              color: "#6EE7B7",
+              background: "var(--risk-low-bg)",
+              border: "1px solid var(--risk-low-border)",
+              color: "var(--risk-low)",
               fontSize: 12,
               fontWeight: 600,
               marginBottom: 12,
@@ -523,9 +523,9 @@ export default function AppCheckPage() {
                       type="button"
                       onClick={handleRemoveImage}
                       style={{
-                        background: "rgba(239, 68, 68, 0.12)",
-                        border: "1px solid rgba(239, 68, 68, 0.3)",
-                        color: "#EF4444",
+                        background: "var(--risk-high-bg)",
+                        border: "1px solid var(--risk-high-border)",
+                        color: "var(--risk-high)",
                         padding: "8px 12px",
                         borderRadius: "var(--radius-sm)",
                         cursor: "pointer",
@@ -642,38 +642,41 @@ export default function AppCheckPage() {
                     <div
                       style={{
                         padding: "6px 12px",
-                        background: "rgba(0,0,0,0.2)",
+                        background: "var(--bg-subtle)",
+                        border: "1px solid var(--surface-border)",
                         borderRadius: "var(--radius-sm)",
                         fontSize: 12,
                         color: "var(--text-secondary)",
                       }}
                     >
-                      App Name: <strong style={{ color: "#FFF" }}>{result.candidate?.name}</strong>
+                      App Name: <strong style={{ color: "var(--text-primary)" }}>{result.candidate?.name}</strong>
                     </div>
                     {result.candidate?.publisher && (
                       <div
                         style={{
                           padding: "6px 12px",
-                          background: "rgba(0,0,0,0.2)",
+                          background: "var(--bg-subtle)",
+                          border: "1px solid var(--surface-border)",
                           borderRadius: "var(--radius-sm)",
                           fontSize: 12,
                           color: "var(--text-secondary)",
                         }}
                       >
-                        Publisher: <strong style={{ color: "#FFF" }}>{result.candidate?.publisher}</strong>
+                        Publisher: <strong style={{ color: "var(--text-primary)" }}>{result.candidate?.publisher}</strong>
                       </div>
                     )}
                     <div
                       style={{
                         padding: "6px 12px",
-                        background: "rgba(0,0,0,0.2)",
+                        background: "var(--bg-subtle)",
+                        border: "1px solid var(--surface-border)",
                         borderRadius: "var(--radius-sm)",
                         fontSize: 12,
                         color: "var(--text-secondary)",
                       }}
                     >
                       Brand Status:{" "}
-                      <strong style={{ color: result.brandStatus === "VERIFIED_OFFICIAL" ? "#10B981" : result.brandStatus === "BRAND_NOT_VERIFIED" ? "#F59E0B" : "#A5B4FC" }}>
+                      <strong style={{ color: result.brandStatus === "VERIFIED_OFFICIAL" ? "var(--risk-low)" : result.brandStatus === "BRAND_NOT_VERIFIED" ? "var(--risk-caution)" : "var(--accent)" }}>
                         {result.brandStatus === "VERIFIED_OFFICIAL"
                           ? `Official ${result.brand?.name}`
                           : result.brandStatus === "BRAND_NOT_VERIFIED"
@@ -764,7 +767,7 @@ export default function AppCheckPage() {
                 }}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
-                  <AlertTriangle size={18} style={{ color: "#F59E0B" }} />
+                  <AlertTriangle size={18} style={{ color: "var(--risk-caution)" }} />
                   <h3 style={{ fontSize: 16, fontWeight: 700 }}>Specific Warning Signs Detected</h3>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -773,17 +776,17 @@ export default function AppCheckPage() {
                       key={idx}
                       style={{
                         padding: "12px 14px",
-                        background: "rgba(245, 158, 11, 0.08)",
-                        border: "1px solid rgba(245, 158, 11, 0.25)",
+                        background: "var(--risk-caution-bg)",
+                        border: "1px solid var(--risk-caution-border)",
                         borderRadius: "var(--radius-md)",
                         fontSize: 14,
-                        color: "#FDE68A",
+                        color: "var(--text-primary)",
                         display: "flex",
                         alignItems: "flex-start",
                         gap: 10,
                       }}
                     >
-                      <XCircle size={16} style={{ color: "#F59E0B", marginTop: 2, flexShrink: 0 }} />
+                      <XCircle size={16} style={{ color: "var(--risk-caution)", marginTop: 2, flexShrink: 0 }} />
                       <div>{w}</div>
                     </div>
                   ))}
@@ -803,7 +806,7 @@ export default function AppCheckPage() {
                 }}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-                  <CheckCircle2 size={16} style={{ color: "#10B981" }} />
+                  <CheckCircle2 size={16} style={{ color: "var(--risk-low)" }} />
                   <h4 style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)" }}>Verified Facts</h4>
                 </div>
                 <ul style={{ paddingLeft: 18, fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.6, margin: 0 }}>
@@ -847,7 +850,7 @@ export default function AppCheckPage() {
                 }}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-                  <Search size={16} style={{ color: "#60A5FA" }} />
+                  <Search size={16} style={{ color: "var(--accent)" }} />
                   <h4 style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)" }}>Automated Findings</h4>
                 </div>
                 <ul style={{ paddingLeft: 18, fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.6, margin: 0 }}>
@@ -1024,10 +1027,10 @@ export default function AppCheckPage() {
                 }}
                 style={{
                   padding: "12px 24px",
-                  background: "rgba(239, 68, 68, 0.12)",
-                  border: "1px solid rgba(239, 68, 68, 0.3)",
+                  background: "var(--risk-high-bg)",
+                  border: "1px solid var(--risk-high-border)",
                   borderRadius: "var(--radius-md)",
-                  color: "#FCA5A5",
+                  color: "var(--risk-high)",
                   fontSize: 14,
                   fontWeight: 600,
                   display: "flex",

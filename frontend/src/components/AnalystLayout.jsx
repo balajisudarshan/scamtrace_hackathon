@@ -34,7 +34,7 @@ export default function AnalystLayout() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: "#080C1A" }}>
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: "var(--bg-base)" }}>
       {/* ── Top Analyst Desk Security Bar ── */}
       <header
         style={{
@@ -132,7 +132,7 @@ export default function AnalystLayout() {
               padding: "6px 12px",
               borderRadius: "var(--radius-sm)",
               border: "1px solid var(--surface-border)",
-              background: "rgba(255, 255, 255, 0.03)",
+              background: "var(--bg-subtle)",
               textDecoration: "none",
             }}
           >
@@ -147,7 +147,7 @@ export default function AnalystLayout() {
               gap: 8,
               padding: "4px 8px",
               borderRadius: "var(--radius-sm)",
-              background: "#11182B",
+              background: "var(--surface-elevated)",
               border: "1px solid var(--surface-border)",
             }}
           >
@@ -191,7 +191,7 @@ export default function AnalystLayout() {
       {/* ── Sub-navigation bar with portal tabs ── */}
       <nav
         style={{
-          background: "#0A0F21",
+          background: "var(--surface-card)",
           borderBottom: "1px solid var(--surface-border)",
           padding: "0 20px",
           display: "flex",
@@ -216,7 +216,7 @@ export default function AnalystLayout() {
                 padding: "12px 16px",
                 fontSize: 13,
                 fontWeight: 500,
-                color: isActive ? "#FFFFFF" : "var(--text-secondary)",
+                color: isActive ? "var(--text-primary)" : "var(--text-secondary)",
                 borderBottom: isActive
                   ? "2px solid var(--accent)"
                   : "2px solid transparent",
@@ -242,8 +242,8 @@ export default function AnalystLayout() {
           .md-flex { display: flex !important; }
         }
         .analyst-tab-link:hover {
-          color: #FFFFFF !important;
-          background: rgba(255, 255, 255, 0.02);
+          color: var(--text-primary) !important;
+          background: var(--bg-subtle);
         }
       `}</style>
     </div>

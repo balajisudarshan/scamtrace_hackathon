@@ -67,44 +67,44 @@ export default function AdminDashboardPage() {
       value: stats.total,
       icon: FileText,
       color: "var(--accent)",
-      bg: "rgba(117, 103, 248, 0.12)",
-      border: "rgba(117, 103, 248, 0.3)",
+      bg: "var(--accent-glow)",
+      border: "var(--accent-border)",
       filter: "ALL",
     },
     {
       title: "New Reports",
       value: stats.newReports,
       icon: Clock,
-      color: "#60A5FA",
-      bg: "rgba(59, 130, 246, 0.12)",
-      border: "rgba(59, 130, 246, 0.3)",
+      color: "var(--status-review)",
+      bg: "var(--status-review-bg)",
+      border: "var(--status-review-bg)",
       filter: "RECEIVED",
     },
     {
       title: "Under Review",
       value: stats.underReview,
       icon: Eye,
-      color: "#F59E0B",
-      bg: "rgba(245, 158, 11, 0.12)",
-      border: "rgba(245, 158, 11, 0.3)",
+      color: "var(--status-disputed)",
+      bg: "var(--status-disputed-bg)",
+      border: "var(--status-disputed-bg)",
       filter: "UNDER_REVIEW",
     },
     {
       title: "Confirmed Scams",
       value: stats.confirmedScams,
       icon: CheckCircle2,
-      color: "#10B981",
-      bg: "rgba(16, 185, 129, 0.12)",
-      border: "rgba(16, 185, 129, 0.3)",
+      color: "var(--status-corroborated)",
+      bg: "var(--status-corroborated-bg)",
+      border: "var(--status-corroborated-bg)",
       filter: "CORROBORATED",
     },
     {
       title: "Dismissed / Duplicate",
       value: stats.dismissedOrDuplicate,
       icon: XCircle,
-      color: "#94A3B8",
-      bg: "rgba(148, 163, 184, 0.12)",
-      border: "rgba(148, 163, 184, 0.3)",
+      color: "var(--text-muted)",
+      bg: "var(--bg-subtle)",
+      border: "var(--surface-border)",
       filter: "REJECTED",
     },
   ];
@@ -112,21 +112,21 @@ export default function AdminDashboardPage() {
   const getStatusBadge = (status) => {
     const s = String(status || "").toUpperCase();
     if (s === "RECEIVED" || s === "NEW") {
-      return { label: "New", color: "#60A5FA", bg: "rgba(59, 130, 246, 0.15)" };
+      return { label: "New", color: "var(--status-review)", bg: "var(--status-review-bg)" };
     }
     if (s === "UNDER_REVIEW") {
-      return { label: "Under Review", color: "#F59E0B", bg: "rgba(245, 158, 11, 0.15)" };
+      return { label: "Under Review", color: "var(--status-disputed)", bg: "var(--status-disputed-bg)" };
     }
     if (s === "CORROBORATED" || s === "PUBLISHED" || s === "CONFIRMED_SCAM") {
-      return { label: "Confirmed Scam", color: "#10B981", bg: "rgba(16, 185, 129, 0.15)" };
+      return { label: "Confirmed Scam", color: "var(--status-corroborated)", bg: "var(--status-corroborated-bg)" };
     }
     if (s === "REJECTED" || s === "DISMISSED") {
-      return { label: "Dismissed", color: "#EF4444", bg: "rgba(239, 68, 68, 0.15)" };
+      return { label: "Dismissed", color: "var(--risk-high)", bg: "var(--risk-high-bg)" };
     }
     if (s === "DISPUTED" || s === "DUPLICATE") {
-      return { label: "Duplicate", color: "#94A3B8", bg: "rgba(148, 163, 184, 0.15)" };
+      return { label: "Duplicate", color: "var(--text-muted)", bg: "var(--bg-subtle)" };
     }
-    return { label: status, color: "#94A3B8", bg: "rgba(148, 163, 184, 0.15)" };
+    return { label: status, color: "var(--text-muted)", bg: "var(--bg-subtle)" };
   };
 
   return (
@@ -169,10 +169,10 @@ export default function AdminDashboardPage() {
         <div
           style={{
             padding: "12px 16px",
-            background: "rgba(239, 68, 68, 0.12)",
-            border: "1px solid rgba(239, 68, 68, 0.3)",
+            background: "var(--risk-high-bg)",
+            border: "1px solid var(--risk-high-border)",
             borderRadius: "var(--radius-md)",
-            color: "#FCA5A5",
+            color: "var(--risk-high)",
             fontSize: 13,
             marginBottom: 24,
           }}
